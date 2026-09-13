@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MN Technology - Learn technology through teacher-curated educational videos.">
+  <title>MN Technology | Learn Technology</title>
+  <!-- Google Font with system-font fallback (see CSS --font token) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%230a1f3d'/><text x='32' y='42' font-size='26' font-family='Arial' font-weight='bold' fill='%2322d3ee' text-anchor='middle'>MN</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+<base target="_blank">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- ===== Navigation bar ===== -->
+  <header class="site-header">
+    <nav class="navbar container" aria-label="Main navigation">
+      <a href="index.html" class="brand">
+        <span class="brand-logo" aria-hidden="true">MN</span>
+        <span class="brand-name">MN Technology</span>
+      </a>
+      <!-- Hamburger button: only visible on mobile -->
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navLinks">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="nav-link active" aria-current="page">Home</a></li>
+        <li><a href="index.html#courses" class="nav-link">Courses</a></li>
+        <li><a href="index.html#about" class="nav-link">About</a></li>
+        <li><a href="login.html" class="nav-link nav-cta" id="navLogin">Login</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- ===== Hero section ===== -->
+    <section class="hero">
+      <div class="container hero-inner">
+        <p class="hero-eyebrow">Teacher-curated video lessons</p>
+        <h1>Learn Technology with <span class="text-cyan">MN Technology</span></h1>
+        <p class="hero-text">
+          MN Technology is a secure learning platform where students sign in to watch
+          educational videos added by their teacher. Study web development, programming,
+          networking, databases, and more - all in one simple, focused place.
+        </p>
+        <div class="hero-actions">
+          <a href="login.html" class="btn btn-primary">Student Login</a>
+          <a href="#courses" class="btn btn-outline">Browse Courses</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Course categories ===== -->
+    <section class="section" id="courses">
+      <div class="container">
+        <h2 class="section-title center">Featured Course Categories</h2>
+        <p class="section-sub center">
+          Every lesson is hand-picked and uploaded by your teacher, so you always learn
+          exactly what your course requires.
+        </p>
+        <div class="category-grid">
+          <article class="category-card">
+            <div class="category-icon" aria-hidden="true">&#128187;</div>
+            <h3>Web Development</h3>
+            <p>HTML, CSS, and modern page layout fundamentals.</p>
+          </article>
+          <article class="category-card">
+            <div class="category-icon" aria-hidden="true">&#128295;</div>
+            <h3>Programming</h3>
+            <p>JavaScript basics, logic, and problem solving.</p>
+          </article>
+          <article class="category-card">
+            <div class="category-icon" aria-hidden="true">&#128421;</div>
+            <h3>Networking</h3>
+            <p>How computers connect, share, and communicate.</p>
+          </article>
+          <article class="category-card">
+            <div class="category-icon" aria-hidden="true">&#128451;</div>
+            <h3>Databases</h3>
+            <p>Designing, querying, and managing data stores.</p>
+          </article>
+          <article class="category-card">
+            <div class="category-icon" aria-hidden="true">&#128737;</div>
+            <h3>Cybersecurity</h3>
+            <p>Staying safe online and protecting information.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== About section ===== -->
+    <section class="section section-alt" id="about">
+      <div class="container">
+        <h2 class="section-title center">Why MN Technology?</h2>
+        <p class="section-sub center">
+          Built for the classroom: simple for students, managed by the teacher.
+        </p>
+        <div class="category-grid">
+          <article class="category-card">
+            <div class="category-icon" aria-hidden="true">&#128274;</div>
+            <h3>Secure by Design</h3>
+            <p>Only signed-in students can watch lessons. No public uploads, no distractions.</p>
+          </article>
+          <article class="category-card">
+            <div class="category-icon" aria-hidden="true">&#127891;</div>
+            <h3>Teacher-Led Content</h3>
+            <p>Your teacher controls the entire library, so every video supports your class.</p>
+          </article>
+          <article class="category-card">
+            <div class="category-icon" aria-hidden="true">&#128337;</div>
+            <h3>Learn at Your Pace</h3>
+            <p>Your progress is saved automatically - resume any lesson right where you left off.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <div class="footer-brand">
+          <span class="brand-logo" aria-hidden="true">MN</span>
+          <span class="brand-name">MN Technology</span>
+        </div>
+        <p>
+          A focused, secure video learning platform for students.
+          Log in with your student account to start watching teacher-added lessons.
+        </p>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul class="contact-list">
+          <li><span class="icon" aria-hidden="true">&#9993;</span> support@mntechnology.edu</li>
+          <li><span class="icon" aria-hidden="true">&#128222;</span> +1 (555) 010-2030</li>
+          <li><span class="icon" aria-hidden="true">&#127968;</span> 100 Learning Lane, Tech City</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Follow Us</h4>
+        <ul class="social-links">
+          <li><a href="#" aria-label="MN Technology on X (Twitter)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.4L6.4 22H3.2l7.3-8.3L1.5 2h6.4l4.4 5.9L18.9 2zm-1.1 18h1.7L6.9 3.9H5L17.8 20z"/></svg></a></li>
+          <li><a href="#" aria-label="MN Technology on YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4L15.8 12l-6.2 3.6z"/></svg></a></li>
+          <li><a href="#" aria-label="MN Technology on LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.6 4.7 6V21h-4v-5.5c0-1.3 0-3-1.9-3s-2.2 1.4-2.2 2.9V21H9z"/></svg></a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-copy">&copy; 2026 MN Technology. All rights reserved.</p>
+  </footer>
+
+  <!-- Shared auth helpers (mobile nav + session check for the Login link) -->
+  <script src="js/auth.js"></script>
+  <script>
+    // If a student is already signed in, send them straight to the dashboard.
+    (function () {
+      var session = MNAuth.getSession();
+      if (session && session.type === 'student') {
+        var link = document.getElementById('navLogin');
+        link.textContent = 'Dashboard';
+        link.href = 'dashboard.html';
+      }
+    })();
+  </script>
+</body>
+</html>
