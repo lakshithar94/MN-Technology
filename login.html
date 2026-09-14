@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="description" content="MN Technology Student and Admin Login">
+  <title>Login | MN Technology</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #071a33, #0a3157);
+      color: #ffffff;
+    }
+
+    /* Navigation */
+    .navbar {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 7%;
+      background: rgba(5, 18, 35, 0.95);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: white;
+      font-size: 21px;
+      font-weight: bold;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: #22d3ee;
+      color: #071a33;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+
+    .home-link {
+      color: #22d3ee;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* Login area */
+    .login-area {
+      min-height: calc(100vh - 70px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 430px;
+      background: #ffffff;
+      color: #172033;
+      border-radius: 18px;
+      padding: 35px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
+
+    .login-title {
+      text-align: center;
+      font-size: 30px;
+      margin-bottom: 8px;
+      color: #071a33;
+    }
+
+    .login-subtitle {
+      text-align: center;
+      color: #667085;
+      margin-bottom: 28px;
+    }
+
+    /* Account type */
+    .account-types {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .type-btn {
+      padding: 13px;
+      border: 2px solid #d9e1ea;
+      border-radius: 10px;
+      background: #ffffff;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+      color: #344054;
+    }
+
+    .type-btn.active {
+      border-color: #22d3ee;
+      background: #e9fbff;
+      color: #087990;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: 600;
+      color: #344054;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #cfd8e3;
+      border-radius: 9px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #22d3ee;
+      box-shadow: 0 0 0 3px rgba(34,211,238,0.15);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      background: #0891b2;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+
+    .login-btn:hover {
+      background: #0e7490;
+    }
+
+    .message {
+      display: none;
+      margin-top: 18px;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .info {
+      margin-top: 22px;
+      padding: 14px;
+      background: #f0f9ff;
+      border-radius: 10px;
+      color: #155e75;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .footer-text {
+      text-align: center;
+      margin-top: 25px;
+      color: #98a2b3;
+      font-size: 13px;
+    }
+
+    @media (max-width: 500px) {
+      .navbar {
+        padding: 0 20px;
+      }
+
+      .login-box {
+        padding: 25px 20px;
+      }
+
+      .login-title {
+        font-size: 26px;
+      }
+
+      .brand-name {
+        font-size: 17px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <a href="index.html" class="brand">
+      <span class="logo">MN</span>
+      <span class="brand-name">MN Technology</span>
+    </a>
+
+    <a href="index.html" class="home-link">Home</a>
+  </nav>
+
+
+  <!-- Login -->
+  <main class="login-area">
+
+    <div class="login-box">
+
+      <h1 class="login-title">Welcome Back</h1>
+
+      <p class="login-subtitle">
+        Sign in to MN Technology
+      </p>
+
+
+      <!-- Account type -->
+      <div class="account-types">
+
+        <button
+          type="button"
+          class="type-btn active"
+          id="studentBtn"
+          onclick="selectType('student')">
+          🎓 Student
+        </button>
+
+        <button
+          type="button"
+          class="type-btn"
+          id="adminBtn"
+          onclick="selectType('admin')">
+          🔐 Admin
+        </button>
+
+      </div>
+
+
+      <!-- Login form -->
+      <form id="loginForm">
+
+        <div class="form-group">
+
+          <label for="username">
+            Username
+          </label>
+
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Enter your username"
+            autocomplete="username"
+            required>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="password">
+            Password
+          </label>
+
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required>
+
+        </div>
+
+
+        <button type="submit" class="login-btn">
+          Student Login
+        </button>
+
+      </form>
+
+
+      <div id="message" class="message"></div>
+
+
+      <div class="info">
+        <strong>Students:</strong><br>
+        Use the username and password provided by your teacher.
+        <br><br>
+        <strong>Admin:</strong><br>
+        Administrators can manage students and course lessons.
+      </div>
+
+
+      <p class="footer-text">
+        © 2026 MN Technology
+      </p>
+
+    </div>
+
+  </main>
+
+
+  <script>
+
+    let accountType = "student";
+
+    function selectType(type) {
+
+      accountType = type;
+
+      const studentBtn = document.getElementById("studentBtn");
+      const adminBtn = document.getElementById("adminBtn");
+      const loginButton = document.querySelector(".login-btn");
+
+      if (type === "student") {
+
+        studentBtn.classList.add("active");
+        adminBtn.classList.remove("active");
+
+        loginButton.textContent = "Student Login";
+
+      } else {
+
+        adminBtn.classList.add("active");
+        studentBtn.classList.remove("active");
+
+        loginButton.textContent = "Admin Login";
+      }
+    }
+
+
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+
+      event.preventDefault();
+
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+      const message = document.getElementById("message");
+
+      if (!username || !password) {
+        showMessage("Please enter username and password.", "error");
+        return;
+      }
+
+      /*
+       * Real authentication will be connected here.
+       *
+       * Student:
+       * username + password → Student Dashboard
+       *
+       * Admin:
+       * username + password → Admin Dashboard
+       *
+       * Authentication will be connected with Supabase
+       * so passwords are NOT stored in this HTML file.
+       */
+
+      showMessage(
+        "Login system is being connected. Please wait for the secure account system to be configured.",
+        "info"
+      );
+
+    });
+
+
+    function showMessage(text, type) {
+
+      const message = document.getElementById("message");
+
+      message.style.display = "block";
+      message.textContent = text;
+
+      if (type === "error") {
+
+        message.style.background = "#fee4e2";
+        message.style.color = "#b42318";
+
+      } else {
+
+        message.style.background = "#e0f2fe";
+        message.style.color = "#075985";
+      }
+    }
+
+  </script>
+
+</body>
+</html>
