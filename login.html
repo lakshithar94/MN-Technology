@@ -1,192 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login | MN Technology</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+  <title>MN Technology - Login</title>
 
-body {
-  font-family: Arial, sans-serif;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #071a33, #0a3157);
-  color: white;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-.navbar {
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 7%;
-  background: #051223;
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e3a8a);
+      min-height: 100vh;
+      color: white;
+    }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: white;
-  text-decoration: none;
-  font-size: 21px;
-  font-weight: bold;
-}
+    nav {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 7%;
+      background: rgba(0, 0, 0, 0.25);
+    }
 
-.logo {
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
-  background: #22d3ee;
-  color: #071a33;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-}
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+    }
 
-.home {
-  color: #22d3ee;
-  text-decoration: none;
-  font-weight: bold;
-}
+    .logo span {
+      color: #38bdf8;
+    }
 
-.login-area {
-  min-height: calc(100vh - 70px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 30px 20px;
-}
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
 
-.login-box {
-  width: 100%;
-  max-width: 430px;
-  background: white;
-  color: #172033;
-  border-radius: 18px;
-  padding: 35px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-}
+    .login-container {
+      width: 100%;
+      max-width: 450px;
+      margin: 60px auto;
+      padding: 35px;
+      background: white;
+      color: #111827;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    }
 
-h1 {
-  text-align: center;
-  color: #071a33;
-  margin-bottom: 8px;
-}
+    h1 {
+      text-align: center;
+      margin-bottom: 8px;
+    }
 
-.subtitle {
-  text-align: center;
-  color: #667085;
-  margin-bottom: 25px;
-}
+    .subtitle {
+      text-align: center;
+      color: #64748b;
+      margin-bottom: 25px;
+    }
 
-.types {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 25px;
-}
+    .types {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
 
-.type-btn {
-  padding: 13px;
-  border: 2px solid #d9e1ea;
-  border-radius: 10px;
-  background: white;
-  cursor: pointer;
-  font-weight: bold;
-}
+    .type-btn {
+      flex: 1;
+      padding: 13px;
+      border: 2px solid #cbd5e1;
+      border-radius: 10px;
+      background: white;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
 
-.type-btn.active {
-  border-color: #22d3ee;
-  background: #e9fbff;
-  color: #087990;
-}
+    .type-btn.active {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
 
-label {
-  display: block;
-  margin-bottom: 7px;
-  font-weight: bold;
-}
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 7px;
+      font-weight: bold;
+    }
 
-input {
-  width: 100%;
-  padding: 14px;
-  margin-bottom: 18px;
-  border: 1px solid #cfd8e3;
-  border-radius: 9px;
-  font-size: 16px;
-}
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      font-size: 16px;
+    }
 
-.login-btn {
-  width: 100%;
-  padding: 15px;
-  border: none;
-  border-radius: 10px;
-  background: #0891b2;
-  color: white;
-  font-size: 17px;
-  font-weight: bold;
-  cursor: pointer;
-}
+    input:focus {
+      outline: none;
+      border-color: #2563eb;
+    }
 
-.login-btn:hover {
-  background: #0e7490;
-}
+    .login-btn {
+      width: 100%;
+      margin-top: 25px;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: #2563eb;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-.info {
-  margin-top: 20px;
-  padding: 14px;
-  background: #f0f9ff;
-  border-radius: 10px;
-  color: #155e75;
-  font-size: 13px;
-  line-height: 1.6;
-}
+    .login-btn:hover {
+      background: #1d4ed8;
+    }
 
-.message {
-  margin-top: 15px;
-  text-align: center;
-  font-weight: bold;
-}
+    .message {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
 
-.success {
-  color: #15803d;
-}
+    .info {
+      margin-top: 25px;
+      padding: 15px;
+      background: #f1f5f9;
+      border-radius: 10px;
+      line-height: 1.7;
+      font-size: 14px;
+    }
 
-.error {
-  color: #dc2626;
-}
-</style>
+    @media (max-width: 500px) {
+      .login-container {
+        margin: 30px 15px;
+        padding: 25px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<nav class="navbar">
+  <nav>
+    <div class="logo">
+      <span>MN</span> Technology
+    </div>
 
-  <a href="index.html" class="brand">
-    <span class="logo">MN</span>
-    <span>MN Technology</span>
-  </a>
+    <a href="index.html">Home</a>
+  </nav>
 
-  <a href="index.html" class="home">Home</a>
 
-</nav>
-
-<main class="login-area">
-
-  <div class="login-box">
+  <div class="login-container">
 
     <h1>Welcome Back</h1>
 
     <p class="subtitle">
       Sign in to MN Technology
     </p>
+
 
     <div class="types">
 
@@ -208,6 +189,7 @@ input {
 
     </div>
 
+
     <form id="loginForm">
 
       <label for="username">Username</label>
@@ -218,6 +200,7 @@ input {
         placeholder="Enter your username"
         required>
 
+
       <label for="password">Password</label>
 
       <input
@@ -226,13 +209,19 @@ input {
         placeholder="Enter your password"
         required>
 
-      <button type="submit" class="login-btn" id="loginButton">
+
+      <button
+        type="submit"
+        class="login-btn"
+        id="loginButton">
         Student Login
       </button>
 
     </form>
 
+
     <div id="message" class="message"></div>
+
 
     <div class="info">
 
@@ -250,123 +239,115 @@ input {
 
   </div>
 
-</main>
 
 <script>
 
-let accountType = "student";
-
-function selectType(type) {
-
-  accountType = type;
-
-  const studentBtn =
-    document.getElementById("studentBtn");
-
-  const adminBtn =
-    document.getElementById("adminBtn");
-
-  const loginButton =
-    document.getElementById("loginButton");
-
-  const message =
-    document.getElementById("message");
-
-  message.textContent = "";
-  message.className = "message";
-
-  if (type === "student") {
-
-    studentBtn.classList.add("active");
-    adminBtn.classList.remove("active");
-
-    loginButton.textContent = "Student Login";
-
-  } else {
-
-    adminBtn.classList.add("active");
-    studentBtn.classList.remove("active");
-
-    loginButton.textContent = "Admin Login";
-  }
-}
+  let loginType = "student";
 
 
-document
-.getElementById("loginForm")
-.addEventListener("submit", function(event) {
+  function selectType(type) {
 
-  event.preventDefault();
+    loginType = type;
 
-  const username =
-    document.getElementById("username").value.trim();
+    const studentBtn = document.getElementById("studentBtn");
+    const adminBtn = document.getElementById("adminBtn");
+    const loginButton = document.getElementById("loginButton");
+    const message = document.getElementById("message");
 
-  const password =
-    document.getElementById("password").value;
+    message.innerHTML = "";
 
-  const message =
-    document.getElementById("message");
+    if (type === "student") {
 
+      studentBtn.classList.add("active");
+      adminBtn.classList.remove("active");
 
-  /* STUDENT LOGIN */
+      loginButton.textContent = "Student Login";
 
-  if (
-    accountType === "student" &&
-    username === "student" &&
-    password === "1234"
-  ) {
+    } else {
 
-    message.textContent =
-      "Student login successful!";
+      adminBtn.classList.add("active");
+      studentBtn.classList.remove("active");
 
-    message.className =
-      "message success";
+      loginButton.textContent = "Admin Login";
 
-    setTimeout(function() {
-
-      window.location.href =
-        "student-dashboard.html";
-
-    }, 800);
-
-    return;
+    }
   }
 
 
-  /* ADMIN LOGIN */
+  document
+    .getElementById("loginForm")
+    .addEventListener("submit", function(event) {
 
-  if (
-    accountType === "admin" &&
-    username === "admin" &&
-    password === "admin123"
-  ) {
+      event.preventDefault();
 
-    message.textContent =
-      "Admin login successful!";
+      const username =
+        document.getElementById("username").value.trim();
 
-    message.className =
-      "message success";
+      const password =
+        document.getElementById("password").value;
 
-    setTimeout(function() {
-
-      window.location.href =
-        "admin-dashboard.html";
-
-    }, 800);
-
-    return;
-  }
+      const message =
+        document.getElementById("message");
 
 
-  /* WRONG LOGIN */
+      // STUDENT LOGIN
+      if (loginType === "student") {
 
-  message.textContent =
-    "Incorrect username or password.";
+        if (
+          username === "student" &&
+          password === "1234"
+        ) {
 
-  message.className =
-    "message error";
+          message.style.color = "green";
+          message.textContent = "Login successful!";
 
-});
+          setTimeout(function() {
+
+            window.location.href =
+              "student-dashboard.html";
+
+          }, 500);
+
+        } else {
+
+          message.style.color = "red";
+          message.textContent =
+            "Incorrect Student username or password.";
+
+        }
+
+      }
+
+
+      // ADMIN LOGIN
+      else {
+
+        if (
+          username === "admin" &&
+          password === "admin123"
+        ) {
+
+          message.style.color = "green";
+          message.textContent = "Login successful!";
+
+          setTimeout(function() {
+
+            window.location.href =
+              "admin-dashboard.html";
+
+          }, 500);
+
+        } else {
+
+          message.style.color = "red";
+          message.textContent =
+            "Incorrect Admin username or password.";
+
+        }
+
+      }
+
+    });
 
 </script>
 
