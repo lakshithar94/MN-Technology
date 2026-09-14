@@ -1,262 +1,374 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login | MN Technology">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | MN Technology</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-    body {
-      font-family: Arial, sans-serif;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #071a33, #0a3157);
-      color: white;
-    }
+body {
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #071a33, #0a3157);
+  color: white;
+}
 
-    .navbar {
-      height: 70px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 7%;
-      background: #051223;
-    }
+.navbar {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 7%;
+  background: #051223;
+}
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: white;
-      text-decoration: none;
-      font-size: 21px;
-      font-weight: bold;
-    }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  text-decoration: none;
+  font-size: 21px;
+  font-weight: bold;
+}
 
-    .logo {
-      width: 42px;
-      height: 42px;
-      border-radius: 10px;
-      background: #22d3ee;
-      color: #071a33;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-    }
+.logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: #22d3ee;
+  color: #071a33;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
 
-    .home {
-      color: #22d3ee;
-      text-decoration: none;
-      font-weight: bold;
-    }
+.home {
+  color: #22d3ee;
+  text-decoration: none;
+  font-weight: bold;
+}
 
-    .login-area {
-      min-height: calc(100vh - 70px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 30px 20px;
-    }
+.login-area {
+  min-height: calc(100vh - 70px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 20px;
+}
 
-    .login-box {
-      width: 100%;
-      max-width: 430px;
-      background: white;
-      color: #172033;
-      border-radius: 18px;
-      padding: 35px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-    }
+.login-box {
+  width: 100%;
+  max-width: 430px;
+  background: white;
+  color: #172033;
+  border-radius: 18px;
+  padding: 35px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+}
 
-    h1 {
-      text-align: center;
-      color: #071a33;
-      margin-bottom: 8px;
-    }
+h1 {
+  text-align: center;
+  color: #071a33;
+  margin-bottom: 8px;
+}
 
-    .subtitle {
-      text-align: center;
-      color: #667085;
-      margin-bottom: 25px;
-    }
+.subtitle {
+  text-align: center;
+  color: #667085;
+  margin-bottom: 25px;
+}
 
-    .types {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 25px;
-    }
+.types {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 25px;
+}
 
-    .type-btn {
-      padding: 13px;
-      border: 2px solid #d9e1ea;
-      border-radius: 10px;
-      background: white;
-      cursor: pointer;
-      font-weight: bold;
-    }
+.type-btn {
+  padding: 13px;
+  border: 2px solid #d9e1ea;
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+  font-weight: bold;
+}
 
-    .type-btn.active {
-      border-color: #22d3ee;
-      background: #e9fbff;
-      color: #087990;
-    }
+.type-btn.active {
+  border-color: #22d3ee;
+  background: #e9fbff;
+  color: #087990;
+}
 
-    label {
-      display: block;
-      margin-bottom: 7px;
-      font-weight: bold;
-    }
+label {
+  display: block;
+  margin-bottom: 7px;
+  font-weight: bold;
+}
 
-    input {
-      width: 100%;
-      padding: 14px;
-      margin-bottom: 18px;
-      border: 1px solid #cfd8e3;
-      border-radius: 9px;
-      font-size: 16px;
-    }
+input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 18px;
+  border: 1px solid #cfd8e3;
+  border-radius: 9px;
+  font-size: 16px;
+}
 
-    .login-btn {
-      width: 100%;
-      padding: 15px;
-      border: none;
-      border-radius: 10px;
-      background: #0891b2;
-      color: white;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+.login-btn {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  background: #0891b2;
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-    .info {
-      margin-top: 20px;
-      padding: 14px;
-      background: #f0f9ff;
-      border-radius: 10px;
-      color: #155e75;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-  </style>
+.login-btn:hover {
+  background: #0e7490;
+}
+
+.info {
+  margin-top: 20px;
+  padding: 14px;
+  background: #f0f9ff;
+  border-radius: 10px;
+  color: #155e75;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.message {
+  margin-top: 15px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.success {
+  color: #15803d;
+}
+
+.error {
+  color: #dc2626;
+}
+</style>
 </head>
 
 <body>
 
-  <nav class="navbar">
+<nav class="navbar">
 
-    <a href="index.html" class="brand">
-      <span class="logo">MN</span>
-      <span>MN Technology</span>
-    </a>
+  <a href="index.html" class="brand">
+    <span class="logo">MN</span>
+    <span>MN Technology</span>
+  </a>
 
-    <a href="index.html" class="home">Home</a>
+  <a href="index.html" class="home">Home</a>
 
-  </nav>
+</nav>
 
-  <main class="login-area">
+<main class="login-area">
 
-    <div class="login-box">
+  <div class="login-box">
 
-      <h1>Welcome Back</h1>
+    <h1>Welcome Back</h1>
 
-      <p class="subtitle">
-        Sign in to MN Technology
-      </p>
+    <p class="subtitle">
+      Sign in to MN Technology
+    </p>
 
-      <div class="types">
+    <div class="types">
 
-        <button class="type-btn active" id="studentBtn"
-          onclick="selectType('student')">
-          🎓 Student
-        </button>
+      <button
+        type="button"
+        class="type-btn active"
+        id="studentBtn"
+        onclick="selectType('student')">
+        🎓 Student
+      </button>
 
-        <button class="type-btn" id="adminBtn"
-          onclick="selectType('admin')">
-          🔐 Admin
-        </button>
-
-      </div>
-
-      <form id="loginForm">
-
-        <label for="username">Username</label>
-
-        <input
-          type="text"
-          id="username"
-          placeholder="Enter your username"
-          required>
-
-        <label for="password">Password</label>
-
-        <input
-          type="password"
-          id="password"
-          placeholder="Enter your password"
-          required>
-
-        <button type="submit" class="login-btn">
-          Student Login
-        </button>
-
-      </form>
-
-      <div class="info">
-        <b>Student:</b><br>
-        Use the username and password provided by your teacher.
-        <br><br>
-        <b>Admin:</b><br>
-        Admin can manage students and lessons.
-      </div>
+      <button
+        type="button"
+        class="type-btn"
+        id="adminBtn"
+        onclick="selectType('admin')">
+        🔐 Admin
+      </button>
 
     </div>
 
-  </main><script>
+    <form id="loginForm">
 
-    let accountType = "student";
+      <label for="username">Username</label>
 
-    function selectType(type) {
+      <input
+        type="text"
+        id="username"
+        placeholder="Enter your username"
+        required>
 
-      accountType = type;
+      <label for="password">Password</label>
 
-      const studentBtn = document.getElementById("studentBtn");
-      const adminBtn = document.getElementById("adminBtn");
-      const loginButton = document.querySelector(".login-btn");
+      <input
+        type="password"
+        id="password"
+        placeholder="Enter your password"
+        required>
 
-      if (type === "student") {
+      <button type="submit" class="login-btn" id="loginButton">
+        Student Login
+      </button>
 
-        studentBtn.classList.add("active");
-        adminBtn.classList.remove("active");
+    </form>
 
-        loginButton.textContent = "Student Login";
+    <div id="message" class="message"></div>
 
-      } else {
+    <div class="info">
 
-        adminBtn.classList.add("active");
-        studentBtn.classList.remove("active");
+      <b>Student Login</b><br>
+      Username: <b>student</b><br>
+      Password: <b>1234</b>
 
-        loginButton.textContent = "Admin Login";
-      }
-    }
+      <br><br>
 
-    document.getElementById("loginForm").addEventListener("submit", function(event) {
+      <b>Admin Login</b><br>
+      Username: <b>admin</b><br>
+      Password: <b>admin123</b>
 
-      event.preventDefault();
+    </div>
 
-      alert(
-        "Login system will be connected to the secure database next."
-      );
+  </div>
 
-    });
+</main>
 
-  </script>
+<script>
+
+let accountType = "student";
+
+function selectType(type) {
+
+  accountType = type;
+
+  const studentBtn =
+    document.getElementById("studentBtn");
+
+  const adminBtn =
+    document.getElementById("adminBtn");
+
+  const loginButton =
+    document.getElementById("loginButton");
+
+  const message =
+    document.getElementById("message");
+
+  message.textContent = "";
+  message.className = "message";
+
+  if (type === "student") {
+
+    studentBtn.classList.add("active");
+    adminBtn.classList.remove("active");
+
+    loginButton.textContent = "Student Login";
+
+  } else {
+
+    adminBtn.classList.add("active");
+    studentBtn.classList.remove("active");
+
+    loginButton.textContent = "Admin Login";
+  }
+}
+
+
+document
+.getElementById("loginForm")
+.addEventListener("submit", function(event) {
+
+  event.preventDefault();
+
+  const username =
+    document.getElementById("username").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+  const message =
+    document.getElementById("message");
+
+
+  /* STUDENT LOGIN */
+
+  if (
+    accountType === "student" &&
+    username === "student" &&
+    password === "1234"
+  ) {
+
+    message.textContent =
+      "Student login successful!";
+
+    message.className =
+      "message success";
+
+    setTimeout(function() {
+
+      window.location.href =
+        "student-dashboard.html";
+
+    }, 800);
+
+    return;
+  }
+
+
+  /* ADMIN LOGIN */
+
+  if (
+    accountType === "admin" &&
+    username === "admin" &&
+    password === "admin123"
+  ) {
+
+    message.textContent =
+      "Admin login successful!";
+
+    message.className =
+      "message success";
+
+    setTimeout(function() {
+
+      window.location.href =
+        "admin-dashboard.html";
+
+    }, 800);
+
+    return;
+  }
+
+
+  /* WRONG LOGIN */
+
+  message.textContent =
+    "Incorrect username or password.";
+
+  message.className =
+    "message error";
+
+});
+
+</script>
 
 </body>
 </html>
