@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard | MN Technology</title>
+  <title>Student Dashboard | MN Technology</title>
 
   <style>
     * {
@@ -73,6 +73,7 @@
       margin: auto;
     }
 
+    /* WELCOME */
     .welcome {
       margin-top: 35px;
       background: linear-gradient(135deg, #071a33, #0a3157);
@@ -133,99 +134,95 @@
       color: #071a33;
     }
 
-    /* ACTIONS */
-    .actions {
+    /* COURSE GRID */
+    .course-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
     }
 
-    .action-card {
+    .course-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+      transition: 0.3s;
+    }
+
+    .course-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+
+    .course-top {
+      height: 130px;
+      background: linear-gradient(135deg, #0891b2, #22d3ee);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 52px;
+    }
+
+    .course-content {
+      padding: 20px;
+    }
+
+    .course-content h3 {
+      margin-bottom: 8px;
+      color: #071a33;
+    }
+
+    .course-content p {
+      color: #667085;
+      line-height: 1.5;
+      font-size: 14px;
+      min-height: 63px;
+    }
+
+    .watch-btn {
+      display: block;
+      width: 100%;
+      margin-top: 15px;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #0891b2;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .watch-btn:hover {
+      background: #0e7490;
+    }
+
+    /* PROGRESS */
+    .progress-box {
       background: white;
       padding: 25px;
       border-radius: 15px;
       box-shadow: 0 5px 20px rgba(0,0,0,0.07);
     }
 
-    .action-icon {
-      font-size: 40px;
-      margin-bottom: 12px;
-    }
-
-    .action-card h3 {
-      margin-bottom: 8px;
-    }
-
-    .action-card p {
-      color: #667085;
-      font-size: 14px;
-      line-height: 1.5;
-      margin-bottom: 15px;
-    }
-
-    .action-btn {
-      border: none;
-      background: #0891b2;
-      color: white;
-      padding: 11px 18px;
-      border-radius: 8px;
-      cursor: pointer;
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
       font-weight: bold;
     }
 
-    .action-btn:hover {
-      background: #0e7490;
-    }
-
-    /* COURSE TABLE */
-    .table-box {
-      background: white;
-      border-radius: 15px;
-      padding: 20px;
-      overflow-x: auto;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.07);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 600px;
-    }
-
-    th,
-    td {
-      padding: 15px;
-      text-align: left;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    th {
-      background: #f8fafc;
-      color: #071a33;
-    }
-
-    td {
-      color: #475467;
-    }
-
-    .status {
-      display: inline-block;
-      padding: 5px 10px;
+    .progress-bar {
+      height: 12px;
+      background: #e5e7eb;
       border-radius: 20px;
-      background: #dcfce7;
-      color: #15803d;
-      font-size: 12px;
-      font-weight: bold;
+      overflow: hidden;
     }
 
-    /* NOTICE */
-    .notice {
-      background: #fff7ed;
-      border-left: 5px solid #f97316;
-      padding: 18px;
-      border-radius: 10px;
-      color: #9a3412;
-      line-height: 1.6;
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: #0891b2;
+      transition: width 0.5s;
     }
 
     /* FOOTER */
@@ -238,10 +235,18 @@
     }
 
     /* MOBILE */
-    @media (max-width: 800px) {
+    @media (max-width: 900px) {
+      .course-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
 
-      .stats,
-      .actions {
+    @media (max-width: 800px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .course-grid {
         grid-template-columns: 1fr;
       }
 
@@ -286,11 +291,11 @@
     <!-- WELCOME -->
     <section class="welcome">
 
-      <h1>Welcome, Admin! 🔐</h1>
+      <h1>Welcome, Student! 👋</h1>
 
       <p>
-        Manage your MN Technology learning platform,
-        courses and educational lessons from this dashboard.
+        Welcome to your MN Technology learning dashboard.
+        Select a course and start learning today.
       </p>
 
     </section>
@@ -300,111 +305,21 @@
     <section class="stats">
 
       <div class="stat-card">
-
-        <div class="stat-icon">👨‍🎓</div>
-
-        <h3>25</h3>
-
-        <p>Registered Students</p>
-
-      </div>
-
-
-      <div class="stat-card">
-
         <div class="stat-icon">📚</div>
-
-        <h3>6</h3>
-
-        <p>Total Courses</p>
-
+        <h3>5</h3>
+        <p>Available Courses</p>
       </div>
-
 
       <div class="stat-card">
-
         <div class="stat-icon">🎬</div>
-
-        <h3>12</h3>
-
-        <p>Total Lessons</p>
-
+        <h3>0</h3>
+        <p>Available Lessons</p>
       </div>
 
-    </section>
-
-
-    <!-- ADMIN ACTIONS -->
-    <section class="section">
-
-      <h2 class="section-title">
-        ⚙️ Administration
-      </h2>
-
-
-      <div class="actions">
-
-
-        <div class="action-card">
-
-          <div class="action-icon">🎬</div>
-
-          <h3>Add Lesson</h3>
-
-          <p>
-            Add a new educational video or lesson
-            for students.
-          </p>
-
-          <button
-            class="action-btn"
-            onclick="addLesson()">
-            Add Lesson
-          </button>
-
-        </div>
-
-
-        <div class="action-card">
-
-          <div class="action-icon">📚</div>
-
-          <h3>Manage Courses</h3>
-
-          <p>
-            Create and manage courses available
-            to students.
-          </p>
-
-          <button
-            class="action-btn"
-            onclick="manageCourses()">
-            Manage Courses
-          </button>
-
-        </div>
-
-
-        <div class="action-card">
-
-          <div class="action-icon">👨‍🎓</div>
-
-          <h3>Students</h3>
-
-          <p>
-            View and manage students registered
-            on the platform.
-          </p>
-
-          <button
-            class="action-btn"
-            onclick="manageStudents()">
-            View Students
-          </button>
-
-        </div>
-
-
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <h3>0%</h3>
+        <p>Learning Progress</p>
       </div>
 
     </section>
@@ -414,100 +329,174 @@
     <section class="section">
 
       <h2 class="section-title">
-        📚 Course Overview
+        📚 Our Courses
       </h2>
 
+      <div class="course-grid">
 
-      <div class="table-box">
 
-        <table>
+        <!-- ELECTRONIC -->
+        <article class="course-card">
 
-          <thead>
+          <div class="course-top">
+            ⚡
+          </div>
 
-            <tr>
-              <th>Course</th>
-              <th>Lessons</th>
-              <th>Students</th>
-              <th>Status</th>
-            </tr>
+          <div class="course-content">
 
-          </thead>
+            <h3>Electronic</h3>
 
-          <tbody>
+            <p>
+              Learn electronic components, circuits,
+              testing, soldering and practical electronics.
+            </p>
 
-            <tr>
-              <td>Web Development</td>
-              <td>3</td>
-              <td>15</td>
-              <td>
-                <span class="status">Active</span>
-              </td>
-            </tr>
+            <button
+              class="watch-btn"
+              onclick="openCourse('Electronic')">
+              Start Course
+            </button>
 
-            <tr>
-              <td>Programming</td>
-              <td>2</td>
-              <td>12</td>
-              <td>
-                <span class="status">Active</span>
-              </td>
-            </tr>
+          </div>
 
-            <tr>
-              <td>Networking</td>
-              <td>2</td>
-              <td>10</td>
-              <td>
-                <span class="status">Active</span>
-              </td>
-            </tr>
+        </article>
 
-            <tr>
-              <td>Electronics</td>
-              <td>3</td>
-              <td>18</td>
-              <td>
-                <span class="status">Active</span>
-              </td>
-            </tr>
 
-            <tr>
-              <td>Databases</td>
-              <td>1</td>
-              <td>8</td>
-              <td>
-                <span class="status">Active</span>
-              </td>
-            </tr>
+        <!-- ELECTRICAL -->
+        <article class="course-card">
 
-            <tr>
-              <td>Cybersecurity</td>
-              <td>1</td>
-              <td>7</td>
-              <td>
-                <span class="status">Active</span>
-              </td>
-            </tr>
+          <div class="course-top">
+            🔌
+          </div>
 
-          </tbody>
+          <div class="course-content">
 
-        </table>
+            <h3>Electrical</h3>
+
+            <p>
+              Learn Single Phase and Three Phase
+              electrical systems, wiring and safety.
+            </p>
+
+            <button
+              class="watch-btn"
+              onclick="openCourse('Electrical')">
+              Start Course
+            </button>
+
+          </div>
+
+        </article>
+
+
+        <!-- CCTV -->
+        <article class="course-card">
+
+          <div class="course-top">
+            📹
+          </div>
+
+          <div class="course-content">
+
+            <h3>CCTV</h3>
+
+            <p>
+              Learn CCTV cameras, DVR/NVR,
+              installation, wiring and troubleshooting.
+            </p>
+
+            <button
+              class="watch-btn"
+              onclick="openCourse('CCTV')">
+              Start Course
+            </button>
+
+          </div>
+
+        </article>
+
+
+        <!-- MOTOR WINDING -->
+        <article class="course-card">
+
+          <div class="course-top">
+            🌀
+          </div>
+
+          <div class="course-content">
+
+            <h3>Motor Winding</h3>
+
+            <p>
+              Learn motor types, winding methods,
+              connections, testing and practical work.
+            </p>
+
+            <button
+              class="watch-btn"
+              onclick="openCourse('Motor Winding')">
+              Start Course
+            </button>
+
+          </div>
+
+        </article>
+
+
+        <!-- MOBILE PHONE -->
+        <article class="course-card">
+
+          <div class="course-top">
+            📱
+          </div>
+
+          <div class="course-content">
+
+            <h3>Mobile Phone</h3>
+
+            <p>
+              Learn mobile phone components,
+              hardware, software and repair techniques.
+            </p>
+
+            <button
+              class="watch-btn"
+              onclick="openCourse('Mobile Phone')">
+              Start Course
+            </button>
+
+          </div>
+
+        </article>
+
 
       </div>
 
     </section>
 
 
-    <!-- NOTICE -->
+    <!-- PROGRESS -->
     <section class="section">
 
-      <div class="notice">
+      <h2 class="section-title">
+        📊 My Progress
+      </h2>
 
-        <strong>⚠️ Important:</strong>
+      <div class="progress-box">
 
-        The current dashboard is a front-end version.
-        To permanently save students, courses and videos,
-        we need to connect the website to a database/backend.
+        <div class="progress-text">
+          <span>Overall Course Progress</span>
+          <span id="progressPercent">0%</span>
+        </div>
+
+        <div class="progress-bar">
+
+          <div
+            class="progress-fill"
+            id="progressFill">
+          </div>
+
+        </div>
 
       </div>
 
@@ -528,29 +517,13 @@
 
   <script>
 
-    function addLesson() {
+    function openCourse(course) {
 
-      alert(
-        "Lesson management will be connected next."
-      );
+      // Selected course is temporarily saved
+      localStorage.setItem("selectedCourse", course);
 
-    }
-
-
-    function manageCourses() {
-
-      alert(
-        "Course management will be connected next."
-      );
-
-    }
-
-
-    function manageStudents() {
-
-      alert(
-        "Student management will be connected next."
-      );
+      // Open course page
+      window.location.href = "course.html";
 
     }
 
@@ -561,6 +534,8 @@
         confirm("Are you sure you want to logout?");
 
       if (confirmLogout) {
+
+        localStorage.removeItem("selectedCourse");
 
         window.location.href =
           "login.html";
