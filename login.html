@@ -4,352 +4,413 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>MN Technology - Login</title>
+  <title>Login | MN Technology</title>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
     }
 
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #0f172a, #1e3a8a);
       min-height: 100vh;
-      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background:
+        linear-gradient(135deg, #06152e, #0b4f8a, #06152e);
+      padding: 20px;
     }
 
-    nav {
-      height: 70px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 7%;
-      background: rgba(0, 0, 0, 0.25);
+    .login-box {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      border-radius: 20px;
+      padding: 35px 30px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.35);
     }
 
     .logo {
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    .logo span {
-      color: #38bdf8;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .login-container {
-      width: 100%;
-      max-width: 450px;
-      margin: 60px auto;
-      padding: 35px;
-      background: white;
-      color: #111827;
-      border-radius: 20px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-    }
-
-    h1 {
       text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+      color: #0b4f8a;
       margin-bottom: 8px;
     }
 
     .subtitle {
       text-align: center;
-      color: #64748b;
-      margin-bottom: 25px;
+      color: #777;
+      margin-bottom: 30px;
     }
 
-    .types {
+    .user-type {
       display: flex;
       gap: 10px;
       margin-bottom: 25px;
     }
 
-    .type-btn {
+    .user-type button {
       flex: 1;
-      padding: 13px;
-      border: 2px solid #cbd5e1;
+      padding: 12px;
+      border: none;
       border-radius: 10px;
-      background: white;
-      cursor: pointer;
-      font-size: 16px;
+      background: #e9eef5;
+      color: #333;
       font-weight: bold;
+      cursor: pointer;
     }
 
-    .type-btn.active {
-      background: #2563eb;
+    .user-type button.active {
+      background: #0b4f8a;
       color: white;
-      border-color: #2563eb;
     }
 
-    label {
+    .input-group {
+      margin-bottom: 18px;
+    }
+
+    .input-group label {
       display: block;
-      margin-top: 15px;
       margin-bottom: 7px;
       font-weight: bold;
+      color: #333;
     }
 
-    input {
+    .input-group input {
       width: 100%;
-      padding: 13px;
-      border: 1px solid #cbd5e1;
-      border-radius: 9px;
+      padding: 14px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
       font-size: 16px;
+      outline: none;
     }
 
-    input:focus {
-      outline: none;
-      border-color: #2563eb;
+    .input-group input:focus {
+      border-color: #0b4f8a;
     }
 
     .login-btn {
       width: 100%;
-      margin-top: 25px;
       padding: 14px;
       border: none;
       border-radius: 10px;
-      background: #2563eb;
+      background: #0b4f8a;
       color: white;
       font-size: 17px;
       font-weight: bold;
       cursor: pointer;
+      margin-top: 8px;
     }
 
     .login-btn:hover {
-      background: #1d4ed8;
+      background: #083c69;
     }
 
     .message {
-      margin-top: 15px;
+      margin-top: 18px;
       text-align: center;
       font-weight: bold;
+      min-height: 22px;
     }
 
     .info {
-      margin-top: 25px;
-      padding: 15px;
-      background: #f1f5f9;
+      margin-top: 22px;
+      padding: 14px;
+      background: #f1f6fb;
       border-radius: 10px;
-      line-height: 1.7;
-      font-size: 14px;
+      font-size: 13px;
+      color: #555;
+      line-height: 1.6;
+      text-align: center;
     }
 
-    @media (max-width: 500px) {
-      .login-container {
-        margin: 30px 15px;
-        padding: 25px;
-      }
+    .loading {
+      opacity: 0.7;
+      pointer-events: none;
     }
   </style>
 </head>
 
 <body>
 
-  <nav>
-    <div class="logo">
-      <span>MN</span> Technology
+  <div class="login-box">
+
+    <div class="logo">MN Technology</div>
+
+    <div class="subtitle">
+      Electronic & Technical Learning
     </div>
 
-    <a href="index.html">Home</a>
-  </nav>
-
-
-  <div class="login-container">
-
-    <h1>Welcome Back</h1>
-
-    <p class="subtitle">
-      Sign in to MN Technology
-    </p>
-
-
-    <div class="types">
-
-      <button
-        type="button"
-        class="type-btn active"
-        id="studentBtn"
-        onclick="selectType('student')">
-        🎓 Student
+    <!-- User Type -->
+    <div class="user-type">
+      <button id="studentBtn" class="active" onclick="selectType('student')">
+        Student
       </button>
 
-      <button
-        type="button"
-        class="type-btn"
-        id="adminBtn"
-        onclick="selectType('admin')">
-        🔐 Admin
+      <button id="adminBtn" onclick="selectType('admin')">
+        Admin
       </button>
-
     </div>
 
-
+    <!-- Login Form -->
     <form id="loginForm">
 
-      <label for="username">Username</label>
+      <div class="input-group">
+        <label>Username</label>
+        <input
+          type="text"
+          id="username"
+          placeholder="Enter username"
+          required
+          autocomplete="username"
+        >
+      </div>
 
-      <input
-        type="text"
-        id="username"
-        placeholder="Enter your username"
-        required>
+      <div class="input-group">
+        <label>Password</label>
+        <input
+          type="password"
+          id="password"
+          placeholder="Enter password"
+          required
+          autocomplete="current-password"
+        >
+      </div>
 
-
-      <label for="password">Password</label>
-
-      <input
-        type="password"
-        id="password"
-        placeholder="Enter your password"
-        required>
-
-
-      <button
-        type="submit"
-        class="login-btn"
-        id="loginButton">
-        Student Login
+      <button type="submit" class="login-btn" id="loginBtn">
+        Login
       </button>
 
     </form>
 
-
-    <div id="message" class="message"></div>
-
+    <div class="message" id="message"></div>
 
     <div class="info">
-
-      <b>Student Login</b><br>
-      Username: <b>student</b><br>
-      Password: <b>1234</b>
-
-      <br><br>
-
-      <b>Admin Login</b><br>
-      Username: <b>admin</b><br>
-      Password: <b>admin123</b>
-
+      MN Technology Learning System
+      <br>
+      Secure Admin Login
     </div>
 
   </div>
 
 
-<script>
+  <script>
 
-  let loginType = "student";
+    // ==============================
+    // SUPABASE CONFIG
+    // ==============================
+
+    const SUPABASE_URL =
+      "https://ekanfqwbqwfhjfgctouk.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_tpFTptBWglmisRRhQiptmg_VkKhJdDn";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
 
 
-  function selectType(type) {
+    // ==============================
+    // ADMIN EMAIL
+    // ==============================
 
-    loginType = type;
+    const ADMIN_EMAIL = "Lakshitha94314@gmail.com";
 
-    const studentBtn = document.getElementById("studentBtn");
-    const adminBtn = document.getElementById("adminBtn");
-    const loginButton = document.getElementById("loginButton");
-    const message = document.getElementById("message");
 
-    message.innerHTML = "";
+    // ==============================
+    // CURRENT LOGIN TYPE
+    // ==============================
 
-    if (type === "student") {
+    let loginType = "student";
 
-      studentBtn.classList.add("active");
-      adminBtn.classList.remove("active");
 
-      loginButton.textContent = "Student Login";
+    // ==============================
+    // SELECT STUDENT / ADMIN
+    // ==============================
 
-    } else {
+    function selectType(type) {
 
-      adminBtn.classList.add("active");
-      studentBtn.classList.remove("active");
+      loginType = type;
 
-      loginButton.textContent = "Admin Login";
+      const studentBtn =
+        document.getElementById("studentBtn");
 
+      const adminBtn =
+        document.getElementById("adminBtn");
+
+      if (type === "student") {
+
+        studentBtn.classList.add("active");
+        adminBtn.classList.remove("active");
+
+      } else {
+
+        adminBtn.classList.add("active");
+        studentBtn.classList.remove("active");
+
+      }
+
+      document.getElementById("message").textContent = "";
+
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
     }
-  }
 
 
-  document
-    .getElementById("loginForm")
-    .addEventListener("submit", function(event) {
+    // ==============================
+    // LOGIN
+    // ==============================
 
-      event.preventDefault();
+    document
+      .getElementById("loginForm")
+      .addEventListener("submit", async function(event) {
 
-      const username =
-        document.getElementById("username").value.trim();
+        event.preventDefault();
 
-      const password =
-        document.getElementById("password").value;
+        const username =
+          document.getElementById("username").value.trim();
 
-      const message =
-        document.getElementById("message");
+        const password =
+          document.getElementById("password").value;
+
+        const message =
+          document.getElementById("message");
+
+        const loginBtn =
+          document.getElementById("loginBtn");
+
+        message.textContent = "";
+
+        // --------------------------
+        // ADMIN LOGIN
+        // --------------------------
+
+        if (loginType === "admin") {
+
+          if (username !== "admin") {
+
+            message.style.color = "red";
+            message.textContent =
+              "Invalid Admin username.";
+
+            return;
+          }
+
+          loginBtn.textContent = "Logging in...";
+          loginBtn.classList.add("loading");
+
+          try {
+
+            const { data, error } =
+              await supabaseClient.auth.signInWithPassword({
+                email: ADMIN_EMAIL,
+                password: password
+              });
+
+            if (error) {
+              throw error;
+            }
+
+            if (!data.user) {
+              throw new Error("Admin user not found.");
+            }
+
+            // Check admin table
+            const { data: adminRow, error: adminError } =
+              await supabaseClient
+                .from("admins")
+                .select("username")
+                .eq("id", data.user.id)
+                .maybeSingle();
+
+            if (adminError) {
+              await supabaseClient.auth.signOut();
+              throw adminError;
+            }
+
+            if (!adminRow) {
+
+              await supabaseClient.auth.signOut();
+
+              throw new Error(
+                "This account is not registered as an Admin."
+              );
+            }
+
+            message.style.color = "green";
+            message.textContent =
+              "Admin login successful.";
+
+            setTimeout(function() {
+              window.location.href =
+                "admin-dashboard.html";
+            }, 500);
+
+          } catch (error) {
+
+            console.error(error);
+
+            message.style.color = "red";
+            message.textContent =
+              "Admin login failed. Check username/password.";
+
+          } finally {
+
+            loginBtn.textContent = "Login";
+            loginBtn.classList.remove("loading");
+          }
+
+          return;
+        }
 
 
-      // STUDENT LOGIN
-      if (loginType === "student") {
+        // --------------------------
+        // STUDENT LOGIN
+        // --------------------------
 
         if (
           username === "student" &&
           password === "1234"
         ) {
 
+          localStorage.setItem(
+            "studentLoggedIn",
+            "true"
+          );
+
+          localStorage.removeItem(
+            "selectedCourse"
+          );
+
           message.style.color = "green";
-          message.textContent = "Login successful!";
+          message.textContent =
+            "Student login successful.";
 
           setTimeout(function() {
-
             window.location.href =
               "student-dashboard.html";
-
           }, 500);
 
         } else {
 
           message.style.color = "red";
           message.textContent =
-            "Incorrect Student username or password.";
-
+            "Invalid Student username or password.";
         }
 
-      }
+      });
 
-
-      // ADMIN LOGIN
-      else {
-
-        if (
-          username === "admin" &&
-          password === "admin123"
-        ) {
-
-          message.style.color = "green";
-          message.textContent = "Login successful!";
-
-          setTimeout(function() {
-
-            window.location.href =
-              "admin-dashboard.html";
-
-          }, 500);
-
-        } else {
-
-          message.style.color = "red";
-          message.textContent =
-            "Incorrect Admin username or password.";
-
-        }
-
-      }
-
-    });
-
-</script>
+  </script>
 
 </body>
 </html>
