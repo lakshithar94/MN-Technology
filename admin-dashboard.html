@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Dashboard | MN Technology</title>
+
+  <title>Admin Dashboard | MN Technology</title>
 
   <style>
     * {
@@ -66,7 +67,7 @@
       background: #b91c1c;
     }
 
-    /* MAIN */
+    /* CONTAINER */
     .container {
       width: 90%;
       max-width: 1200px;
@@ -134,55 +135,40 @@
       color: #071a33;
     }
 
-    /* COURSE GRID */
-    .course-grid {
+    /* ACTIONS */
+    .actions {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
     }
 
-    .course-card {
+    .action-card {
       background: white;
+      padding: 25px;
       border-radius: 15px;
-      overflow: hidden;
       box-shadow: 0 5px 20px rgba(0,0,0,0.07);
-      transition: 0.3s;
+      text-align: center;
     }
 
-    .course-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    .action-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
     }
 
-    .course-top {
-      height: 130px;
-      background: linear-gradient(135deg, #0891b2, #22d3ee);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 52px;
-    }
-
-    .course-content {
-      padding: 20px;
-    }
-
-    .course-content h3 {
+    .action-card h3 {
       margin-bottom: 8px;
       color: #071a33;
     }
 
-    .course-content p {
+    .action-card p {
       color: #667085;
-      line-height: 1.5;
       font-size: 14px;
-      min-height: 63px;
+      margin-bottom: 15px;
+      line-height: 1.5;
     }
 
-    .watch-btn {
-      display: block;
+    .action-btn {
       width: 100%;
-      margin-top: 15px;
       padding: 12px;
       border: none;
       border-radius: 8px;
@@ -192,37 +178,67 @@
       cursor: pointer;
     }
 
-    .watch-btn:hover {
+    .action-btn:hover {
       background: #0e7490;
     }
 
-    /* PROGRESS */
-    .progress-box {
+    /* COURSE TABLE */
+    .table-box {
       background: white;
-      padding: 25px;
       border-radius: 15px;
       box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+      overflow-x: auto;
     }
 
-    .progress-text {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 650px;
+    }
+
+    th,
+    td {
+      padding: 16px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    th {
+      background: #071a33;
+      color: white;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .course-name {
+      font-weight: bold;
+      color: #071a33;
+    }
+
+    .manage-btn {
+      border: none;
+      background: #0891b2;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
       font-weight: bold;
     }
 
-    .progress-bar {
-      height: 12px;
-      background: #e5e7eb;
-      border-radius: 20px;
-      overflow: hidden;
+    .manage-btn:hover {
+      background: #0e7490;
     }
 
-    .progress-fill {
-      width: 0%;
-      height: 100%;
-      background: #0891b2;
-      transition: width 0.5s;
+    /* NOTICE */
+    .notice {
+      background: #ecfeff;
+      border-left: 5px solid #0891b2;
+      padding: 20px;
+      border-radius: 10px;
+      color: #164e63;
+      line-height: 1.6;
     }
 
     /* FOOTER */
@@ -236,22 +252,10 @@
 
     /* MOBILE */
     @media (max-width: 900px) {
-      .course-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
 
-    @media (max-width: 800px) {
-      .stats {
+      .stats,
+      .actions {
         grid-template-columns: 1fr;
-      }
-
-      .course-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .welcome {
-        padding: 25px;
       }
 
       .welcome h1 {
@@ -291,11 +295,11 @@
     <!-- WELCOME -->
     <section class="welcome">
 
-      <h1>Welcome, Student! 👋</h1>
+      <h1>Welcome, Admin! 👨‍💼</h1>
 
       <p>
-        Welcome to your MN Technology learning dashboard.
-        Select a course and start learning today.
+        Manage MN Technology courses, lessons, students
+        and learning content from this dashboard.
       </p>
 
     </section>
@@ -305,169 +309,121 @@
     <section class="stats">
 
       <div class="stat-card">
+
+        <div class="stat-icon">👨‍🎓</div>
+
+        <h3>25</h3>
+
+        <p>Registered Students</p>
+
+      </div>
+
+
+      <div class="stat-card">
+
         <div class="stat-icon">📚</div>
+
         <h3>5</h3>
-        <p>Available Courses</p>
+
+        <p>Total Courses</p>
+
       </div>
 
+
       <div class="stat-card">
+
         <div class="stat-icon">🎬</div>
-        <h3>0</h3>
-        <p>Available Lessons</p>
-      </div>
 
-      <div class="stat-card">
-        <div class="stat-icon">📊</div>
-        <h3>0%</h3>
-        <p>Learning Progress</p>
+        <h3>47</h3>
+
+        <p>Total Lessons</p>
+
       </div>
 
     </section>
 
 
-    <!-- COURSES -->
+    <!-- ADMIN ACTIONS -->
     <section class="section">
 
       <h2 class="section-title">
-        📚 Our Courses
+        ⚙️ Admin Actions
       </h2>
 
-      <div class="course-grid">
+
+      <div class="actions">
 
 
-        <!-- ELECTRONIC -->
-        <article class="course-card">
+        <!-- ADD LESSON -->
+        <div class="action-card">
 
-          <div class="course-top">
-            ⚡
+          <div class="action-icon">
+            🎬
           </div>
 
-          <div class="course-content">
+          <h3>Add Lesson</h3>
 
-            <h3>Electronic</h3>
+          <p>
+            Add a new lesson and video to a course.
+          </p>
 
-            <p>
-              Learn electronic components, circuits,
-              testing, soldering and practical electronics.
-            </p>
+          <button
+            class="action-btn"
+            onclick="addLesson()">
 
-            <button
-              class="watch-btn"
-              onclick="openCourse('Electronic')">
-              Start Course
-            </button>
+            Add Lesson
 
+          </button>
+
+        </div>
+
+
+        <!-- COURSES -->
+        <div class="action-card">
+
+          <div class="action-icon">
+            📚
           </div>
 
-        </article>
+          <h3>Manage Courses</h3>
+
+          <p>
+            View and manage all MN Technology courses.
+          </p>
+
+          <button
+            class="action-btn"
+            onclick="manageCourses()">
+
+            Manage Courses
+
+          </button>
+
+        </div>
 
 
-        <!-- ELECTRICAL -->
-        <article class="course-card">
+        <!-- STUDENTS -->
+        <div class="action-card">
 
-          <div class="course-top">
-            🔌
+          <div class="action-icon">
+            👨‍🎓
           </div>
 
-          <div class="course-content">
+          <h3>Students</h3>
 
-            <h3>Electrical</h3>
+          <p>
+            View registered students and their progress.
+          </p>
 
-            <p>
-              Learn Single Phase and Three Phase
-              electrical systems, wiring and safety.
-            </p>
+          <button
+            class="action-btn"
+            onclick="manageStudents()">
 
-            <button
-              class="watch-btn"
-              onclick="openCourse('Electrical')">
-              Start Course
-            </button>
+            Manage Students
 
-          </div>
+          </button>
 
-        </article>
-
-
-        <!-- CCTV -->
-        <article class="course-card">
-
-          <div class="course-top">
-            📹
-          </div>
-
-          <div class="course-content">
-
-            <h3>CCTV</h3>
-
-            <p>
-              Learn CCTV cameras, DVR/NVR,
-              installation, wiring and troubleshooting.
-            </p>
-
-            <button
-              class="watch-btn"
-              onclick="openCourse('CCTV')">
-              Start Course
-            </button>
-
-          </div>
-
-        </article>
-
-
-        <!-- MOTOR WINDING -->
-        <article class="course-card">
-
-          <div class="course-top">
-            🌀
-          </div>
-
-          <div class="course-content">
-
-            <h3>Motor Winding</h3>
-
-            <p>
-              Learn motor types, winding methods,
-              connections, testing and practical work.
-            </p>
-
-            <button
-              class="watch-btn"
-              onclick="openCourse('Motor Winding')">
-              Start Course
-            </button>
-
-          </div>
-
-        </article>
-
-
-        <!-- MOBILE PHONE -->
-        <article class="course-card">
-
-          <div class="course-top">
-            📱
-          </div>
-
-          <div class="course-content">
-
-            <h3>Mobile Phone</h3>
-
-            <p>
-              Learn mobile phone components,
-              hardware, software and repair techniques.
-            </p>
-
-            <button
-              class="watch-btn"
-              onclick="openCourse('Mobile Phone')">
-              Start Course
-            </button>
-
-          </div>
-
-        </article>
+        </div>
 
 
       </div>
@@ -475,28 +431,210 @@
     </section>
 
 
-    <!-- PROGRESS -->
+    <!-- COURSE OVERVIEW -->
     <section class="section">
 
       <h2 class="section-title">
-        📊 My Progress
+        📚 Course Overview
       </h2>
 
-      <div class="progress-box">
 
-        <div class="progress-text">
-          <span>Overall Course Progress</span>
-          <span id="progressPercent">0%</span>
-        </div>
+      <div class="table-box">
 
-        <div class="progress-bar">
+        <table>
 
-          <div
-            class="progress-fill"
-            id="progressFill">
-          </div>
+          <thead>
 
-        </div>
+            <tr>
+
+              <th>Course</th>
+              <th>Lessons</th>
+              <th>Status</th>
+              <th>Action</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+
+            <!-- ELECTRONIC -->
+            <tr>
+
+              <td class="course-name">
+                ⚡ Electronic
+              </td>
+
+              <td>
+                10
+              </td>
+
+              <td>
+                Active
+              </td>
+
+              <td>
+
+                <button
+                  class="manage-btn"
+                  onclick="manageCourse('Electronic')">
+
+                  Manage
+
+                </button>
+
+              </td>
+
+            </tr>
+
+
+            <!-- ELECTRICAL -->
+            <tr>
+
+              <td class="course-name">
+                🔌 Electrical
+              </td>
+
+              <td>
+                8
+              </td>
+
+              <td>
+                Active
+              </td>
+
+              <td>
+
+                <button
+                  class="manage-btn"
+                  onclick="manageCourse('Electrical')">
+
+                  Manage
+
+                </button>
+
+              </td>
+
+            </tr>
+
+
+            <!-- CCTV -->
+            <tr>
+
+              <td class="course-name">
+                📹 CCTV
+              </td>
+
+              <td>
+                9
+              </td>
+
+              <td>
+                Active
+              </td>
+
+              <td>
+
+                <button
+                  class="manage-btn"
+                  onclick="manageCourse('CCTV')">
+
+                  Manage
+
+                </button>
+
+              </td>
+
+            </tr>
+
+
+            <!-- MOTOR WINDING -->
+            <tr>
+
+              <td class="course-name">
+                🌀 Motor Winding
+              </td>
+
+              <td>
+                10
+              </td>
+
+              <td>
+                Active
+              </td>
+
+              <td>
+
+                <button
+                  class="manage-btn"
+                  onclick="manageCourse('Motor Winding')">
+
+                  Manage
+
+                </button>
+
+              </td>
+
+            </tr>
+
+
+            <!-- MOBILE PHONE -->
+            <tr>
+
+              <td class="course-name">
+                📱 Mobile Phone
+              </td>
+
+              <td>
+                10
+              </td>
+
+              <td>
+                Active
+              </td>
+
+              <td>
+
+                <button
+                  class="manage-btn"
+                  onclick="manageCourse('Mobile Phone')">
+
+                  Manage
+
+                </button>
+
+              </td>
+
+            </tr>
+
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- NOTICE -->
+    <section class="section">
+
+      <div class="notice">
+
+        <strong>ℹ️ Admin Notice</strong>
+
+        <br><br>
+
+        This is the current frontend version of the
+        MN Technology Admin Dashboard.
+
+        <br>
+
+        Database connection can be added later to store
+        students, courses, lessons, videos and progress.
 
       </div>
 
@@ -517,16 +655,56 @@
 
   <script>
 
-    function openCourse(course) {
+    /* ADD LESSON */
 
-      // Selected course is temporarily saved
-      localStorage.setItem("selectedCourse", course);
+    function addLesson() {
 
-      // Open course page
-      window.location.href = "course.html";
+      alert(
+        "Add Lesson section will be connected to the database next."
+      );
 
     }
 
+
+    /* MANAGE COURSES */
+
+    function manageCourses() {
+
+      alert(
+        "Course management section will be added next."
+      );
+
+    }
+
+
+    /* MANAGE STUDENTS */
+
+    function manageStudents() {
+
+      alert(
+        "Student management section will be added next."
+      );
+
+    }
+
+
+    /* MANAGE INDIVIDUAL COURSE */
+
+    function manageCourse(course) {
+
+      localStorage.setItem(
+        "adminSelectedCourse",
+        course
+      );
+
+      alert(
+        "Selected Course: " + course
+      );
+
+    }
+
+
+    /* LOGOUT */
 
     function logout() {
 
@@ -535,7 +713,13 @@
 
       if (confirmLogout) {
 
-        localStorage.removeItem("selectedCourse");
+        localStorage.removeItem(
+          "adminSelectedCourse"
+        );
+
+        localStorage.removeItem(
+          "selectedCourse"
+        );
 
         window.location.href =
           "login.html";
