@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Student Dashboard | MN Technology</title>
 
   <style>
@@ -74,6 +73,7 @@
       margin: auto;
     }
 
+    /* WELCOME */
     .welcome {
       margin-top: 35px;
       background: linear-gradient(135deg, #071a33, #0a3157);
@@ -134,7 +134,7 @@
       color: #071a33;
     }
 
-    /* COURSES */
+    /* COURSE GRID */
     .course-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -146,15 +146,21 @@
       border-radius: 15px;
       overflow: hidden;
       box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+      transition: 0.3s;
+    }
+
+    .course-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
     }
 
     .course-top {
-      height: 120px;
+      height: 130px;
       background: linear-gradient(135deg, #0891b2, #22d3ee);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 48px;
+      font-size: 52px;
     }
 
     .course-content {
@@ -170,6 +176,7 @@
       color: #667085;
       line-height: 1.5;
       font-size: 14px;
+      min-height: 63px;
     }
 
     .watch-btn {
@@ -187,58 +194,6 @@
 
     .watch-btn:hover {
       background: #0e7490;
-    }
-
-    /* LESSONS */
-    .lesson-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .lesson {
-      background: white;
-      padding: 18px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-    }
-
-    .lesson-info {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .play-icon {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      background: #e9fbff;
-      color: #0891b2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .lesson h3 {
-      font-size: 16px;
-    }
-
-    .lesson p {
-      color: #667085;
-      font-size: 13px;
-      margin-top: 4px;
-    }
-
-    .lesson-btn {
-      background: #071a33;
-      color: white;
-      border: none;
-      padding: 9px 15px;
-      border-radius: 7px;
-      cursor: pointer;
     }
 
     /* PROGRESS */
@@ -264,9 +219,10 @@
     }
 
     .progress-fill {
-      width: 45%;
+      width: 0%;
       height: 100%;
       background: #0891b2;
+      transition: width 0.5s;
     }
 
     /* FOOTER */
@@ -279,8 +235,13 @@
     }
 
     /* MOBILE */
-    @media (max-width: 800px) {
+    @media (max-width: 900px) {
+      .course-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
 
+    @media (max-width: 800px) {
       .stats {
         grid-template-columns: 1fr;
       }
@@ -297,16 +258,14 @@
         font-size: 24px;
       }
 
-      .lesson {
-        align-items: flex-start;
-        gap: 10px;
+      .navbar {
+        padding: 0 5%;
       }
 
-      .lesson-btn {
-        padding: 8px 10px;
+      .brand-name {
+        font-size: 17px;
       }
     }
-
   </style>
 </head>
 
@@ -317,7 +276,7 @@
 
     <a href="index.html" class="brand">
       <span class="logo">MN</span>
-      <span>MN Technology</span>
+      <span class="brand-name">MN Technology</span>
     </a>
 
     <button class="logout-btn" onclick="logout()">
@@ -346,35 +305,21 @@
     <section class="stats">
 
       <div class="stat-card">
-
         <div class="stat-icon">📚</div>
-
         <h3>5</h3>
-
         <p>Available Courses</p>
-
       </div>
 
-
       <div class="stat-card">
-
         <div class="stat-icon">🎬</div>
-
-        <h3>12</h3>
-
-        <p>Lessons</p>
-
+        <h3>0</h3>
+        <p>Available Lessons</p>
       </div>
 
-
       <div class="stat-card">
-
         <div class="stat-icon">📊</div>
-
-        <h3>45%</h3>
-
+        <h3>0%</h3>
         <p>Learning Progress</p>
-
       </div>
 
     </section>
@@ -384,90 +329,13 @@
     <section class="section">
 
       <h2 class="section-title">
-        📚 My Courses
+        📚 Our Courses
       </h2>
-
 
       <div class="course-grid">
 
 
-        <article class="course-card">
-
-          <div class="course-top">
-            💻
-          </div>
-
-          <div class="course-content">
-
-            <h3>Web Development</h3>
-
-            <p>
-              Learn HTML, CSS and modern website development.
-            </p>
-
-            <button
-              class="watch-btn"
-              onclick="openCourse('Web Development')">
-              Start Course
-            </button>
-
-          </div>
-
-        </article>
-
-
-        <article class="course-card">
-
-          <div class="course-top">
-            👨‍💻
-          </div>
-
-          <div class="course-content">
-
-            <h3>Programming</h3>
-
-            <p>
-              Learn programming fundamentals,
-              logic and problem solving.
-            </p>
-
-            <button
-              class="watch-btn"
-              onclick="openCourse('Programming')">
-              Start Course
-            </button>
-
-          </div>
-
-        </article>
-
-
-        <article class="course-card">
-
-          <div class="course-top">
-            🌐
-          </div>
-
-          <div class="course-content">
-
-            <h3>Networking</h3>
-
-            <p>
-              Learn how computers communicate
-              and connect to networks.
-            </p>
-
-            <button
-              class="watch-btn"
-              onclick="openCourse('Networking')">
-              Start Course
-            </button>
-
-          </div>
-
-        </article>
-
-
+        <!-- ELECTRONIC -->
         <article class="course-card">
 
           <div class="course-top">
@@ -476,16 +344,16 @@
 
           <div class="course-content">
 
-            <h3>Electronics</h3>
+            <h3>Electronic</h3>
 
             <p>
-              Learn electronic components,
-              circuits and practical electronics.
+              Learn electronic components, circuits,
+              testing, soldering and practical electronics.
             </p>
 
             <button
               class="watch-btn"
-              onclick="openCourse('Electronics')">
+              onclick="openCourse('Electronic')">
               Start Course
             </button>
 
@@ -494,24 +362,25 @@
         </article>
 
 
+        <!-- ELECTRICAL -->
         <article class="course-card">
 
           <div class="course-top">
-            🗄️
+            🔌
           </div>
 
           <div class="course-content">
 
-            <h3>Databases</h3>
+            <h3>Electrical</h3>
 
             <p>
-              Learn database concepts,
-              data management and queries.
+              Learn Single Phase and Three Phase
+              electrical systems, wiring and safety.
             </p>
 
             <button
               class="watch-btn"
-              onclick="openCourse('Databases')">
+              onclick="openCourse('Electrical')">
               Start Course
             </button>
 
@@ -520,24 +389,25 @@
         </article>
 
 
+        <!-- CCTV -->
         <article class="course-card">
 
           <div class="course-top">
-            🔐
+            📹
           </div>
 
           <div class="course-content">
 
-            <h3>Cybersecurity</h3>
+            <h3>CCTV</h3>
 
             <p>
-              Learn the basics of online safety
-              and information security.
+              Learn CCTV cameras, DVR/NVR,
+              installation, wiring and troubleshooting.
             </p>
 
             <button
               class="watch-btn"
-              onclick="openCourse('Cybersecurity')">
+              onclick="openCourse('CCTV')">
               Start Course
             </button>
 
@@ -545,113 +415,59 @@
 
         </article>
 
-      </div>
 
-    </section>
+        <!-- MOTOR WINDING -->
+        <article class="course-card">
 
+          <div class="course-top">
+            🌀
+          </div>
 
-    <!-- LESSONS -->
-    <section class="section">
+          <div class="course-content">
 
-      <h2 class="section-title">
-        🎬 Recent Lessons
-      </h2>
+            <h3>Motor Winding</h3>
 
+            <p>
+              Learn motor types, winding methods,
+              connections, testing and practical work.
+            </p>
 
-      <div class="lesson-list">
-
-
-        <div class="lesson">
-
-          <div class="lesson-info">
-
-            <div class="play-icon">
-              ▶
-            </div>
-
-            <div>
-
-              <h3>
-                Lesson 01 - Introduction to HTML
-              </h3>
-
-              <p>
-                Web Development • 20 minutes
-              </p>
-
-            </div>
+            <button
+              class="watch-btn"
+              onclick="openCourse('Motor Winding')">
+              Start Course
+            </button>
 
           </div>
 
-          <button
-            class="lesson-btn"
-            onclick="watchLesson('Lesson 01')">
-            Watch
-          </button>
-
-        </div>
+        </article>
 
 
-        <div class="lesson">
+        <!-- MOBILE PHONE -->
+        <article class="course-card">
 
-          <div class="lesson-info">
+          <div class="course-top">
+            📱
+          </div>
 
-            <div class="play-icon">
-              ▶
-            </div>
+          <div class="course-content">
 
-            <div>
+            <h3>Mobile Phone</h3>
 
-              <h3>
-                Lesson 02 - CSS Basics
-              </h3>
+            <p>
+              Learn mobile phone components,
+              hardware, software and repair techniques.
+            </p>
 
-              <p>
-                Web Development • 25 minutes
-              </p>
-
-            </div>
+            <button
+              class="watch-btn"
+              onclick="openCourse('Mobile Phone')">
+              Start Course
+            </button>
 
           </div>
 
-          <button
-            class="lesson-btn"
-            onclick="watchLesson('Lesson 02')">
-            Watch
-          </button>
-
-        </div>
-
-
-        <div class="lesson">
-
-          <div class="lesson-info">
-
-            <div class="play-icon">
-              ▶
-            </div>
-
-            <div>
-
-              <h3>
-                Lesson 03 - Introduction to Electronics
-              </h3>
-
-              <p>
-                Electronics • 30 minutes
-              </p>
-
-            </div>
-
-          </div>
-
-          <button
-            class="lesson-btn"
-            onclick="watchLesson('Lesson 03')">
-            Watch
-          </button>
-
-        </div>
+        </article>
 
 
       </div>
@@ -666,24 +482,19 @@
         📊 My Progress
       </h2>
 
-
       <div class="progress-box">
 
         <div class="progress-text">
-
-          <span>
-            Overall Course Progress
-          </span>
-
-          <span>
-            45%
-          </span>
-
+          <span>Overall Course Progress</span>
+          <span id="progressPercent">0%</span>
         </div>
 
         <div class="progress-bar">
 
-          <div class="progress-fill"></div>
+          <div
+            class="progress-fill"
+            id="progressFill">
+          </div>
 
         </div>
 
@@ -708,20 +519,11 @@
 
     function openCourse(course) {
 
-      alert(
-        course +
-        " course selected. Lessons will be available here."
-      );
+      // Selected course is temporarily saved
+      localStorage.setItem("selectedCourse", course);
 
-    }
-
-
-    function watchLesson(lesson) {
-
-      alert(
-        lesson +
-        " video will be added by the teacher."
-      );
+      // Open course page
+      window.location.href = "course.html";
 
     }
 
@@ -732,6 +534,8 @@
         confirm("Are you sure you want to logout?");
 
       if (confirmLogout) {
+
+        localStorage.removeItem("selectedCourse");
 
         window.location.href =
           "login.html";
