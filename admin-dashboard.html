@@ -6,6 +6,9 @@
 
   <title>Admin Dashboard | MN Technology</title>
 
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -20,7 +23,6 @@
       min-height: 100vh;
     }
 
-    /* NAVBAR */
     .navbar {
       height: 70px;
       background: #051223;
@@ -63,18 +65,12 @@
       font-weight: bold;
     }
 
-    .logout-btn:hover {
-      background: #b91c1c;
-    }
-
-    /* CONTAINER */
     .container {
       width: 90%;
       max-width: 1200px;
       margin: auto;
     }
 
-    /* WELCOME */
     .welcome {
       margin-top: 35px;
       background: linear-gradient(135deg, #071a33, #0a3157);
@@ -94,7 +90,6 @@
       line-height: 1.6;
     }
 
-    /* STATS */
     .stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -124,7 +119,6 @@
       margin-top: 5px;
     }
 
-    /* SECTION */
     .section {
       margin: 35px 0;
     }
@@ -135,7 +129,6 @@
       color: #071a33;
     }
 
-    /* ACTIONS */
     .actions {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -178,11 +171,6 @@
       cursor: pointer;
     }
 
-    .action-btn:hover {
-      background: #0e7490;
-    }
-
-    /* COURSE TABLE */
     .table-box {
       background: white;
       border-radius: 15px;
@@ -208,10 +196,6 @@
       color: white;
     }
 
-    tr:last-child td {
-      border-bottom: none;
-    }
-
     .course-name {
       font-weight: bold;
       color: #071a33;
@@ -227,11 +211,93 @@
       font-weight: bold;
     }
 
-    .manage-btn:hover {
-      background: #0e7490;
+    /* ADD LESSON FORM */
+
+    .lesson-form {
+      background: white;
+      padding: 28px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.07);
     }
 
-    /* NOTICE */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: bold;
+      color: #071a33;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: #0891b2;
+    }
+
+    .form-group textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .save-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      background: #16a34a;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .save-btn:hover {
+      background: #15803d;
+    }
+
+    .status-message {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .lesson-list {
+      margin-top: 20px;
+    }
+
+    .lesson-item {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .lesson-item h4 {
+      color: #071a33;
+      margin-bottom: 6px;
+    }
+
+    .lesson-item p {
+      color: #64748b;
+      font-size: 14px;
+    }
+
     .notice {
       background: #ecfeff;
       border-left: 5px solid #0891b2;
@@ -241,7 +307,6 @@
       line-height: 1.6;
     }
 
-    /* FOOTER */
     footer {
       margin-top: 50px;
       background: #051223;
@@ -250,9 +315,7 @@
       padding: 25px;
     }
 
-    /* MOBILE */
     @media (max-width: 900px) {
-
       .stats,
       .actions {
         grid-template-columns: 1fr;
@@ -275,460 +338,793 @@
 
 <body>
 
-  <!-- NAVBAR -->
-  <nav class="navbar">
+<nav class="navbar">
 
-    <a href="index.html" class="brand">
-      <span class="logo">MN</span>
-      <span class="brand-name">MN Technology</span>
-    </a>
+  <a href="index.html" class="brand">
+    <span class="logo">MN</span>
+    <span class="brand-name">MN Technology</span>
+  </a>
 
-    <button class="logout-btn" onclick="logout()">
-      Logout
-    </button>
+  <button class="logout-btn" onclick="logout()">
+    Logout
+  </button>
 
-  </nav>
+</nav>
 
 
-  <main class="container">
+<main class="container">
 
-    <!-- WELCOME -->
-    <section class="welcome">
+  <section class="welcome">
 
-      <h1>Welcome, Admin! 👨‍💼</h1>
-
-      <p>
-        Manage MN Technology courses, lessons, students
-        and learning content from this dashboard.
-      </p>
-
-    </section>
-
-
-    <!-- STATISTICS -->
-    <section class="stats">
-
-      <div class="stat-card">
-
-        <div class="stat-icon">👨‍🎓</div>
-
-        <h3>25</h3>
-
-        <p>Registered Students</p>
-
-      </div>
-
-
-      <div class="stat-card">
-
-        <div class="stat-icon">📚</div>
-
-        <h3>5</h3>
-
-        <p>Total Courses</p>
-
-      </div>
-
-
-      <div class="stat-card">
-
-        <div class="stat-icon">🎬</div>
-
-        <h3>47</h3>
-
-        <p>Total Lessons</p>
-
-      </div>
-
-    </section>
-
-
-    <!-- ADMIN ACTIONS -->
-    <section class="section">
-
-      <h2 class="section-title">
-        ⚙️ Admin Actions
-      </h2>
-
-
-      <div class="actions">
-
-
-        <!-- ADD LESSON -->
-        <div class="action-card">
-
-          <div class="action-icon">
-            🎬
-          </div>
-
-          <h3>Add Lesson</h3>
-
-          <p>
-            Add a new lesson and video to a course.
-          </p>
-
-          <button
-            class="action-btn"
-            onclick="addLesson()">
-
-            Add Lesson
-
-          </button>
-
-        </div>
-
-
-        <!-- COURSES -->
-        <div class="action-card">
-
-          <div class="action-icon">
-            📚
-          </div>
-
-          <h3>Manage Courses</h3>
-
-          <p>
-            View and manage all MN Technology courses.
-          </p>
-
-          <button
-            class="action-btn"
-            onclick="manageCourses()">
-
-            Manage Courses
-
-          </button>
-
-        </div>
-
-
-        <!-- STUDENTS -->
-        <div class="action-card">
-
-          <div class="action-icon">
-            👨‍🎓
-          </div>
-
-          <h3>Students</h3>
-
-          <p>
-            View registered students and their progress.
-          </p>
-
-          <button
-            class="action-btn"
-            onclick="manageStudents()">
-
-            Manage Students
-
-          </button>
-
-        </div>
-
-
-      </div>
-
-    </section>
-
-
-    <!-- COURSE OVERVIEW -->
-    <section class="section">
-
-      <h2 class="section-title">
-        📚 Course Overview
-      </h2>
-
-
-      <div class="table-box">
-
-        <table>
-
-          <thead>
-
-            <tr>
-
-              <th>Course</th>
-              <th>Lessons</th>
-              <th>Status</th>
-              <th>Action</th>
-
-            </tr>
-
-          </thead>
-
-
-          <tbody>
-
-
-            <!-- ELECTRONIC -->
-            <tr>
-
-              <td class="course-name">
-                ⚡ Electronic
-              </td>
-
-              <td>
-                10
-              </td>
-
-              <td>
-                Active
-              </td>
-
-              <td>
-
-                <button
-                  class="manage-btn"
-                  onclick="manageCourse('Electronic')">
-
-                  Manage
-
-                </button>
-
-              </td>
-
-            </tr>
-
-
-            <!-- ELECTRICAL -->
-            <tr>
-
-              <td class="course-name">
-                🔌 Electrical
-              </td>
-
-              <td>
-                8
-              </td>
-
-              <td>
-                Active
-              </td>
-
-              <td>
-
-                <button
-                  class="manage-btn"
-                  onclick="manageCourse('Electrical')">
-
-                  Manage
-
-                </button>
-
-              </td>
-
-            </tr>
-
-
-            <!-- CCTV -->
-            <tr>
-
-              <td class="course-name">
-                📹 CCTV
-              </td>
-
-              <td>
-                9
-              </td>
-
-              <td>
-                Active
-              </td>
-
-              <td>
-
-                <button
-                  class="manage-btn"
-                  onclick="manageCourse('CCTV')">
-
-                  Manage
-
-                </button>
-
-              </td>
-
-            </tr>
-
-
-            <!-- MOTOR WINDING -->
-            <tr>
-
-              <td class="course-name">
-                🌀 Motor Winding
-              </td>
-
-              <td>
-                10
-              </td>
-
-              <td>
-                Active
-              </td>
-
-              <td>
-
-                <button
-                  class="manage-btn"
-                  onclick="manageCourse('Motor Winding')">
-
-                  Manage
-
-                </button>
-
-              </td>
-
-            </tr>
-
-
-            <!-- MOBILE PHONE -->
-            <tr>
-
-              <td class="course-name">
-                📱 Mobile Phone
-              </td>
-
-              <td>
-                10
-              </td>
-
-              <td>
-                Active
-              </td>
-
-              <td>
-
-                <button
-                  class="manage-btn"
-                  onclick="manageCourse('Mobile Phone')">
-
-                  Manage
-
-                </button>
-
-              </td>
-
-            </tr>
-
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-    </section>
-
-
-    <!-- NOTICE -->
-    <section class="section">
-
-      <div class="notice">
-
-        <strong>ℹ️ Admin Notice</strong>
-
-        <br><br>
-
-        This is the current frontend version of the
-        MN Technology Admin Dashboard.
-
-        <br>
-
-        Database connection can be added later to store
-        students, courses, lessons, videos and progress.
-
-      </div>
-
-    </section>
-
-  </main>
-
-
-  <!-- FOOTER -->
-  <footer>
+    <h1>Welcome, Admin! 👨‍💼</h1>
 
     <p>
-      © 2026 MN Technology. All rights reserved.
+      Manage MN Technology courses, lessons, students
+      and learning content from this dashboard.
     </p>
 
-  </footer>
+  </section>
 
 
-  <script>
+  <!-- STATISTICS -->
 
-    /* ADD LESSON */
+  <section class="stats">
 
-    function addLesson() {
+    <div class="stat-card">
+      <div class="stat-icon">👨‍🎓</div>
+      <h3 id="studentCount">25</h3>
+      <p>Registered Students</p>
+    </div>
 
-      alert(
-        "Add Lesson section will be connected to the database next."
-      );
+    <div class="stat-card">
+      <div class="stat-icon">📚</div>
+      <h3>5</h3>
+      <p>Total Courses</p>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">🎬</div>
+      <h3 id="lessonCount">0</h3>
+      <p>Total Lessons</p>
+    </div>
+
+  </section>
+
+
+  <!-- ADMIN ACTIONS -->
+
+  <section class="section">
+
+    <h2 class="section-title">
+      ⚙️ Admin Actions
+    </h2>
+
+    <div class="actions">
+
+      <div class="action-card">
+
+        <div class="action-icon">
+          🎬
+        </div>
+
+        <h3>Add Lesson</h3>
+
+        <p>
+          Add a new lesson and video to a course.
+        </p>
+
+        <button
+          class="action-btn"
+          onclick="showAddLesson()">
+
+          Add Lesson
+
+        </button>
+
+      </div>
+
+
+      <div class="action-card">
+
+        <div class="action-icon">
+          📚
+        </div>
+
+        <h3>Manage Courses</h3>
+
+        <p>
+          View and manage all MN Technology courses.
+        </p>
+
+        <button
+          class="action-btn"
+          onclick="manageCourses()">
+
+          Manage Courses
+
+        </button>
+
+      </div>
+
+
+      <div class="action-card">
+
+        <div class="action-icon">
+          👨‍🎓
+        </div>
+
+        <h3>Students</h3>
+
+        <p>
+          View registered students and their progress.
+        </p>
+
+        <button
+          class="action-btn"
+          onclick="manageStudents()">
+
+          Manage Students
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ADD LESSON -->
+
+  <section
+    class="section"
+    id="addLessonSection"
+    style="display:none;">
+
+    <h2 class="section-title">
+      🎬 Add New Lesson
+    </h2>
+
+    <div class="lesson-form">
+
+      <div class="form-group">
+
+        <label for="course">
+          Select Course
+        </label>
+
+        <select id="course">
+
+          <option value="">
+            -- Select Course --
+          </option>
+
+          <option value="Electronic">
+            ⚡ Electronic
+          </option>
+
+          <option value="Electrical">
+            🔌 Electrical
+          </option>
+
+          <option value="CCTV">
+            📹 CCTV
+          </option>
+
+          <option value="Motor Winding">
+            🌀 Motor Winding
+          </option>
+
+          <option value="Mobile Phone">
+            📱 Mobile Phone
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="lessonTitle">
+          Lesson Title
+        </label>
+
+        <input
+          type="text"
+          id="lessonTitle"
+          placeholder="Example: Introduction to Electronics">
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="lessonDescription">
+          Lesson Description
+        </label>
+
+        <textarea
+          id="lessonDescription"
+          placeholder="Enter lesson description"></textarea>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="videoUrl">
+          Video URL
+        </label>
+
+        <input
+          type="url"
+          id="videoUrl"
+          placeholder="https://www.youtube.com/watch?v=...">
+
+      </div>
+
+
+      <button
+        class="save-btn"
+        onclick="saveLesson()">
+
+        💾 Save Lesson
+
+      </button>
+
+
+      <div
+        id="statusMessage"
+        class="status-message">
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- LESSONS -->
+
+  <section class="section">
+
+    <h2 class="section-title">
+      🎬 Lessons in Database
+    </h2>
+
+    <div
+      id="lessonList"
+      class="lesson-list">
+
+      Loading lessons...
+
+    </div>
+
+  </section>
+
+
+  <!-- COURSE OVERVIEW -->
+
+  <section class="section">
+
+    <h2 class="section-title">
+      📚 Course Overview
+    </h2>
+
+    <div class="table-box">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Course</th>
+            <th>Lessons</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td class="course-name">⚡ Electronic</td>
+            <td id="electronicCount">0</td>
+            <td>Active</td>
+            <td>
+              <button
+                class="manage-btn"
+                onclick="manageCourse('Electronic')">
+                Manage
+              </button>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="course-name">🔌 Electrical</td>
+            <td id="electricalCount">0</td>
+            <td>Active</td>
+            <td>
+              <button
+                class="manage-btn"
+                onclick="manageCourse('Electrical')">
+                Manage
+              </button>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="course-name">📹 CCTV</td>
+            <td id="cctvCount">0</td>
+            <td>Active</td>
+            <td>
+              <button
+                class="manage-btn"
+                onclick="manageCourse('CCTV')">
+                Manage
+              </button>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="course-name">🌀 Motor Winding</td>
+            <td id="motorCount">0</td>
+            <td>Active</td>
+            <td>
+              <button
+                class="manage-btn"
+                onclick="manageCourse('Motor Winding')">
+                Manage
+              </button>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="course-name">📱 Mobile Phone</td>
+            <td id="mobileCount">0</td>
+            <td>Active</td>
+            <td>
+              <button
+                class="manage-btn"
+                onclick="manageCourse('Mobile Phone')">
+                Manage
+              </button>
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+  <section class="section">
+
+    <div class="notice">
+
+      <strong>ℹ️ Admin Notice</strong>
+
+      <br><br>
+
+      Lessons are loaded from the MN Technology
+      Supabase database.
+
+      <br><br>
+
+      Secure Admin authentication will be connected
+      before database writing is enabled.
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<footer>
+
+  <p>
+    © 2026 MN Technology. All rights reserved.
+  </p>
+
+</footer>
+
+
+<script>
+
+  /* SUPABASE CONFIG */
+
+  const SUPABASE_URL =
+    "https://ekanfqwbqwfhjfgctouk.supabase.co";
+
+  const SUPABASE_KEY =
+    "sb_publishable_tpFTptBWglmisRRhQiptmg_VkKhJdDn";
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  /* SHOW ADD LESSON */
+
+  function showAddLesson() {
+
+    const section =
+      document.getElementById("addLessonSection");
+
+    section.style.display = "block";
+
+    section.scrollIntoView({
+      behavior: "smooth"
+    });
+
+  }
+
+
+  /* LOAD LESSONS */
+
+  async function loadLessons() {
+
+    const list =
+      document.getElementById("lessonList");
+
+    const { data, error } =
+      await supabaseClient
+        .from("lessons")
+        .select("*")
+        .order("id", { ascending: true });
+
+
+    if (error) {
+
+      list.innerHTML =
+        "<p>Unable to load lessons.</p>";
+
+      console.error(error);
+
+      return;
 
     }
 
 
-    /* MANAGE COURSES */
-
-    function manageCourses() {
-
-      alert(
-        "Course management section will be added next."
-      );
-
-    }
+    document.getElementById("lessonCount").textContent =
+      data.length;
 
 
-    /* MANAGE STUDENTS */
+    updateCourseCounts(data);
 
-    function manageStudents() {
 
-      alert(
-        "Student management section will be added next."
-      );
+    if (data.length === 0) {
+
+      list.innerHTML =
+        "<p>No lessons have been added yet.</p>";
+
+      return;
 
     }
 
 
-    /* MANAGE INDIVIDUAL COURSE */
+    list.innerHTML = "";
 
-    function manageCourse(course) {
 
-      localStorage.setItem(
-        "adminSelectedCourse",
-        course
+    data.forEach(function(lesson) {
+
+      const item =
+        document.createElement("div");
+
+      item.className = "lesson-item";
+
+      item.innerHTML = `
+
+        <h4>
+          🎬 ${escapeHtml(lesson.title)}
+        </h4>
+
+        <p>
+          <strong>Course:</strong>
+          ${escapeHtml(lesson.course)}
+        </p>
+
+        <p>
+          ${escapeHtml(lesson.description || "")}
+        </p>
+
+      `;
+
+      list.appendChild(item);
+
+    });
+
+  }
+
+
+  /* COURSE COUNTS */
+
+  function updateCourseCounts(data) {
+
+    let electronic = 0;
+    let electrical = 0;
+    let cctv = 0;
+    let motor = 0;
+    let mobile = 0;
+
+
+    data.forEach(function(lesson) {
+
+      if (lesson.course === "Electronic")
+        electronic++;
+
+      if (lesson.course === "Electrical")
+        electrical++;
+
+      if (lesson.course === "CCTV")
+        cctv++;
+
+      if (lesson.course === "Motor Winding")
+        motor++;
+
+      if (lesson.course === "Mobile Phone")
+        mobile++;
+
+    });
+
+
+    document.getElementById("electronicCount").textContent =
+      electronic;
+
+    document.getElementById("electricalCount").textContent =
+      electrical;
+
+    document.getElementById("cctvCount").textContent =
+      cctv;
+
+    document.getElementById("motorCount").textContent =
+      motor;
+
+    document.getElementById("mobileCount").textContent =
+      mobile;
+
+  }
+
+
+  /* SAVE LESSON */
+
+  async function saveLesson() {
+
+    const course =
+      document.getElementById("course").value;
+
+    const title =
+      document.getElementById("lessonTitle").value.trim();
+
+    const description =
+      document.getElementById("lessonDescription").value.trim();
+
+    const videoUrl =
+      document.getElementById("videoUrl").value.trim();
+
+    const status =
+      document.getElementById("statusMessage");
+
+
+    if (!course || !title || !videoUrl) {
+
+      showStatus(
+        "Please select a course, enter a lesson title and video URL.",
+        "error"
       );
 
-      alert(
-        "Selected Course: " + course
-      );
+      return;
 
     }
 
 
-    /* LOGOUT */
+    showStatus(
+      "Saving lesson...",
+      "info"
+    );
 
-    function logout() {
 
-      const confirmLogout =
-        confirm("Are you sure you want to logout?");
+    /*
+      IMPORTANT:
+      INSERT will only work after secure
+      Supabase Admin authentication + RLS policy
+      are connected.
+    */
 
-      if (confirmLogout) {
 
-        localStorage.removeItem(
-          "adminSelectedCourse"
-        );
+    const { data, error } =
+      await supabaseClient
+        .from("lessons")
+        .insert([{
 
-        localStorage.removeItem(
-          "selectedCourse"
-        );
+          title: title,
+          course: course,
+          description: description,
+          video_path: videoUrl
 
-        window.location.href =
-          "login.html";
+        }])
+        .select();
 
-      }
+
+    if (error) {
+
+      console.error(error);
+
+      showStatus(
+        "Save blocked by database security. Admin authentication needs to be connected first.",
+        "error"
+      );
+
+      return;
 
     }
 
-  </script>
+
+    showStatus(
+      "✅ Lesson saved successfully!",
+      "success"
+    );
+
+
+    document.getElementById("lessonTitle").value = "";
+    document.getElementById("lessonDescription").value = "";
+    document.getElementById("videoUrl").value = "";
+
+
+    loadLessons();
+
+  }
+
+
+  /* STATUS */
+
+  function showStatus(message, type) {
+
+    const status =
+      document.getElementById("statusMessage");
+
+    status.style.display = "block";
+
+    status.textContent = message;
+
+    if (type === "success") {
+
+      status.style.background = "#dcfce7";
+      status.style.color = "#166534";
+
+    }
+
+    else if (type === "error") {
+
+      status.style.background = "#fee2e2";
+      status.style.color = "#991b1b";
+
+    }
+
+    else {
+
+      status.style.background = "#e0f2fe";
+      status.style.color = "#075985";
+
+    }
+
+  }
+
+
+  /* HTML SECURITY */
+
+  function escapeHtml(value) {
+
+    const div =
+      document.createElement("div");
+
+    div.textContent = value;
+
+    return div.innerHTML;
+
+  }
+
+
+  /* MANAGE COURSES */
+
+  function manageCourses() {
+
+    alert(
+      "Course management will be connected next."
+    );
+
+  }
+
+
+  /* MANAGE STUDENTS */
+
+  function manageStudents() {
+
+    alert(
+      "Student management will be connected next."
+    );
+
+  }
+
+
+  /* MANAGE COURSE */
+
+  function manageCourse(course) {
+
+    localStorage.setItem(
+      "adminSelectedCourse",
+      course
+    );
+
+    showAddLesson();
+
+    document.getElementById("course").value =
+      course;
+
+  }
+
+
+  /* LOGOUT */
+
+  async function logout() {
+
+    const confirmLogout =
+      confirm("Are you sure you want to logout?");
+
+
+    if (!confirmLogout)
+      return;
+
+
+    /*
+      Sign out from Supabase if
+      an Auth session exists.
+    */
+
+    try {
+
+      await supabaseClient.auth.signOut();
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+
+
+    localStorage.removeItem(
+      "adminSelectedCourse"
+    );
+
+    localStorage.removeItem(
+      "selectedCourse"
+    );
+
+    window.location.href =
+      "login.html";
+
+  }
+
+
+  /* LOAD DATA */
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+      loadLessons();
+
+    }
+  );
+
+</script>
 
 </body>
 </html>
