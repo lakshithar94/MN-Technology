@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Course | MN Technology</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #172033;
+      min-height: 100vh;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      height: 70px;
+      background: #051223;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 7%;
+      color: white;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      text-decoration: none;
+      font-size: 21px;
+      font-weight: bold;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: #22d3ee;
+      color: #071a33;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+
+    .back-btn {
+      background: #0891b2;
+      color: white;
+      text-decoration: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .back-btn:hover {
+      background: #0e7490;
+    }
+
+    /* MAIN */
+    .container {
+      width: 90%;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    /* COURSE HEADER */
+    .course-header {
+      margin-top: 35px;
+      background: linear-gradient(135deg, #071a33, #0a3157);
+      color: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+
+    .course-icon {
+      font-size: 55px;
+      margin-bottom: 15px;
+    }
+
+    .course-header h1 {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .course-header p {
+      color: #d9f8ff;
+      line-height: 1.7;
+      max-width: 800px;
+    }
+
+    /* COURSE INFO */
+    .course-info {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin: 25px 0;
+    }
+
+    .info-card {
+      background: white;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+      text-align: center;
+    }
+
+    .info-card strong {
+      display: block;
+      font-size: 24px;
+      color: #0891b2;
+      margin-bottom: 5px;
+    }
+
+    .info-card span {
+      color: #667085;
+      font-size: 14px;
+    }
+
+    /* LESSONS */
+    .section {
+      margin: 35px 0;
+    }
+
+    .section-title {
+      color: #071a33;
+      font-size: 25px;
+      margin-bottom: 18px;
+    }
+
+    .lesson-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .lesson {
+      background: white;
+      padding: 18px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+    }
+
+    .lesson-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .lesson-number {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: #e9fbff;
+      color: #0891b2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .lesson h3 {
+      font-size: 16px;
+      color: #071a33;
+      margin-bottom: 5px;
+    }
+
+    .lesson p {
+      color: #667085;
+      font-size: 13px;
+    }
+
+    .watch-btn {
+      border: none;
+      background: #0891b2;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .watch-btn:hover {
+      background: #0e7490;
+    }
+
+    /* PROGRESS */
+    .progress-box {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+    }
+
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .progress-bar {
+      height: 12px;
+      background: #e5e7eb;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: #0891b2;
+      transition: 0.4s;
+    }
+
+    /* MESSAGE */
+    .message {
+      margin-top: 20px;
+      background: #fff7ed;
+      border-left: 5px solid #f97316;
+      padding: 18px;
+      border-radius: 10px;
+      color: #9a3412;
+      line-height: 1.6;
+    }
+
+    /* FOOTER */
+    footer {
+      margin-top: 50px;
+      background: #051223;
+      color: #cbd5e1;
+      text-align: center;
+      padding: 25px;
+    }
+
+    /* MOBILE */
+    @media (max-width: 800px) {
+
+      .course-info {
+        grid-template-columns: 1fr;
+      }
+
+      .course-header {
+        padding: 28px;
+      }
+
+      .course-header h1 {
+        font-size: 26px;
+      }
+
+      .lesson {
+        align-items: flex-start;
+      }
+
+      .lesson-left {
+        align-items: flex-start;
+      }
+
+      .watch-btn {
+        padding: 9px 12px;
+      }
+
+      .brand-name {
+        font-size: 17px;
+      }
+
+      .navbar {
+        padding: 0 5%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+
+    <a href="student-dashboard.html" class="brand">
+      <span class="logo">MN</span>
+      <span class="brand-name">MN Technology</span>
+    </a>
+
+    <a href="student-dashboard.html" class="back-btn">
+      ← Courses
+    </a>
+
+  </nav>
+
+
+  <main class="container">
+
+    <!-- COURSE HEADER -->
+    <section class="course-header">
+
+      <div class="course-icon" id="courseIcon">
+        📚
+      </div>
+
+      <h1 id="courseTitle">
+        Course
+      </h1>
+
+      <p id="courseDescription">
+        Welcome to MN Technology course.
+      </p>
+
+    </section>
+
+
+    <!-- COURSE INFO -->
+    <section class="course-info">
+
+      <div class="info-card">
+
+        <strong id="lessonCount">
+          0
+        </strong>
+
+        <span>
+          Lessons
+        </span>
+
+      </div>
+
+
+      <div class="info-card">
+
+        <strong>
+          🎬
+        </strong>
+
+        <span>
+          Video Lessons
+        </span>
+
+      </div>
+
+
+      <div class="info-card">
+
+        <strong>
+          📊
+        </strong>
+
+        <span>
+          Your Progress
+        </span>
+
+      </div>
+
+    </section>
+
+
+    <!-- LESSONS -->
+    <section class="section">
+
+      <h2 class="section-title">
+        📚 Course Lessons
+      </h2>
+
+      <div
+        class="lesson-list"
+        id="lessonList">
+      </div>
+
+    </section>
+
+
+    <!-- PROGRESS -->
+    <section class="section">
+
+      <h2 class="section-title">
+        📊 Course Progress
+      </h2>
+
+      <div class="progress-box">
+
+        <div class="progress-text">
+
+          <span>
+            Completed
+          </span>
+
+          <span id="progressText">
+            0%
+          </span>
+
+        </div>
+
+        <div class="progress-bar">
+
+          <div
+            class="progress-fill"
+            id="progressFill">
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- MESSAGE -->
+    <section class="section">
+
+      <div class="message">
+
+        <strong>ℹ️ Course Information</strong>
+
+        <p>
+          Course videos and lessons will be added
+          by the MN Technology administrator.
+        </p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- FOOTER -->
+  <footer>
+
+    <p>
+      © 2026 MN Technology. All rights reserved.
+    </p>
+
+  </footer>
+
+
+  <script>
+
+    /*
+      COURSE DATA
+
+      Later these lessons can be loaded
+      from Supabase database.
+    */
+
+    const courses = {
+
+      "Electronic": {
+
+        icon: "⚡",
+
+        description:
+          "Learn electronic components, circuits, testing, soldering and practical electronics.",
+
+        lessons: [
+
+          "Introduction to Electronics",
+          "Electronic Components",
+          "Resistor",
+          "Capacitor",
+          "Diode",
+          "Transistor",
+          "LED and LDR",
+          "Using an Analog Multimeter",
+          "Soldering Practical",
+          "Basic Circuit Testing"
+
+        ]
+
+      },
+
+
+      "Electrical": {
+
+        icon: "🔌",
+
+        description:
+          "Learn Single Phase and Three Phase electrical systems, wiring, safety and practical electrical work.",
+
+        lessons: [
+
+          "Introduction to Electrical Systems",
+          "Electrical Safety",
+          "Single Phase Electricity",
+          "Single Phase Wiring",
+          "Three Phase Electricity",
+          "Three Phase Wiring",
+          "Electrical Components",
+          "Testing Electrical Circuits"
+
+        ]
+
+      },
+
+
+      "CCTV": {
+
+        icon: "📹",
+
+        description:
+          "Learn CCTV cameras, DVR/NVR, installation, wiring, configuration and troubleshooting.",
+
+        lessons: [
+
+          "Introduction to CCTV",
+          "CCTV Camera Types",
+          "DVR and NVR",
+          "CCTV Power Supply",
+          "Camera Wiring",
+          "CCTV Installation",
+          "DVR Configuration",
+          "Remote CCTV Viewing",
+          "CCTV Troubleshooting"
+
+        ]
+
+      },
+
+
+      "Motor Winding": {
+
+        icon: "🌀",
+
+        description:
+          "Learn motor types, winding methods, winding connections, testing and practical motor work.",
+
+        lessons: [
+
+          "Introduction to Motors",
+          "Motor Types",
+          "Motor Components",
+          "Winding Fundamentals",
+          "Winding Calculations",
+          "Coil Preparation",
+          "Winding Methods",
+          "Motor Connections",
+          "Motor Testing",
+          "Motor Fault Finding"
+
+        ]
+
+      },
+
+
+      "Mobile Phone": {
+
+        icon: "📱",
+
+        description:
+          "Learn mobile phone components, hardware, software and basic mobile phone repair techniques.",
+
+        lessons: [
+
+          "Introduction to Mobile Phones",
+          "Mobile Phone Components",
+          "Mobile Phone Circuit",
+          "Power Supply Section",
+          "Charging Section",
+          "Audio Section",
+          "Display Section",
+          "Software Problems",
+          "Hardware Troubleshooting",
+          "Basic Mobile Phone Repair"
+
+        ]
+
+      }
+
+    };
+
+
+    /* GET SELECTED COURSE */
+
+    const selectedCourse =
+      localStorage.getItem("selectedCourse");
+
+
+    /* CHECK COURSE */
+
+    if (!selectedCourse || !courses[selectedCourse]) {
+
+      document.getElementById("courseTitle").textContent =
+        "Course Not Found";
+
+      document.getElementById("courseDescription").textContent =
+        "Please return to the Student Dashboard and select a course.";
+
+    } else {
+
+      const course =
+        courses[selectedCourse];
+
+
+      /* COURSE HEADER */
+
+      document.getElementById("courseIcon").textContent =
+        course.icon;
+
+      document.getElementById("courseTitle").textContent =
+        courseName(selectedCourse);
+
+      document.getElementById("courseDescription").textContent =
+        course.description;
+
+
+      /* LESSON COUNT */
+
+      document.getElementById("lessonCount").textContent =
+        course.lessons.length;
+
+
+      /* CREATE LESSONS */
+
+      const lessonList =
+        document.getElementById("lessonList");
+
+      course.lessons.forEach(function(lesson, index) {
+
+        const lessonDiv =
+          document.createElement("div");
+
+        lessonDiv.className = "lesson";
+
+        lessonDiv.innerHTML = `
+
+          <div class="lesson-left">
+
+            <div class="lesson-number">
+              ${index + 1}
+            </div>
+
+            <div>
+
+              <h3>
+                Lesson ${String(index + 1).padStart(2, "0")} -
+                ${lesson}
+              </h3>
+
+              <p>
+                ${selectedCourse} • Video Lesson
+              </p>
+
+            </div>
+
+          </div>
+
+          <button
+            class="watch-btn"
+            onclick="watchLesson('${lesson.replace(/'/g, "\\'")}')">
+
+            ▶ Watch
+
+          </button>
+
+        `;
+
+        lessonList.appendChild(lessonDiv);
+
+      });
+
+    }
+
+
+    /* COURSE NAME */
+
+    function courseName(name) {
+
+      if (name === "Electrical") {
+
+        return "Electrical - Single Phase & Three Phase";
+
+      }
+
+      return name;
+
+    }
+
+
+    /* WATCH LESSON */
+
+    function watchLesson(lesson) {
+
+      localStorage.setItem(
+        "selectedLesson",
+        lesson
+      );
+
+      alert(
+        "“" + lesson + "” video will be added by the administrator."
+      );
+
+    }
+
+  </script>
+
+</body>
+</html>
