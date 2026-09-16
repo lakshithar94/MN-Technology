@@ -6,7 +6,7 @@
 
 <title>Admin Dashboard | MN Technology</title>
 
-<!-- FIXED SUPABASE CDN -->
+<!-- SUPABASE CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -319,6 +319,76 @@ video{
     margin-bottom:10px;
 }
 
+
+/* ==========================================
+   ADMIN MONITORING
+   ========================================== */
+
+.monitor-wrap{
+    overflow-x:auto;
+    margin-top:10px;
+}
+
+.monitor-table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:950px;
+}
+
+.monitor-table th{
+    background:#051223;
+    color:white;
+    padding:12px;
+    text-align:left;
+    font-size:13px;
+}
+
+.monitor-table td{
+    padding:12px;
+    border-bottom:1px solid #e2e8f0;
+    font-size:14px;
+    vertical-align:middle;
+}
+
+.monitor-table tr:hover{
+    background:#f8fafc;
+}
+
+.status{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.status-completed{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.status-watching{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.status-started{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
+.status-not-started{
+    background:#f1f5f9;
+    color:#475569;
+}
+
+.monitor-refresh{
+    margin-bottom:12px;
+}
+
+
+/* MOBILE */
+
 @media(max-width:700px){
 
     .stats{
@@ -342,6 +412,7 @@ video{
     .course-actions{
         width:100%;
     }
+
 }
 </style>
 </head>
@@ -364,6 +435,7 @@ video{
 <div class="container">
 
 <h1>Admin Dashboard</h1>
+
 
 <!-- STATS -->
 
@@ -562,6 +634,65 @@ video{
 
 </div>
 
+
+<!-- ==========================================
+     ADMIN MONITORING
+     ========================================== -->
+
+<div class="card">
+
+<h2>📊 Student Lesson Monitoring</h2>
+
+<p style="
+    color:#64748b;
+    margin-bottom:15px;
+">
+    Student lesson activity, watch time and completion status
+</p>
+
+<button
+    type="button"
+    class="primary monitor-refresh"
+    onclick="loadMonitoring()"
+>
+    🔄 Refresh Monitoring
+</button>
+
+<div class="monitor-wrap">
+
+    <table class="monitor-table">
+
+        <thead>
+
+            <tr>
+                <th>Student</th>
+                <th>Lesson</th>
+                <th>Date</th>
+                <th>Started</th>
+                <th>Last Watched</th>
+                <th>Watch Time</th>
+                <th>Status</th>
+            </tr>
+
+        </thead>
+
+        <tbody id="monitoringBody">
+
+            <tr>
+                <td colspan="7" class="empty">
+                    Loading monitoring...
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</div>
+
+
 </div>
 
 
@@ -573,6 +704,7 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
     "sb_publishable_tpFTptBWglmisRRhQiptmg_VkKhJdDn";
 
+
 const supabaseClient =
     window.supabase.createClient(
         SUPABASE_URL,
@@ -583,7 +715,9 @@ const supabaseClient =
 let ALL_COURSES = [];
 
 
-/* PAGE START */
+/* ==========================================
+   PAGE START
+   ========================================== */
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -594,12 +728,14 @@ document.addEventListener(
         } =
         await supabaseClient.auth.getSession();
 
+
         if(!session){
 
             window.location.href =
                 "login.html";
 
             return;
+
         }
 
 
@@ -621,6 +757,7 @@ document.addEventListener(
                 "login.html";
 
             return;
+
         }
 
 
@@ -630,11 +767,15 @@ document.addEventListener(
 
         await loadDashboard();
 
+        await loadMonitoring();
+
     }
 );
 
 
-/* LOAD COURSE NAMES */
+/* ==========================================
+   LOAD COURSE NAMES
+   ========================================== */
 
 async function loadCourseNames(){
 
@@ -645,7 +786,10 @@ async function loadCourseNames(){
     await supabaseClient
     .from("courses")
     .select("id,name")
-    .order("id",{ascending:true});
+    .order(
+        "id",
+        {ascending:true}
+    );
 
 
     if(error){
@@ -663,12 +807,17 @@ async function loadCourseNames(){
 
 
     ALL_COURSES =
-        data.map(course => course.name);
+        data.map(
+            course =>
+            course.name
+        );
 
 }
 
 
-/* COURSE INPUTS */
+/* ==========================================
+   COURSE INPUTS
+   ========================================== */
 
 function buildCourseInputs(){
 
@@ -677,6 +826,7 @@ function buildCourseInputs(){
             "createCourseList"
         );
 
+
     const select =
         document.getElementById(
             "lessonCourse"
@@ -684,6 +834,7 @@ function buildCourseInputs(){
 
 
     createList.innerHTML = "";
+
 
     select.innerHTML =
         '<option value="">Select Course</option>';
@@ -721,7 +872,9 @@ function buildCourseInputs(){
 }
 
 
-/* DASHBOARD */
+/* ==========================================
+   DASHBOARD
+   ========================================== */
 
 async function loadDashboard(){
 
@@ -734,7 +887,9 @@ async function loadDashboard(){
 }
 
 
-/* STUDENTS */
+/* ==========================================
+   STUDENTS
+   ========================================== */
 
 async function loadStudents(){
 
@@ -866,7 +1021,9 @@ async function loadStudents(){
 }
 
 
-/* SAVE COURSE ACCESS */
+/* ==========================================
+   SAVE COURSE ACCESS
+   ========================================== */
 
 async function saveStudentAccess(studentId){
 
@@ -925,7 +1082,9 @@ async function saveStudentAccess(studentId){
 }
 
 
-/* CREATE STUDENT */
+/* ==========================================
+   CREATE STUDENT
+   ========================================== */
 
 document.getElementById(
     "studentForm"
@@ -980,8 +1139,10 @@ document.getElementById(
         msg.style.display =
             "block";
 
+
         msg.className =
             "message";
+
 
         msg.textContent =
             "Creating student...";
@@ -1030,8 +1191,13 @@ document.getElementById(
             } =
             await supabaseClient
             .from("student_accounts")
-            .select("id,username")
-            .eq("username",username)
+            .select(
+                "id,username"
+            )
+            .eq(
+                "username",
+                username
+            )
             .maybeSingle();
 
 
@@ -1059,7 +1225,10 @@ document.getElementById(
             .update({
                 course_access:selectedCourses
             })
-            .eq("id",student.id);
+            .eq(
+                "id",
+                student.id
+            );
 
 
             if(accessError){
@@ -1071,6 +1240,7 @@ document.getElementById(
 
             msg.className =
                 "message success-msg";
+
 
             msg.textContent =
                 "Student created successfully!";
@@ -1088,8 +1258,10 @@ document.getElementById(
 
             console.error(err);
 
+
             msg.className =
                 "message error-msg";
+
 
             msg.textContent =
                 err.message ||
@@ -1116,13 +1288,19 @@ async function loadCourses(){
     } =
     await supabaseClient
     .from("courses")
-    .select("id,name")
-    .order("id",{ascending:true});
+    .select(
+        "id,name"
+    )
+    .order(
+        "id",
+        {ascending:true}
+    );
 
 
     if(courseError){
 
         console.error(courseError);
+
 
         document.getElementById(
             "coursesList"
@@ -1140,7 +1318,8 @@ async function loadCourses(){
 
     ALL_COURSES =
         courses.map(
-            course => course.name
+            course =>
+            course.name
         );
 
 
@@ -1222,7 +1401,10 @@ async function loadCourses(){
 
                     <button
                         class="edit-btn"
-                        onclick="editCourse(${course.id}, '${escapeJs(course.name)}')"
+                        onclick="editCourse(
+                            ${course.id},
+                            '${escapeJs(course.name)}'
+                        )"
                     >
                         ✏️ Edit
                     </button>
@@ -1230,7 +1412,10 @@ async function loadCourses(){
 
                     <button
                         class="danger"
-                        onclick="deleteCourse(${course.id}, '${escapeJs(course.name)}')"
+                        onclick="deleteCourse(
+                            ${course.id},
+                            '${escapeJs(course.name)}'
+                        )"
                     >
                         🗑️ Delete
                     </button>
@@ -1274,11 +1459,14 @@ async function addCourse(){
         msg.style.display =
             "block";
 
+
         msg.className =
             "message error-msg";
 
+
         msg.textContent =
             "Please enter a course name.";
+
 
         return;
 
@@ -1288,8 +1476,10 @@ async function addCourse(){
     msg.style.display =
         "block";
 
+
     msg.className =
         "message";
+
 
     msg.textContent =
         "Adding course...";
@@ -1319,6 +1509,7 @@ async function addCourse(){
 
             }
 
+
             throw error;
 
         }
@@ -1326,6 +1517,7 @@ async function addCourse(){
 
         msg.className =
             "message success-msg";
+
 
         msg.textContent =
             "Course added successfully!";
@@ -1345,8 +1537,10 @@ async function addCourse(){
 
         console.error(err);
 
+
         msg.className =
             "message error-msg";
+
 
         msg.textContent =
             err.message ||
@@ -1409,7 +1603,10 @@ async function editCourse(
         await supabaseClient
         .from("courses")
         .select("id")
-        .eq("name",cleanName)
+        .eq(
+            "name",
+            cleanName
+        )
         .maybeSingle();
 
 
@@ -1439,7 +1636,10 @@ async function editCourse(
         .update({
             name:cleanName
         })
-        .eq("id",courseId);
+        .eq(
+            "id",
+            courseId
+        );
 
 
         if(courseError){
@@ -1457,7 +1657,10 @@ async function editCourse(
         .update({
             course:cleanName
         })
-        .eq("course",oldName);
+        .eq(
+            "course",
+            oldName
+        );
 
 
         if(lessonError){
@@ -1473,7 +1676,9 @@ async function editCourse(
         } =
         await supabaseClient
         .from("student_accounts")
-        .select("id,course_access");
+        .select(
+            "id,course_access"
+        );
 
 
         if(studentError){
@@ -1512,7 +1717,10 @@ async function editCourse(
                 .update({
                     course_access:newAccess
                 })
-                .eq("id",student.id);
+                .eq(
+                    "id",
+                    student.id
+                );
 
 
                 if(updateError){
@@ -1539,10 +1747,13 @@ async function editCourse(
 
         await loadLessons();
 
+        await loadMonitoring();
+
     }
     catch(err){
 
         console.error(err);
+
 
         alert(
             "Course Edit failed:\n" +
@@ -1568,7 +1779,10 @@ async function deleteCourse(
     await supabaseClient
     .from("lessons")
     .select("id")
-    .eq("course",courseName);
+    .eq(
+        "course",
+        courseName
+    );
 
 
     if(lessonCheckError){
@@ -1625,7 +1839,9 @@ async function deleteCourse(
         } =
         await supabaseClient
         .from("student_accounts")
-        .select("id,course_access");
+        .select(
+            "id,course_access"
+        );
 
 
         if(studentError){
@@ -1662,7 +1878,10 @@ async function deleteCourse(
                 .update({
                     course_access:newAccess
                 })
-                .eq("id",student.id);
+                .eq(
+                    "id",
+                    student.id
+                );
 
 
                 if(updateError){
@@ -1682,7 +1901,10 @@ async function deleteCourse(
         await supabaseClient
         .from("courses")
         .delete()
-        .eq("id",courseId);
+        .eq(
+            "id",
+            courseId
+        );
 
 
         if(deleteError){
@@ -1708,6 +1930,7 @@ async function deleteCourse(
 
         console.error(err);
 
+
         alert(
             "Course Delete failed:\n" +
             err.message
@@ -1726,11 +1949,15 @@ async function loadLessons(){
 
     /*
      * IMPORTANT:
-     * ASCENDING created_at
+     *
+     * Lesson order uses ID ASC.
      *
      * Oldest lesson = Lesson 01
      * Next lesson = Lesson 02
      * etc.
+     *
+     * This matches Student Dashboard
+     * lesson unlock order.
      */
 
     const {
@@ -1741,7 +1968,7 @@ async function loadLessons(){
     .from("lessons")
     .select("*")
     .order(
-        "created_at",
+        "id",
         {ascending:true}
     );
 
@@ -1749,6 +1976,7 @@ async function loadLessons(){
     if(error){
 
         console.error(error);
+
 
         document.getElementById(
             "lessonsList"
@@ -1793,10 +2021,6 @@ async function loadLessons(){
     box.innerHTML = "";
 
 
-    /*
-     * GROUP LESSONS BY COURSE
-     */
-
     const grouped = {};
 
 
@@ -1808,14 +2032,13 @@ async function loadLessons(){
 
         }
 
-        grouped[lesson.course].push(lesson);
+
+        grouped[lesson.course].push(
+            lesson
+        );
 
     });
 
-
-    /*
-     * SHOW COURSES IN COURSE ORDER
-     */
 
     const courseNames =
         ALL_COURSES.filter(
@@ -1824,13 +2047,11 @@ async function loadLessons(){
         );
 
 
-    /*
-     * ADD ANY COURSE NOT FOUND IN ALL_COURSES
-     */
-
     Object.keys(grouped).forEach(course => {
 
-        if(!courseNames.includes(course)){
+        if(
+            !courseNames.includes(course)
+        ){
 
             courseNames.push(course);
 
@@ -1844,10 +2065,6 @@ async function loadLessons(){
         const courseLessons =
             grouped[courseName];
 
-
-        /*
-         * COURSE HEADING
-         */
 
         box.innerHTML += `
 
@@ -1867,10 +2084,6 @@ async function loadLessons(){
         `;
 
 
-        /*
-         * LESSONS
-         */
-
         courseLessons.forEach(
             (lesson,index) => {
 
@@ -1886,15 +2099,17 @@ async function loadLessons(){
 
                     videoHTML = `
 
-                        <div class="video-loading"
-                             id="video-${lesson.id}"
-                             style="
+                        <div
+                            class="video-loading"
+                            id="video-${lesson.id}"
+                            style="
                                 margin-top:10px;
                                 padding:12px;
                                 background:#f8fafc;
                                 border-radius:8px;
                                 color:#64748b;
-                             ">
+                            "
+                        >
                             🎥 Loading secure video...
                         </div>
 
@@ -1917,7 +2132,9 @@ async function loadLessons(){
                             <button
                                 type="button"
                                 class="primary"
-                                onclick="openLessonPdf('${escapeJs(lesson.pdf_path)}')"
+                                onclick="openLessonPdf(
+                                    '${escapeJs(lesson.pdf_path)}'
+                                )"
                             >
                                 Open / Download Lesson PDF
                             </button>
@@ -1968,10 +2185,6 @@ async function loadLessons(){
 
                 `;
 
-
-                /*
-                 * LOAD PRIVATE VIDEO AFTER CARD CREATION
-                 */
 
                 if(lesson.video_path){
 
@@ -2029,10 +2242,9 @@ async function loadAdminVideo(
 
         console.error(error);
 
+
         target.innerHTML = `
-
             ❌ Secure video loading failed.
-
         `;
 
         return;
@@ -2043,9 +2255,7 @@ async function loadAdminVideo(
     if(!data?.signedUrl){
 
         target.innerHTML = `
-
             ❌ Video URL could not be created.
-
         `;
 
         return;
@@ -2119,14 +2329,18 @@ async function openLessonPdf(
         const link =
             document.createElement("a");
 
+
         link.href =
             data.signedUrl;
+
 
         link.target =
             "_blank";
 
+
         link.rel =
             "noopener";
+
 
         link.click();
 
@@ -2134,6 +2348,7 @@ async function openLessonPdf(
     catch(err){
 
         console.error(err);
+
 
         alert(
             "PDF download failed:\n" +
@@ -2198,8 +2413,10 @@ document.getElementById(
         msg.style.display =
             "block";
 
+
         msg.className =
             "message";
+
 
         msg.textContent =
             "Uploading lesson...";
@@ -2269,6 +2486,14 @@ document.getElementById(
                     "application/pdf"
                 ){
 
+                    await supabaseClient
+                    .storage
+                    .from("Video")
+                    .remove([
+                        videoPath
+                    ]);
+
+
                     throw new Error(
                         "PDF file එකක් පමණක් upload කරන්න."
                     );
@@ -2312,6 +2537,7 @@ document.getElementById(
                         videoPath
                     ]);
 
+
                     throw pdfError;
 
                 }
@@ -2322,7 +2548,7 @@ document.getElementById(
             /*
              * Lesson row
              *
-             * created_at determines order.
+             * ID determines lesson order.
              */
 
             const {
@@ -2378,6 +2604,7 @@ document.getElementById(
             msg.className =
                 "message success-msg";
 
+
             msg.textContent =
                 "Lesson uploaded successfully!";
 
@@ -2391,13 +2618,17 @@ document.getElementById(
 
             await loadCourses();
 
+            await loadMonitoring();
+
         }
         catch(err){
 
             console.error(err);
 
+
             msg.className =
                 "message error-msg";
+
 
             msg.textContent =
                 err.message ||
@@ -2437,7 +2668,10 @@ async function deleteLesson(id){
     .select(
         "video_path,pdf_path"
     )
-    .eq("id",id)
+    .eq(
+        "id",
+        id
+    )
     .maybeSingle();
 
 
@@ -2493,7 +2727,10 @@ async function deleteLesson(id){
     await supabaseClient
     .from("lessons")
     .delete()
-    .eq("id",id);
+    .eq(
+        "id",
+        id
+    );
 
 
     if(error){
@@ -2512,14 +2749,572 @@ async function deleteLesson(id){
 
     await loadCourses();
 
+    await loadMonitoring();
+
 }
 
 
-/* LOGOUT */
+/* ==========================================
+   ADMIN MONITORING
+   ========================================== */
+
+async function loadMonitoring(){
+
+    const body =
+        document.getElementById(
+            "monitoringBody"
+        );
+
+
+    if(!body){
+
+        return;
+
+    }
+
+
+    body.innerHTML = `
+
+        <tr>
+            <td colspan="7" class="empty">
+                Loading monitoring...
+            </td>
+        </tr>
+
+    `;
+
+
+    try{
+
+        /*
+         * Load progress
+         */
+
+        const {
+            data: progress,
+            error: progressError
+        } =
+        await supabaseClient
+        .from("lesson_progress")
+        .select(`
+            id,
+            student_id,
+            lesson_id,
+            first_opened_at,
+            last_watched_at,
+            watch_seconds,
+            video_duration_seconds,
+            completed_at,
+            created_at,
+            updated_at
+        `)
+        .order(
+            "updated_at",
+            {
+                ascending:false
+            }
+        );
+
+
+        if(progressError){
+
+            throw progressError;
+
+        }
+
+
+        /*
+         * Load students
+         */
+
+        const {
+            data: students,
+            error: studentError
+        } =
+        await supabaseClient
+        .from("student_accounts")
+        .select(
+            "id,username"
+        );
+
+
+        if(studentError){
+
+            throw studentError;
+
+        }
+
+
+        /*
+         * Load lessons
+         */
+
+        const {
+            data: lessons,
+            error: lessonError
+        } =
+        await supabaseClient
+        .from("lessons")
+        .select(
+            "id,title,course"
+        )
+        .order(
+            "id",
+            {
+                ascending:true
+            }
+        );
+
+
+        if(lessonError){
+
+            throw lessonError;
+
+        }
+
+
+        if(
+            !progress ||
+            progress.length === 0
+        ){
+
+            body.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="empty"
+                    >
+                        No student lesson activity yet.
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        const studentMap = {};
+
+
+        (students || []).forEach(
+            student => {
+
+                studentMap[
+                    String(student.id)
+                ] =
+                    student;
+
+            }
+        );
+
+
+        const lessonMap = {};
+
+
+        (lessons || []).forEach(
+            lesson => {
+
+                lessonMap[
+                    String(lesson.id)
+                ] =
+                    lesson;
+
+            }
+        );
+
+
+        body.innerHTML = "";
+
+
+        progress.forEach(row => {
+
+            const student =
+                studentMap[
+                    String(row.student_id)
+                ];
+
+
+            const lesson =
+                lessonMap[
+                    String(row.lesson_id)
+                ];
+
+
+            const studentName =
+                student
+                ? student.username
+                : "Unknown Student";
+
+
+            const lessonName =
+                lesson
+                ? lesson.title
+                : "Unknown Lesson";
+
+
+            const courseName =
+                lesson
+                ? lesson.course
+                : "";
+
+
+            const date =
+                formatDate(
+                    row.first_opened_at ||
+                    row.created_at
+                );
+
+
+            const started =
+                formatDateTime(
+                    row.first_opened_at
+                );
+
+
+            const lastWatched =
+                formatDateTime(
+                    row.last_watched_at
+                );
+
+
+            const watchTime =
+                formatWatchTime(
+                    row.watch_seconds
+                );
+
+
+            const status =
+                getMonitoringStatus(
+                    row
+                );
+
+
+            body.innerHTML += `
+
+                <tr>
+
+                    <td>
+
+                        <strong>
+                            ${escapeHtml(studentName)}
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+
+                        <strong>
+                            ${escapeHtml(lessonName)}
+                        </strong>
+
+                        ${
+                            courseName
+                            ?
+                            `<br>
+                            <small style="
+                                color:#64748b;
+                            ">
+                                ${escapeHtml(courseName)}
+                            </small>`
+                            :
+                            ""
+                        }
+
+                    </td>
+
+
+                    <td>
+                        ${escapeHtml(date)}
+                    </td>
+
+
+                    <td>
+                        ${escapeHtml(started)}
+                    </td>
+
+
+                    <td>
+                        ${escapeHtml(lastWatched)}
+                    </td>
+
+
+                    <td>
+                        ${escapeHtml(watchTime)}
+                    </td>
+
+
+                    <td>
+                        ${status}
+                    </td>
+
+                </tr>
+
+            `;
+
+        });
+
+    }
+    catch(err){
+
+        console.error(
+            "Monitoring error:",
+            err
+        );
+
+
+        body.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    style="
+                        color:#991b1b;
+                        padding:15px;
+                    "
+                >
+
+                    ❌ Monitoring load failed:
+                    ${escapeHtml(
+                        err.message ||
+                        "Unknown error"
+                    )}
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+
+/* ==========================================
+   MONITORING STATUS
+   ========================================== */
+
+function getMonitoringStatus(row){
+
+    if(row.completed_at){
+
+        return `
+
+            <span class="
+                status
+                status-completed
+            ">
+                ✅ Completed
+            </span>
+
+        `;
+
+    }
+
+
+    if(row.last_watched_at){
+
+        return `
+
+            <span class="
+                status
+                status-watching
+            ">
+                👀 Watching
+            </span>
+
+        `;
+
+    }
+
+
+    if(row.first_opened_at){
+
+        return `
+
+            <span class="
+                status
+                status-started
+            ">
+                ▶️ Started
+            </span>
+
+        `;
+
+    }
+
+
+    return `
+
+        <span class="
+            status
+            status-not-started
+        ">
+            🔒 Not Started
+        </span>
+
+    `;
+
+}
+
+
+/* ==========================================
+   FORMAT DATE
+   ========================================== */
+
+function formatDate(value){
+
+    if(!value){
+
+        return "—";
+
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if(
+        Number.isNaN(
+            date.getTime()
+        )
+    ){
+
+        return "—";
+
+    }
+
+
+    return date.toLocaleDateString(
+        "en-GB"
+    );
+
+}
+
+
+/* ==========================================
+   FORMAT DATE + TIME
+   ========================================== */
+
+function formatDateTime(value){
+
+    if(!value){
+
+        return "—";
+
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if(
+        Number.isNaN(
+            date.getTime()
+        )
+    ){
+
+        return "—";
+
+    }
+
+
+    return date.toLocaleString(
+        "en-GB",
+        {
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric",
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+
+}
+
+
+/* ==========================================
+   FORMAT WATCH TIME
+   ========================================== */
+
+function formatWatchTime(seconds){
+
+    const total =
+        Number(seconds || 0);
+
+
+    if(total <= 0){
+
+        return "0 min";
+
+    }
+
+
+    const hours =
+        Math.floor(
+            total / 3600
+        );
+
+
+    const minutes =
+        Math.floor(
+            (total % 3600) / 60
+        );
+
+
+    const secs =
+        total % 60;
+
+
+    if(hours > 0){
+
+        return (
+            hours +
+            "h " +
+            minutes +
+            "m"
+        );
+
+    }
+
+
+    if(minutes > 0){
+
+        return (
+            minutes +
+            " min"
+        );
+
+    }
+
+
+    return (
+        secs +
+        " sec"
+    );
+
+}
+
+
+/* ==========================================
+   LOGOUT
+   ========================================== */
 
 async function logout(){
 
-    await supabaseClient.auth.signOut();
+    await supabaseClient
+        .auth
+        .signOut();
+
 
     window.location.href =
         "login.html";
@@ -2527,7 +3322,9 @@ async function logout(){
 }
 
 
-/* HELPERS */
+/* ==========================================
+   HELPERS
+   ========================================== */
 
 function cleanFileName(name){
 
@@ -2542,50 +3339,54 @@ function cleanFileName(name){
 
 function escapeHtml(value){
 
-    return String(value ?? "")
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
 
 }
 
 
 function escapeJs(value){
 
-    return String(value ?? "")
-        .replace(
-            /\\/g,
-            "\\\\"
-        )
-        .replace(
-            /'/g,
-            "\\'"
-        )
-        .replace(
-            /\r/g,
-            ""
-        )
-        .replace(
-            /\n/g,
-            "\\n"
-        );
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /\\/g,
+        "\\\\"
+    )
+    .replace(
+        /'/g,
+        "\\'"
+    )
+    .replace(
+        /\r/g,
+        ""
+    )
+    .replace(
+        /\n/g,
+        "\\n"
+    );
 
 }
 
