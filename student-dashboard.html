@@ -1,40 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Student Dashboard | MN Technology</title>
 
-  <!-- IMPORTANT: lowercase @supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
+
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
     }
 
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
       background: #f4f7fb;
       color: #172033;
     }
 
-    /* ================= NAVBAR ================= */
+    /* =====================================
+       NAVBAR
+    ===================================== */
 
     nav {
       background: #051223;
       color: white;
-      padding: 12px 20px;
+      padding: 15px 25px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 15px;
-      flex-wrap: wrap;
+      align-items: center;
     }
 
-    .brand {
+    .logo {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -42,1870 +46,3085 @@
       font-weight: bold;
     }
 
-    .logo {
+    .logo-box {
       width: 42px;
       height: 42px;
-      border-radius: 10px;
       background: #22d3ee;
       color: #051223;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 16px;
     }
 
     .nav-right {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 15px;
     }
 
-    #studentName {
-      font-weight: bold;
-      color: #67e8f9;
+    .username-display {
+      color: #cbd5e1;
     }
 
     .logout-btn {
-      border: none;
       background: #ef4444;
+      border: none;
       color: white;
       padding: 9px 15px;
       border-radius: 7px;
       cursor: pointer;
-      font-weight: bold;
     }
 
-    .logout-btn:hover {
-      background: #dc2626;
-    }
-
-    /* ================= MAIN ================= */
+    /* =====================================
+       CONTAINER
+    ===================================== */
 
     .container {
-      width: min(1100px, 94%);
-      margin: 25px auto;
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 0 20px;
     }
 
     .welcome {
       background: white;
       padding: 25px;
-      border-radius: 14px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+      border-radius: 12px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
       margin-bottom: 25px;
     }
 
     .welcome h1 {
-      margin-top: 0;
-      color: #051223;
+      margin-bottom: 8px;
     }
 
     .welcome p {
       color: #64748b;
-      margin-bottom: 0;
     }
 
-    /* ================= COURSES ================= */
+    /* =====================================
+       SECTION
+    ===================================== */
 
-    .course-card {
+    .section {
       background: white;
-      border-radius: 14px;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
       margin-bottom: 25px;
-      padding: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+    }
+
+    .section h2 {
+      margin-bottom: 20px;
+    }
+
+    /* =====================================
+       COURSE
+    ===================================== */
+
+    .course-section {
+      margin-bottom: 30px;
     }
 
     .course-title {
-      margin-top: 0;
-      padding-bottom: 12px;
-      border-bottom: 1px solid #e5e7eb;
-      color: #051223;
+      background: #051223;
+      color: white;
+      padding: 14px 18px;
+      border-radius: 9px;
+      margin-bottom: 15px;
+      font-size: 19px;
     }
 
-    /* ================= LESSON ================= */
+    .course-locked {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 30px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .lock-icon {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    .course-locked h3 {
+      margin-bottom: 8px;
+      color: #334155;
+    }
+
+    .course-locked p {
+      color: #64748b;
+    }
+
+    /* =====================================
+       LESSON
+    ===================================== */
 
     .lesson {
       border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      margin: 15px 0;
-      padding: 18px;
-      background: #fafcff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 18px;
+      position: relative;
     }
 
-    .lesson.locked {
-      opacity: 0.65;
-      background: #f1f5f9;
+    .lesson:last-child {
+      margin-bottom: 0;
     }
 
-    .lesson-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 15px;
-      flex-wrap: wrap;
+    .lesson h3 {
+      margin-bottom: 8px;
+      font-size: 20px;
     }
 
-    .lesson-title {
-      margin: 0 0 7px;
-      color: #0f172a;
+    .course {
+      color: #0284c7;
+      font-weight: bold;
+      margin-bottom: 10px;
     }
 
-    .lesson-description {
+    .description {
       color: #64748b;
-      margin: 5px 0 12px;
-      white-space: pre-wrap;
+      margin-bottom: 15px;
+      line-height: 1.5;
     }
 
-    .status {
+    /* =====================================
+       LESSON STATUS
+    ===================================== */
+
+    .lesson-status {
       display: inline-block;
-      padding: 6px 10px;
+      padding: 7px 12px;
       border-radius: 20px;
       font-size: 13px;
       font-weight: bold;
+      margin-bottom: 15px;
     }
 
-    .status.locked {
-      background: #e2e8f0;
-      color: #475569;
+    .status-locked {
+      background: #f1f5f9;
+      color: #64748b;
     }
 
-    .status.available {
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .status.completed {
+    .status-unlocked {
       background: #dbeafe;
       color: #1d4ed8;
     }
 
-    /* ================= VIDEO ================= */
+    .status-watching {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-completed {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .lesson-locked {
+      background: #f8fafc;
+      border-color: #e2e8f0;
+    }
+
+    .locked-message {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      padding: 18px;
+      border-radius: 8px;
+      color: #64748b;
+      text-align: center;
+    }
+
+    .completed-message {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      padding: 12px;
+      border-radius: 8px;
+      color: #166534;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    /* =====================================
+       VIDEO WRAPPER
+    ===================================== */
 
     .video-wrapper {
       position: relative;
       width: 100%;
-      background: #000;
+      max-width: 800px;
+      background: black;
       border-radius: 10px;
       overflow: hidden;
-      margin-top: 15px;
     }
+
+    /* =====================================
+       VIDEO
+    ===================================== */
 
     video {
-      display: block;
       width: 100%;
-      max-height: 550px;
-      background: #000;
+      display: block;
+      background: black;
+      border-radius: 10px;
     }
 
-    /* ================= WATERMARK ================= */
+    /* =====================================
+       WATERMARK
+    ===================================== */
 
-    .watermark {
+    .video-watermark {
       position: absolute;
-      z-index: 20;
-      color: rgba(255,255,255,0.72);
-      background: rgba(0,0,0,0.25);
-      padding: 6px 10px;
-      border-radius: 5px;
-      font-size: 13px;
+      color: rgba(255,255,255,0.30);
+      font-size: 15px;
       font-weight: bold;
+      padding: 6px 10px;
+      background: rgba(0,0,0,0.12);
+      border-radius: 5px;
       pointer-events: none;
       user-select: none;
+      z-index: 99999;
+      transition:
+        top 1s ease,
+        left 1s ease,
+        right 1s ease,
+        bottom 1s ease;
       white-space: nowrap;
-      text-shadow: 1px 1px 3px #000;
     }
 
-    /* ================= LOCK ================= */
+    /* =====================================
+       FULLSCREEN
+    ===================================== */
 
-    .locked-message {
-      padding: 30px 15px;
-      text-align: center;
-      color: #64748b;
-      font-weight: bold;
-    }
-
-    /* ================= BUTTONS ================= */
-
-    .button-row {
+    .video-wrapper:fullscreen {
+      width: 100vw;
+      height: 100vh;
+      max-width: none;
+      border-radius: 0;
+      background: black;
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 14px;
+      align-items: center;
+      justify-content: center;
     }
 
-    button,
-    .pdf-btn {
+    .video-wrapper:-webkit-full-screen {
+      width: 100vw;
+      height: 100vh;
+      max-width: none;
+      border-radius: 0;
+      background: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .video-wrapper:fullscreen video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 0;
+    }
+
+    .video-wrapper:-webkit-full-screen video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 0;
+    }
+
+    /* =====================================
+       FULLSCREEN BUTTON
+    ===================================== */
+
+    .fullscreen-btn {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      z-index: 100000;
+      background: rgba(0,0,0,0.65);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.35);
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      opacity: 0.85;
+      transition: opacity 0.2s ease;
+    }
+
+    .fullscreen-btn:hover {
+      opacity: 1;
+    }
+
+    .video-wrapper:fullscreen .fullscreen-btn {
+      right: 18px;
+      bottom: 18px;
+    }
+
+    .video-wrapper:-webkit-full-screen .fullscreen-btn {
+      right: 18px;
+      bottom: 18px;
+    }
+
+    /* =====================================
+       LESSON COMPLETE BUTTON
+    ===================================== */
+
+    .lesson-complete-btn {
+      margin-top: 15px;
+      background: #22c55e;
+      color: white;
       border: none;
+      padding: 11px 18px;
       border-radius: 7px;
-      padding: 10px 15px;
       cursor: pointer;
       font-weight: bold;
-      text-decoration: none;
-      display: inline-block;
+      font-size: 14px;
+      transition: background 0.2s ease;
     }
 
-    .complete-btn {
+    .lesson-complete-btn:hover {
       background: #16a34a;
-      color: white;
     }
 
-    .complete-btn:hover {
-      background: #15803d;
-    }
-
-    .complete-btn:disabled {
+    .lesson-complete-btn:disabled {
       background: #94a3b8;
       cursor: not-allowed;
     }
 
+    .lesson-complete-btn.completing {
+      background: #f59e0b;
+      cursor: wait;
+    }
+
+    /* =====================================
+       PDF BUTTON
+    ===================================== */
+
     .pdf-btn {
+      display: inline-block;
+      margin-top: 15px;
+      margin-left: 8px;
       background: #2563eb;
       color: white;
+      border: none;
+      padding: 11px 18px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      text-decoration: none;
     }
 
     .pdf-btn:hover {
       background: #1d4ed8;
     }
 
-    /* ================= PASSWORD ================= */
+    /* =====================================
+       PASSWORD
+    ===================================== */
 
-    .password-card {
-      background: white;
-      padding: 22px;
-      border-radius: 14px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.07);
-      margin-top: 25px;
+    .password-form {
+      max-width: 500px;
     }
 
-    .password-card h2 {
-      margin-top: 0;
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 7px;
     }
 
     input {
       width: 100%;
-      padding: 11px;
-      border: 1px solid #cbd5e1;
+      padding: 12px;
+      border: 1px solid #d1d5db;
       border-radius: 7px;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
       font-size: 15px;
     }
 
-    .password-btn {
-      background: #0f172a;
+    .change-btn {
+      background: #0ea5e9;
       color: white;
-    }
-
-    .password-btn:hover {
-      background: #1e293b;
-    }
-
-    /* ================= MESSAGE ================= */
-
-    #message {
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-      z-index: 1000;
-      max-width: 350px;
-      padding: 13px 17px;
-      border-radius: 8px;
-      color: white;
-      display: none;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 7px;
       font-weight: bold;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      cursor: pointer;
     }
 
-    #message.success {
-      background: #16a34a;
+    .change-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
-    #message.error {
-      background: #dc2626;
+    /* =====================================
+       MESSAGE
+    ===================================== */
+
+    .message {
+      display: none;
+      padding: 12px;
+      border-radius: 7px;
+      margin-bottom: 15px;
     }
 
-    /* ================= MOBILE ================= */
+    .success {
+      background: #dcfce7;
+      color: #166534;
+    }
 
-    @media (max-width: 650px) {
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    /* =====================================
+       NO LESSONS
+    ===================================== */
+
+    .no-lessons {
+      color: #64748b;
+      text-align: center;
+      padding: 30px;
+    }
+
+    /* =====================================
+       MOBILE
+    ===================================== */
+
+    @media (max-width: 700px) {
 
       nav {
-        padding: 10px 12px;
+        padding: 12px 15px;
       }
 
-      .brand {
-        font-size: 17px;
+      .logo span {
+        display: none;
       }
 
-      .logo {
-        width: 38px;
-        height: 38px;
+      .nav-right {
+        gap: 8px;
+      }
+
+      .username-display {
+        font-size: 13px;
       }
 
       .container {
-        width: 95%;
-        margin-top: 15px;
+        padding: 0 12px;
       }
 
-      .welcome,
-      .course-card,
-      .password-card {
-        padding: 16px;
+      .video-watermark {
+        font-size: 11px;
+        padding: 4px 7px;
       }
 
-      .watermark {
-        font-size: 10px;
-        padding: 4px 6px;
+      .fullscreen-btn {
+        font-size: 12px;
+        padding: 7px 9px;
+      }
+
+      .section {
+        padding: 18px;
       }
 
       .lesson {
-        padding: 13px;
+        padding: 15px;
       }
+
+      .pdf-btn {
+        margin-left: 0;
+        margin-top: 10px;
+      }
+
     }
+
   </style>
+
 </head>
 
 <body>
 
-  <!-- ================= NAVBAR ================= -->
+  <!-- =====================================
+       NAVBAR
+  ===================================== -->
 
   <nav>
-    <div class="brand">
-      <div class="logo">MN</div>
-      <div>MN Technology</div>
+
+    <div class="logo">
+
+      <div class="logo-box">
+        MN
+      </div>
+
+      <span>
+        MN Technology
+      </span>
+
     </div>
 
     <div class="nav-right">
-      <span id="studentName">Student</span>
-      <button class="logout-btn" onclick="logout()">Logout</button>
+
+      <span
+        class="username-display"
+        id="navUsername"
+      >
+        Student
+      </span>
+
+      <button
+        class="logout-btn"
+        id="logoutBtn"
+      >
+        Logout
+      </button>
+
     </div>
+
   </nav>
 
 
-  <main class="container">
+  <div class="container">
 
-    <!-- ================= WELCOME ================= -->
+    <!-- =====================================
+         WELCOME
+    ===================================== -->
 
-    <section class="welcome">
-      <h1>Welcome to MN Technology 🎓</h1>
+    <div class="welcome">
+
+      <h1>
+        Welcome,
+        <span id="welcomeUsername">
+          Student
+        </span>!
+      </h1>
+
       <p>
-        Learn your lessons, watch videos and complete each lesson to unlock the next one.
+        Select a lesson below and start learning.
       </p>
-    </section>
+
+    </div>
 
 
-    <!-- ================= COURSES ================= -->
+    <!-- =====================================
+         LESSONS
+    ===================================== -->
 
-    <section>
-      <h2>📚 Available Lessons</h2>
+    <div class="section">
 
-      <div id="coursesContainer">
-        <p>Loading lessons...</p>
+      <h2>
+        📚 Available Lessons
+      </h2>
+
+      <div id="lessonsList">
+
+        <p class="no-lessons">
+          Loading lessons...
+        </p>
+
       </div>
-    </section>
+
+    </div>
 
 
-    <!-- ================= CHANGE PASSWORD ================= -->
+    <!-- =====================================
+         PASSWORD
+    ===================================== -->
 
-    <section class="password-card">
+    <div class="section">
 
-      <h2>🔐 Change Password</h2>
+      <h2>
+        🔐 Change Password
+      </h2>
 
-      <input
-        type="password"
-        id="newPassword"
-        placeholder="Enter new password"
+      <div
+        id="passwordMessage"
+        class="message"
+      >
+      </div>
+
+      <form
+        id="passwordForm"
+        class="password-form"
       >
 
-      <input
-        type="password"
-        id="confirmPassword"
-        placeholder="Confirm new password"
-      >
+        <label for="newPassword">
+          New Password
+        </label>
 
-      <button
-        class="password-btn"
-        onclick="changePassword()"
-      >
-        Change Password
-      </button>
+        <input
+          type="password"
+          id="newPassword"
+          placeholder="Enter new password"
+          minlength="6"
+          required
+          autocomplete="new-password"
+        >
 
-    </section>
+        <label for="confirmPassword">
+          Confirm New Password
+        </label>
 
-  </main>
+        <input
+          type="password"
+          id="confirmPassword"
+          placeholder="Confirm new password"
+          minlength="6"
+          required
+          autocomplete="new-password"
+        >
 
+        <button
+          type="submit"
+          class="change-btn"
+          id="changePasswordBtn"
+        >
+          Change Password
+        </button>
 
-  <div id="message"></div>
+      </form>
 
+    </div>
 
-<script>
-
-  /* =========================================================
-     SUPABASE
-  ========================================================= */
-
-  const SUPABASE_URL =
-    "https://ekanfqwbqwfhjfgctouk.supabase.co";
-
-  const SUPABASE_KEY =
-    "sb_publishable_tpFTptBWglmisRRhQiptmg_VkKhJdDn";
-
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
-
-
-  /* =========================================================
-     GLOBAL VARIABLES
-  ========================================================= */
-
-  let CURRENT_USER = null;
-  let CURRENT_STUDENT = null;
-
-  let ALL_LESSONS = [];
-  let ALL_COURSES = [];
-  let ALL_PROGRESS = [];
-
-  let ACTIVE_TRACKERS = {};
-
-  let watermarkTimer = null;
+  </div>
 
 
-  /* =========================================================
-     MESSAGE
-  ========================================================= */
+  <!-- =====================================
+       SUPABASE
+  ===================================== -->
 
-  function showMessage(text, type = "success") {
-
-    const box = document.getElementById("message");
-
-    box.textContent = text;
-    box.className = "";
-    box.classList.add(type);
-
-    box.style.display = "block";
-
-    setTimeout(() => {
-      box.style.display = "none";
-    }, 3500);
-  }
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
-  /* =========================================================
-     LOAD STUDENT
-  ========================================================= */
+  <script>
 
-  async function loadStudent() {
+    /* =====================================
+       SUPABASE
+    ===================================== */
 
-    const {
-      data: {
-        user
-      },
-      error
-    } = await supabaseClient.auth.getUser();
+    const SUPABASE_URL =
+      "https://ekanfqwbqwfhjfgctouk.supabase.co";
 
-    if (error || !user) {
+    const SUPABASE_KEY =
+      "sb_publishable_tpFTptBWglmisRRhQiptmg_VkKhJdDn";
 
-      window.location.href = "login.html";
-      return;
-    }
-
-    CURRENT_USER = user;
-
-
-    const {
-      data: student,
-      error: studentError
-    } = await supabaseClient
-      .from("student_accounts")
-      .select("*")
-      .eq("id", user.id)
-      .maybeSingle();
-
-
-    if (studentError || !student) {
-
-      showMessage(
-        "Student account not found.",
-        "error"
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
       );
 
-      await supabaseClient.auth.signOut();
 
-      window.location.href = "login.html";
-      return;
-    }
+    /* =====================================
+       ELEMENTS
+    ===================================== */
 
+    const lessonsList =
+      document.getElementById("lessonsList");
 
-    CURRENT_STUDENT = student;
+    const navUsername =
+      document.getElementById("navUsername");
 
+    const welcomeUsername =
+      document.getElementById("welcomeUsername");
 
-    document.getElementById("studentName").textContent =
-      student.username || "Student";
+    const passwordForm =
+      document.getElementById("passwordForm");
 
+    const passwordMessage =
+      document.getElementById("passwordMessage");
 
-    await loadProgress();
-    await loadCourses();
 
-  }
+    /* =====================================
+       CURRENT STUDENT
+    ===================================== */
 
+    let CURRENT_STUDENT = null;
 
-  /* =========================================================
-     LOAD PROGRESS
-  ========================================================= */
 
-  async function loadProgress() {
+    /* =====================================
+       ALL DATA
+    ===================================== */
 
-    if (!CURRENT_USER) return;
+    let ALL_COURSES = [];
+    let ALL_LESSONS = [];
+    let ALL_PROGRESS = [];
 
 
-    const {
-      data,
-      error
-    } = await supabaseClient
-      .from("lesson_progress")
-      .select("*")
-      .eq("student_id", CURRENT_USER.id);
+    /* =====================================
+       ACTIVE VIDEO TRACKERS
+    ===================================== */
 
+    const activeTrackers = new Map();
 
-    if (error) {
 
-      console.error(error);
+    /* =====================================
+       PASSWORD MESSAGE
+    ===================================== */
 
-      showMessage(
-        "Could not load lesson progress.",
-        "error"
-      );
-
-      ALL_PROGRESS = [];
-      return;
-    }
-
-
-    ALL_PROGRESS = data || [];
-  }
-
-
-  /* =========================================================
-     LOAD COURSES
-  ========================================================= */
-
-  async function loadCourses() {
-
-    const {
-      data: courses,
-      error: courseError
-    } = await supabaseClient
-      .from("courses")
-      .select("*")
-      .order("id", {
-        ascending: true
-      });
-
-
-    if (courseError) {
-
-      console.error(courseError);
-
-      showMessage(
-        "Could not load courses.",
-        "error"
-      );
-
-      return;
-    }
-
-
-    ALL_COURSES = courses || [];
-
-
-    const {
-      data: lessons,
-      error: lessonError
-    } = await supabaseClient
-      .from("lessons")
-      .select("*")
-      .order("id", {
-        ascending: true
-      });
-
-
-    if (lessonError) {
-
-      console.error(lessonError);
-
-      showMessage(
-        "Could not load lessons.",
-        "error"
-      );
-
-      return;
-    }
-
-
-    ALL_LESSONS = lessons || [];
-
-
-    renderCourses();
-  }
-
-
-  /* =========================================================
-     CHECK COURSE ACCESS
-  ========================================================= */
-
-  function studentHasCourseAccess(courseName) {
-
-    if (!CURRENT_STUDENT) return false;
-
-    const access =
-      CURRENT_STUDENT.course_access || [];
-
-    return access.includes(courseName);
-  }
-
-
-  /* =========================================================
-     GROUP LESSONS
-  ========================================================= */
-
-  function getCourseLessons(courseName) {
-
-    return ALL_LESSONS
-      .filter(
-        lesson =>
-          lesson.course === courseName
-      )
-      .sort(
-        (a, b) =>
-          Number(a.id) - Number(b.id)
-      );
-  }
-
-
-  /* =========================================================
-     GET PROGRESS
-  ========================================================= */
-
-  function getLessonProgress(lessonId) {
-
-    return ALL_PROGRESS.find(
-      item =>
-        Number(item.lesson_id) ===
-        Number(lessonId)
-    );
-  }
-
-
-  /* =========================================================
-     CHECK COMPLETED
-  ========================================================= */
-
-  function isLessonCompleted(lessonId) {
-
-    const progress =
-      getLessonProgress(lessonId);
-
-    return !!(
-      progress &&
-      progress.completed_at
-    );
-  }
-
-
-  /* =========================================================
-     CHECK UNLOCKED
-  ========================================================= */
-
-  function isLessonUnlocked(
-    lesson,
-    courseLessons
-  ) {
-
-    if (
-      !courseLessons ||
-      courseLessons.length === 0
+    function showPasswordMessage(
+      text,
+      type
     ) {
-      return false;
+
+      passwordMessage.textContent =
+        text;
+
+      passwordMessage.className =
+        "message " + type;
+
+      passwordMessage.style.display =
+        "block";
+
     }
 
 
-    const lessonIndex =
-      courseLessons.findIndex(
-        item =>
-          Number(item.id) ===
-          Number(lesson.id)
-      );
+    /* =====================================
+       LOAD STUDENT
+    ===================================== */
+
+    async function loadStudent() {
+
+      const {
+        data: sessionData,
+        error: sessionError
+      } =
+        await supabaseClient.auth.getSession();
 
 
-    if (lessonIndex === -1) {
-      return false;
-    }
+      if (
+        sessionError ||
+        !sessionData.session
+      ) {
+
+        window.location.href =
+          "login.html";
+
+        return null;
+      }
 
 
-    /* First lesson is unlocked */
-
-    if (lessonIndex === 0) {
-      return true;
-    }
+      const user =
+        sessionData.session.user;
 
 
-    /* Previous lesson must be completed */
-
-    const previousLesson =
-      courseLessons[lessonIndex - 1];
-
-
-    return isLessonCompleted(
-      previousLesson.id
-    );
-  }
-
-
-  /* =========================================================
-     RENDER COURSES
-  ========================================================= */
-
-  function renderCourses() {
-
-    const container =
-      document.getElementById(
-        "coursesContainer"
-      );
-
-
-    container.innerHTML = "";
-
-
-    const accessibleCourses =
-      ALL_COURSES.filter(
-        course =>
-          studentHasCourseAccess(
-            course.name
+      const {
+        data: student,
+        error
+      } =
+        await supabaseClient
+          .from("student_accounts")
+          .select(
+            "id, username, course_access"
           )
-      );
+          .eq(
+            "id",
+            user.id
+          )
+          .maybeSingle();
 
 
-    if (accessibleCourses.length === 0) {
+      if (
+        error ||
+        !student
+      ) {
 
-      container.innerHTML = `
-        <div class="course-card">
-          <p>
-            No courses have been assigned to your account yet.
-          </p>
-        </div>
-      `;
+        console.error(error);
 
-      return;
+        await supabaseClient.auth.signOut();
+
+        window.location.href =
+          "login.html";
+
+        return null;
+      }
+
+
+      CURRENT_STUDENT =
+        student;
+
+
+      navUsername.textContent =
+        student.username;
+
+      welcomeUsername.textContent =
+        student.username;
+
+
+      return student;
+
     }
 
 
-    accessibleCourses.forEach(course => {
+    /* =====================================
+       LOAD PROGRESS
+    ===================================== */
 
-      const courseLessons =
-        getCourseLessons(
-          course.name
+    async function loadProgress() {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("lesson_progress")
+          .select("*")
+          .eq(
+            "student_id",
+            CURRENT_STUDENT.id
+          );
+
+
+      if (error) {
+
+        console.error(
+          "Progress loading error:",
+          error
+        );
+
+        ALL_PROGRESS = [];
+
+        return [];
+
+      }
+
+
+      ALL_PROGRESS =
+        data || [];
+
+
+      return ALL_PROGRESS;
+
+    }
+
+
+    /* =====================================
+       GET PROGRESS
+    ===================================== */
+
+    function getProgress(
+      lessonId
+    ) {
+
+      return ALL_PROGRESS.find(
+        progress =>
+          Number(progress.lesson_id) ===
+          Number(lessonId)
+      ) || null;
+
+    }
+
+
+    /* =====================================
+       CHECK COMPLETED
+    ===================================== */
+
+    function isLessonCompleted(
+      lessonId
+    ) {
+
+      const progress =
+        getProgress(
+          lessonId
         );
 
 
-      if (courseLessons.length === 0) {
+      return !!(
+        progress &&
+        progress.completed_at
+      );
+
+    }
+
+
+    /* =====================================
+       CHECK UNLOCKED
+    ===================================== */
+
+    function isLessonUnlocked(
+      lesson,
+      courseLessons
+    ) {
+
+      if (
+        !courseLessons ||
+        courseLessons.length === 0
+      ) {
+
+        return false;
+
+      }
+
+
+      const lessonIndex =
+        courseLessons.findIndex(
+          item =>
+            Number(item.id) ===
+            Number(lesson.id)
+        );
+
+
+      if (
+        lessonIndex === -1
+      ) {
+
+        return false;
+
+      }
+
+
+      /*
+        First lesson is always unlocked.
+      */
+
+      if (
+        lessonIndex === 0
+      ) {
+
+        return true;
+
+      }
+
+
+      /*
+        Previous lesson must be completed.
+      */
+
+      const previousLesson =
+        courseLessons[
+          lessonIndex - 1
+        ];
+
+
+      return isLessonCompleted(
+        previousLesson.id
+      );
+
+    }
+
+
+    /* =====================================
+       LOAD COURSES
+    ===================================== */
+
+    async function loadCourses() {
+
+      const {
+        data: courses,
+        error: courseError
+      } =
+        await supabaseClient
+          .from("courses")
+          .select(
+            "id, name"
+          )
+          .order(
+            "id",
+            {
+              ascending: true
+            }
+          );
+
+
+      if (courseError) {
+
+        console.error(
+          courseError
+        );
+
+        lessonsList.innerHTML =
+          '<p class="no-lessons">Could not load courses.</p>';
+
+        return;
+
+      }
+
+
+      ALL_COURSES =
+        courses || [];
+
+
+      if (
+        ALL_COURSES.length === 0
+      ) {
+
+        lessonsList.innerHTML =
+          '<p class="no-lessons">No courses available yet.</p>';
+
+        return;
+
+      }
+
+
+      const {
+        data: lessons,
+        error: lessonError
+      } =
+        await supabaseClient
+          .from("lessons")
+          .select("*")
+          .order(
+            "id",
+            {
+              ascending: true
+            }
+          );
+
+
+      if (lessonError) {
+
+        console.error(
+          lessonError
+        );
+
+        lessonsList.innerHTML =
+          '<p class="no-lessons">Could not load lessons.</p>';
+
+        return;
+
+      }
+
+
+      ALL_LESSONS =
+        lessons || [];
+
+
+      await loadProgress();
+
+      renderCourses();
+
+    }
+
+
+    /* =====================================
+       RENDER COURSES
+    ===================================== */
+
+    function renderCourses() {
+
+      const access =
+        Array.isArray(
+          CURRENT_STUDENT.course_access
+        )
+          ? CURRENT_STUDENT.course_access
+          : [];
+
+
+      lessonsList.innerHTML =
+        "";
+
+
+      ALL_COURSES.forEach(
+        course => {
+
+          const courseName =
+            course.name;
+
+
+          const hasAccess =
+            access.includes(
+              courseName
+            );
+
+
+          const courseBox =
+            document.createElement(
+              "div"
+            );
+
+
+          courseBox.className =
+            "course-section";
+
+
+          /* COURSE TITLE */
+
+          const title =
+            document.createElement(
+              "div"
+            );
+
+
+          title.className =
+            "course-title";
+
+
+          title.textContent =
+            hasAccess
+              ? "📚 " + courseName
+              : "🔒 " + courseName;
+
+
+          courseBox.appendChild(
+            title
+          );
+
+
+          /* LOCKED COURSE */
+
+          if (!hasAccess) {
+
+            const locked =
+              document.createElement(
+                "div"
+              );
+
+
+            locked.className =
+              "course-locked";
+
+
+            locked.innerHTML = `
+              <div class="lock-icon">
+                🔒
+              </div>
+
+              <h3>
+                Course Locked
+              </h3>
+
+              <p>
+                You don't have access to this course yet.
+              </p>
+
+              <p style="margin-top:8px;">
+                Please contact the administrator to get access.
+              </p>
+            `;
+
+
+            courseBox.appendChild(
+              locked
+            );
+
+
+            lessonsList.appendChild(
+              courseBox
+            );
+
+
+            return;
+
+          }
+
+
+          /* OPEN COURSE */
+
+          const courseLessons =
+            ALL_LESSONS
+              .filter(
+                lesson =>
+                  lesson.course ===
+                  courseName
+              )
+              .sort(
+                (a, b) =>
+                  Number(a.id) -
+                  Number(b.id)
+              );
+
+
+          if (
+            courseLessons.length === 0
+          ) {
+
+            const noLesson =
+              document.createElement(
+                "div"
+              );
+
+
+            noLesson.className =
+              "no-lessons";
+
+
+            noLesson.textContent =
+              "No lessons available in this course yet.";
+
+
+            courseBox.appendChild(
+              noLesson
+            );
+
+          }
+
+          else {
+
+            courseLessons.forEach(
+              lesson => {
+
+                courseBox.appendChild(
+                  createLessonElement(
+                    lesson,
+                    courseLessons
+                  )
+                );
+
+              }
+            );
+
+          }
+
+
+          lessonsList.appendChild(
+            courseBox
+          );
+
+        }
+      );
+
+    }
+
+
+    /* =====================================
+       CREATE LESSON
+    ===================================== */
+
+    function createLessonElement(
+      lesson,
+      courseLessons
+    ) {
+
+      const item =
+        document.createElement(
+          "div"
+        );
+
+
+      item.className =
+        "lesson";
+
+
+      item.id =
+        "lesson-" +
+        lesson.id;
+
+
+      const unlocked =
+        isLessonUnlocked(
+          lesson,
+          courseLessons
+        );
+
+
+      const completed =
+        isLessonCompleted(
+          lesson.id
+        );
+
+
+      const progress =
+        getProgress(
+          lesson.id
+        );
+
+
+      if (!unlocked) {
+
+        item.classList.add(
+          "lesson-locked"
+        );
+
+      }
+
+
+      /* TITLE */
+
+      const title =
+        document.createElement(
+          "h3"
+        );
+
+
+      title.textContent =
+        lesson.title || "";
+
+
+      item.appendChild(
+        title
+      );
+
+
+      /* COURSE */
+
+      const course =
+        document.createElement(
+          "div"
+        );
+
+
+      course.className =
+        "course";
+
+
+      course.textContent =
+        "Course: " +
+        (lesson.course || "");
+
+
+      item.appendChild(
+        course
+      );
+
+
+      /* DESCRIPTION */
+
+      const description =
+        document.createElement(
+          "div"
+        );
+
+
+      description.className =
+        "description";
+
+
+      description.textContent =
+        lesson.description || "";
+
+
+      item.appendChild(
+        description
+      );
+
+
+      /* STATUS */
+
+      const status =
+        document.createElement(
+          "div"
+        );
+
+
+      status.className =
+        "lesson-status";
+
+
+      if (completed) {
+
+        status.classList.add(
+          "status-completed"
+        );
+
+        status.textContent =
+          "✅ Completed";
+
+      }
+
+      else if (
+        progress &&
+        progress.first_opened_at
+      ) {
+
+        status.classList.add(
+          "status-watching"
+        );
+
+        status.textContent =
+          "👀 Watching";
+
+      }
+
+      else if (unlocked) {
+
+        status.classList.add(
+          "status-unlocked"
+        );
+
+        status.textContent =
+          "▶️ Ready to Watch";
+
+      }
+
+      else {
+
+        status.classList.add(
+          "status-locked"
+        );
+
+        status.textContent =
+          "🔒 Locked";
+
+      }
+
+
+      item.appendChild(
+        status
+      );
+
+
+      /* =====================================
+         LOCKED LESSON
+      ===================================== */
+
+      if (!unlocked) {
+
+        const lockedMessage =
+          document.createElement(
+            "div"
+          );
+
+
+        lockedMessage.className =
+          "locked-message";
+
+
+        lockedMessage.innerHTML = `
+          🔒 <strong>Lesson Locked</strong>
+
+          <br><br>
+
+          Complete the previous lesson
+          to unlock this lesson.
+        `;
+
+
+        item.appendChild(
+          lockedMessage
+        );
+
+
+        return item;
+
+      }
+
+
+      /*
+        Keep video element available to the
+        Complete button.
+      */
+
+      let videoElement =
+        null;
+
+
+      /* =====================================
+         VIDEO
+      ===================================== */
+
+      if (lesson.video_path) {
+
+        const videoWrapper =
+          document.createElement(
+            "div"
+          );
+
+
+        videoWrapper.className =
+          "video-wrapper";
+
+
+        videoElement =
+          document.createElement(
+            "video"
+          );
+
+
+        videoElement.controls =
+          true;
+
+
+        videoElement.preload =
+          "metadata";
+
+
+        /*
+          Block common download controls.
+        */
+
+        videoElement.setAttribute(
+          "controlsList",
+          "nodownload noremoteplayback nofullscreen"
+        );
+
+
+        videoElement.setAttribute(
+          "disablePictureInPicture",
+          ""
+        );
+
+
+        videoElement.addEventListener(
+          "contextmenu",
+          function(event) {
+
+            event.preventDefault();
+
+          }
+        );
+
+
+        /* WATERMARK */
+
+        const watermark =
+          document.createElement(
+            "div"
+          );
+
+
+        watermark.className =
+          "video-watermark";
+
+
+        watermark.textContent =
+          "💧 MN TECHNOLOGY • " +
+          CURRENT_STUDENT.username;
+
+
+        /* FULLSCREEN BUTTON */
+
+        const fullscreenButton =
+          document.createElement(
+            "button"
+          );
+
+
+        fullscreenButton.className =
+          "fullscreen-btn";
+
+
+        fullscreenButton.type =
+          "button";
+
+
+        fullscreenButton.textContent =
+          "⛶ Full Screen";
+
+
+        fullscreenButton.addEventListener(
+          "click",
+          async function(event) {
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+
+            try {
+
+              if (
+                !document.fullscreenElement
+              ) {
+
+                if (
+                  videoWrapper.requestFullscreen
+                ) {
+
+                  await videoWrapper.requestFullscreen();
+
+                }
+
+                else if (
+                  videoWrapper.webkitRequestFullscreen
+                ) {
+
+                  videoWrapper.webkitRequestFullscreen();
+
+                }
+
+              }
+
+              else {
+
+                if (
+                  document.exitFullscreen
+                ) {
+
+                  await document.exitFullscreen();
+
+                }
+
+                else if (
+                  document.webkitExitFullscreen
+                ) {
+
+                  document.webkitExitFullscreen();
+
+                }
+
+              }
+
+            }
+
+            catch (error) {
+
+              console.error(
+                "Fullscreen error:",
+                error
+              );
+
+            }
+
+          }
+        );
+
+
+        /* DOUBLE CLICK FULLSCREEN */
+
+        videoElement.addEventListener(
+          "dblclick",
+          async function(event) {
+
+            event.preventDefault();
+
+
+            try {
+
+              if (
+                !document.fullscreenElement
+              ) {
+
+                if (
+                  videoWrapper.requestFullscreen
+                ) {
+
+                  await videoWrapper.requestFullscreen();
+
+                }
+
+                else if (
+                  videoWrapper.webkitRequestFullscreen
+                ) {
+
+                  videoWrapper.webkitRequestFullscreen();
+
+                }
+
+              }
+
+              else {
+
+                if (
+                  document.exitFullscreen
+                ) {
+
+                  await document.exitFullscreen();
+
+                }
+
+                else if (
+                  document.webkitExitFullscreen
+                ) {
+
+                  document.webkitExitFullscreen();
+
+                }
+
+              }
+
+            }
+
+            catch (error) {
+
+              console.error(
+                "Fullscreen error:",
+                error
+              );
+
+            }
+
+          }
+        );
+
+
+        /* ADD ELEMENTS */
+
+        videoWrapper.appendChild(
+          videoElement
+        );
+
+
+        videoWrapper.appendChild(
+          watermark
+        );
+
+
+        videoWrapper.appendChild(
+          fullscreenButton
+        );
+
+
+        item.appendChild(
+          videoWrapper
+        );
+
+
+        /* LOAD SECURE VIDEO */
+
+        loadSecureVideo(
+          lesson.video_path,
+          videoElement
+        );
+
+
+        /* WATERMARK MOVEMENT */
+
+        startWatermarkMovement(
+          watermark,
+          videoWrapper
+        );
+
+
+        /* WATCH TRACKING */
+
+        setupVideoTracking(
+          videoElement,
+          lesson
+        );
+
+      }
+
+      else {
+
+        const noVideo =
+          document.createElement(
+            "div"
+          );
+
+
+        noVideo.className =
+          "locked-message";
+
+
+        noVideo.textContent =
+          "No video available for this lesson yet.";
+
+
+        item.appendChild(
+          noVideo
+        );
+
+      }
+
+
+      /* =====================================
+         LESSON COMPLETE BUTTON
+      ===================================== */
+
+      const completeButton =
+        document.createElement(
+          "button"
+        );
+
+
+      completeButton.type =
+        "button";
+
+
+      completeButton.className =
+        "lesson-complete-btn";
+
+
+      if (completed) {
+
+        completeButton.textContent =
+          "✅ Lesson Completed";
+
+
+        completeButton.disabled =
+          true;
+
+      }
+
+      else {
+
+        completeButton.textContent =
+          "✅ Lesson Complete";
+
+
+        completeButton.disabled =
+          false;
+
+
+        completeButton.addEventListener(
+          "click",
+          async function() {
+
+            completeButton.disabled =
+              true;
+
+
+            completeButton.classList.add(
+              "completing"
+            );
+
+
+            completeButton.textContent =
+              "Saving...";
+
+
+            try {
+
+              const tracker =
+                activeTrackers.get(
+                  Number(lesson.id)
+                );
+
+
+              /*
+                If video is currently playing,
+                pause it before completion.
+              */
+
+              if (
+                videoElement &&
+                !videoElement.paused
+              ) {
+
+                videoElement.pause();
+
+              }
+
+
+              if (tracker) {
+
+                tracker.lastTick =
+                  null;
+
+                tracker.completed =
+                  true;
+
+
+                await saveLessonProgress(
+                  lesson.id,
+                  tracker
+                );
+
+
+                await completeLesson(
+                  lesson.id,
+                  tracker
+                );
+
+              }
+
+              else {
+
+                /*
+                  Student can complete a lesson
+                  even without watching it.
+                */
+
+                const existing =
+                  getProgress(
+                    lesson.id
+                  );
+
+
+                const trackerWithoutVideo = {
+
+                  lessonId:
+                    Number(lesson.id),
+
+                  videoDuration:
+                    null,
+
+                  firstOpened:
+                    existing?.first_opened_at ||
+                    null,
+
+                  lastTick:
+                    null,
+
+                  watchSeconds:
+                    Number(
+                      existing?.watch_seconds ||
+                      0
+                    ),
+
+                  saving:
+                    false,
+
+                  completed:
+                    true
+
+                };
+
+
+                await completeLesson(
+                  lesson.id,
+                  trackerWithoutVideo
+                );
+
+              }
+
+            }
+
+            catch (error) {
+
+              console.error(
+                "Manual complete error:",
+                error
+              );
+
+
+              completeButton.disabled =
+                false;
+
+
+              completeButton.classList.remove(
+                "completing"
+              );
+
+
+              completeButton.textContent =
+                "✅ Lesson Complete";
+
+
+              alert(
+                "Could not complete this lesson."
+              );
+
+            }
+
+          }
+        );
+
+      }
+
+
+      item.appendChild(
+        completeButton
+      );
+
+
+      /* =====================================
+         PDF DOWNLOAD
+      ===================================== */
+
+      if (
+        lesson.pdf_path
+      ) {
+
+        const pdfButton =
+          document.createElement(
+            "a"
+          );
+
+
+        pdfButton.className =
+          "pdf-btn";
+
+
+        pdfButton.textContent =
+          "📄 Download PDF";
+
+
+        pdfButton.href =
+          "#";
+
+
+        pdfButton.addEventListener(
+          "click",
+          async function(event) {
+
+            event.preventDefault();
+
+
+            await downloadPdf(
+              lesson.pdf_path,
+              pdfButton
+            );
+
+          }
+        );
+
+
+        item.appendChild(
+          pdfButton
+        );
+
+      }
+
+
+      /* =====================================
+         COMPLETED MESSAGE
+      ===================================== */
+
+      if (completed) {
+
+        const completedMessage =
+          document.createElement(
+            "div"
+          );
+
+
+        completedMessage.className =
+          "completed-message";
+
+
+        completedMessage.textContent =
+          "✅ You have completed this lesson. You can watch it again anytime.";
+
+
+        item.appendChild(
+          completedMessage
+        );
+
+      }
+
+
+      return item;
+
+    }
+
+
+    /* =====================================
+       SECURE VIDEO
+    ===================================== */
+
+    async function loadSecureVideo(
+      videoPath,
+      videoElement
+    ) {
+
+      try {
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .storage
+            .from("Video")
+            .createSignedUrl(
+              videoPath,
+              7200
+            );
+
+
+        if (error) {
+
+          console.error(
+            "Video signed URL error:",
+            error
+          );
+
+
+          videoElement.outerHTML =
+            '<p style="color:#991b1b;padding:15px;">Unable to load this video.</p>';
+
+
+          return;
+
+        }
+
+
+        if (
+          !data ||
+          !data.signedUrl
+        ) {
+
+          videoElement.outerHTML =
+            '<p style="color:#991b1b;padding:15px;">Video URL could not be created.</p>';
+
+
+          return;
+
+        }
+
+
+        videoElement.src =
+          data.signedUrl;
+
+
+        videoElement.load();
+
+      }
+
+      catch (error) {
+
+        console.error(
+          error
+        );
+
+
+        videoElement.outerHTML =
+          '<p style="color:#991b1b;padding:15px;">Unable to load this video.</p>';
+
+      }
+
+    }
+
+
+    /* =====================================
+       DOWNLOAD PDF
+    ===================================== */
+
+    async function downloadPdf(
+      pdfPath,
+      button
+    ) {
+
+      if (!pdfPath) {
         return;
       }
 
 
-      const courseCard =
-        document.createElement("div");
-
-      courseCard.className =
-        "course-card";
+      const originalText =
+        button.textContent;
 
 
-      const title =
-        document.createElement("h2");
-
-      title.className =
-        "course-title";
-
-      title.textContent =
-        "📚 " + course.name;
+      button.textContent =
+        "Preparing PDF...";
 
 
-      courseCard.appendChild(title);
+      button.style.pointerEvents =
+        "none";
 
 
-      courseLessons.forEach(
-        (lesson, index) => {
+      try {
 
-          const lessonElement =
-            createLessonElement(
-              lesson,
-              courseLessons,
-              index
+        /*
+          PDF is also inside the private
+          Video bucket, therefore use a
+          signed URL.
+        */
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .storage
+            .from("Video")
+            .createSignedUrl(
+              pdfPath,
+              3600,
+              {
+                download: true
+              }
             );
 
-          courseCard.appendChild(
-            lessonElement
+
+        if (
+          error ||
+          !data ||
+          !data.signedUrl
+        ) {
+
+          console.error(
+            "PDF signed URL error:",
+            error
+          );
+
+
+          alert(
+            "PDF download failed."
+          );
+
+
+          return;
+
+        }
+
+
+        /*
+          Open the signed download URL.
+        */
+
+        const link =
+          document.createElement(
+            "a"
+          );
+
+
+        link.href =
+          data.signedUrl;
+
+
+        link.target =
+          "_blank";
+
+
+        link.rel =
+          "noopener";
+
+
+        document.body.appendChild(
+          link
+        );
+
+
+        link.click();
+
+
+        link.remove();
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "PDF download error:",
+          error
+        );
+
+
+        alert(
+          "PDF download failed."
+        );
+
+      }
+
+      finally {
+
+        button.textContent =
+          originalText;
+
+
+        button.style.pointerEvents =
+          "auto";
+
+      }
+
+    }
+
+
+    /* =====================================
+       MOVING WATERMARK
+    ===================================== */
+
+    function startWatermarkMovement(
+      watermark,
+      wrapper
+    ) {
+
+      const positions = [
+
+        {
+          top: "8%",
+          left: "8%"
+        },
+
+        {
+          top: "8%",
+          left: "auto",
+          right: "8%"
+        },
+
+        {
+          top: "auto",
+          bottom: "18%",
+          left: "8%"
+        },
+
+        {
+          top: "auto",
+          bottom: "18%",
+          left: "auto",
+          right: "8%"
+        },
+
+        {
+          top: "42%",
+          left: "40%"
+        },
+
+        {
+          top: "25%",
+          left: "20%"
+        },
+
+        {
+          top: "60%",
+          left: "55%"
+        }
+
+      ];
+
+
+      let index =
+        Math.floor(
+          Math.random() *
+          positions.length
+        );
+
+
+      function moveWatermark() {
+
+        const position =
+          positions[index];
+
+
+        watermark.style.top =
+          position.top ||
+          "auto";
+
+
+        watermark.style.bottom =
+          position.bottom ||
+          "auto";
+
+
+        watermark.style.left =
+          position.left ||
+          "auto";
+
+
+        watermark.style.right =
+          position.right ||
+          "auto";
+
+
+        index =
+          (index + 1) %
+          positions.length;
+
+      }
+
+
+      /*
+        Initial position
+      */
+
+      moveWatermark();
+
+
+      /*
+        Change position every 15 seconds.
+      */
+
+      setInterval(
+        moveWatermark,
+        15000
+      );
+
+    }
+
+
+    /* =====================================
+       VIDEO TRACKING SETUP
+    ===================================== */
+
+    function setupVideoTracking(
+      video,
+      lesson
+    ) {
+
+      const tracker = {
+
+        lessonId:
+          Number(lesson.id),
+
+        videoDuration:
+          null,
+
+        firstOpened:
+          false,
+
+        lastTick:
+          null,
+
+        watchSeconds:
+          Number(
+            getProgress(
+              lesson.id
+            )?.watch_seconds || 0
+          ),
+
+        saving:
+          false,
+
+        completed:
+          isLessonCompleted(
+            lesson.id
+          ),
+
+        lastSaveSeconds:
+          Number(
+            getProgress(
+              lesson.id
+            )?.watch_seconds || 0
+          )
+
+      };
+
+
+      activeTrackers.set(
+        Number(lesson.id),
+        tracker
+      );
+
+
+      /* =====================================
+         VIDEO METADATA
+      ===================================== */
+
+      video.addEventListener(
+        "loadedmetadata",
+        function() {
+
+          if (
+            Number.isFinite(
+              video.duration
+            )
+          ) {
+
+            tracker.videoDuration =
+              Math.round(
+                video.duration
+              );
+
+          }
+
+        }
+      );
+
+
+      /* =====================================
+         PLAY
+      ===================================== */
+
+      video.addEventListener(
+        "play",
+        async function() {
+
+          tracker.lastTick =
+            Date.now();
+
+
+          if (
+            !tracker.firstOpened
+          ) {
+
+            tracker.firstOpened =
+              true;
+
+
+            await startLessonProgress(
+              lesson.id,
+              tracker.videoDuration
+            );
+
+          }
+
+        }
+      );
+
+
+      /* =====================================
+         TIME UPDATE
+      ===================================== */
+
+      video.addEventListener(
+        "timeupdate",
+        async function() {
+
+          if (
+            video.paused ||
+            video.ended
+          ) {
+
+            return;
+
+          }
+
+
+          const now =
+            Date.now();
+
+
+          if (
+            tracker.lastTick
+          ) {
+
+            const difference =
+              (
+                now -
+                tracker.lastTick
+              ) / 1000;
+
+
+            /*
+              Only count reasonable
+              real playback time.
+            */
+
+            if (
+              difference > 0 &&
+              difference <= 5
+            ) {
+
+              tracker.watchSeconds +=
+                difference;
+
+            }
+
+          }
+
+
+          tracker.lastTick =
+            now;
+
+
+          /*
+            Save approximately every
+            10 seconds of watch time.
+          */
+
+          if (
+            tracker.watchSeconds -
+            tracker.lastSaveSeconds >=
+            10
+          ) {
+
+            tracker.lastSaveSeconds =
+              tracker.watchSeconds;
+
+
+            await saveLessonProgress(
+              lesson.id,
+              tracker
+            );
+
+          }
+
+        }
+      );
+
+
+      /* =====================================
+         PAUSE
+      ===================================== */
+
+      video.addEventListener(
+        "pause",
+        async function() {
+
+          tracker.lastTick =
+            null;
+
+
+          await saveLessonProgress(
+            lesson.id,
+            tracker
           );
 
         }
       );
 
 
-      container.appendChild(
-        courseCard
-      );
+      /* =====================================
+         ENDED = COMPLETED
+      ===================================== */
 
-    });
+      video.addEventListener(
+        "ended",
+        async function() {
 
-  }
+          tracker.lastTick =
+            null;
 
 
-  /* =========================================================
-     CREATE LESSON ELEMENT
-  ========================================================= */
+          if (
+            Number.isFinite(
+              video.duration
+            )
+          ) {
 
-  function createLessonElement(
-    lesson,
-    courseLessons,
-    index
-  ) {
+            tracker.videoDuration =
+              Math.round(
+                video.duration
+              );
 
-    const unlocked =
-      isLessonUnlocked(
-        lesson,
-        courseLessons
-      );
-
-
-    const completed =
-      isLessonCompleted(
-        lesson.id
-      );
-
-
-    const lessonBox =
-      document.createElement("div");
-
-
-    lessonBox.className =
-      "lesson";
-
-
-    if (!unlocked) {
-      lessonBox.classList.add("locked");
-    }
-
-
-    /* ================= HEADER ================= */
-
-    const header =
-      document.createElement("div");
-
-    header.className =
-      "lesson-header";
-
-
-    const info =
-      document.createElement("div");
-
-
-    const title =
-      document.createElement("h3");
-
-    title.className =
-      "lesson-title";
-
-    title.textContent =
-      `${index + 1}. ${lesson.title}`;
-
-
-    const description =
-      document.createElement("p");
-
-    description.className =
-      "lesson-description";
-
-    description.textContent =
-      lesson.description || "";
-
-
-    info.appendChild(title);
-    info.appendChild(description);
-
-
-    const status =
-      document.createElement("span");
-
-    status.className =
-      "status";
-
-
-    if (completed) {
-
-      status.classList.add(
-        "completed"
-      );
-
-      status.textContent =
-        "✅ Completed";
-
-    } else if (unlocked) {
-
-      status.classList.add(
-        "available"
-      );
-
-      status.textContent =
-        "▶ Available";
-
-    } else {
-
-      status.classList.add(
-        "locked"
-      );
-
-      status.textContent =
-        "🔒 Locked";
-
-    }
-
-
-    header.appendChild(info);
-    header.appendChild(status);
-
-
-    lessonBox.appendChild(header);
-
-
-    /* ================= LOCKED ================= */
-
-    if (!unlocked) {
-
-      const locked =
-        document.createElement("div");
-
-      locked.className =
-        "locked-message";
-
-      locked.textContent =
-        "🔒 Complete the previous lesson to unlock this lesson.";
-
-      lessonBox.appendChild(locked);
-
-      return lessonBox;
-    }
-
-
-    /* ================= VIDEO ================= */
-
-    const videoWrapper =
-      document.createElement("div");
-
-    videoWrapper.className =
-      "video-wrapper";
-
-
-    const video =
-      document.createElement("video");
-
-    video.preload = "metadata";
-
-    video.playsInline = true;
-
-    video.controls = true;
-
-
-    /*
-      Disable common download / remote controls.
-      Note: browser controls cannot provide absolute
-      protection against copying screen/video data.
-    */
-
-    video.setAttribute(
-      "controlsList",
-      "nodownload noremoteplayback nofullscreen"
-    );
-
-    video.setAttribute(
-      "disablePictureInPicture",
-      ""
-    );
-
-
-    video.addEventListener(
-      "contextmenu",
-      event => {
-        event.preventDefault();
-      }
-    );
-
-
-    /* ================= WATERMARK ================= */
-
-    const watermark =
-      document.createElement("div");
-
-    watermark.className =
-      "watermark";
-
-    watermark.textContent =
-      "💧 MN TECHNOLOGY • " +
-      (CURRENT_STUDENT.username || "STUDENT");
-
-
-    videoWrapper.appendChild(video);
-    videoWrapper.appendChild(watermark);
-
-    lessonBox.appendChild(
-      videoWrapper
-    );
-
-
-    /* ================= VIDEO EVENTS ================= */
-
-    loadSecureVideo(
-      lesson.video_path,
-      video
-    );
-
-
-    video.addEventListener(
-      "loadedmetadata",
-      async () => {
-
-        await ensureProgressRow(
-          lesson.id,
-          video.duration
-        );
-
-      }
-    );
-
-
-    video.addEventListener(
-      "play",
-      () => {
-
-        startLessonProgress(
-          lesson.id,
-          video
-        );
-
-      }
-    );
-
-
-    video.addEventListener(
-      "timeupdate",
-      () => {
-
-        trackVideoTime(
-          lesson.id,
-          video
-        );
-
-      }
-    );
-
-
-    video.addEventListener(
-      "pause",
-      async () => {
-
-        await saveLessonProgress(
-          lesson.id,
-          video
-        );
-
-      }
-    );
-
-
-    video.addEventListener(
-      "ended",
-      async () => {
-
-        await saveLessonProgress(
-          lesson.id,
-          video
-        );
-
-        /*
-          Existing automatic completion remains.
-          Student can also manually press Complete.
-        */
-
-        await completeLesson(
-          lesson.id,
-          true
-        );
-
-      }
-    );
-
-
-    /* ================= BUTTONS ================= */
-
-    const buttonRow =
-      document.createElement("div");
-
-    buttonRow.className =
-      "button-row";
-
-
-    /* COMPLETE BUTTON */
-
-    const completeButton =
-      document.createElement("button");
-
-    completeButton.className =
-      "complete-btn";
-
-
-    if (completed) {
-
-      completeButton.textContent =
-        "✅ Completed";
-
-      completeButton.disabled =
-        true;
-
-    } else {
-
-      completeButton.textContent =
-        "✅ Lesson Complete";
-
-      completeButton.addEventListener(
-        "click",
-        async () => {
-
-          /*
-            If video is playing, pause first
-            and save current progress.
-          */
-
-          if (!video.paused) {
-
-            video.pause();
-
-            await saveLessonProgress(
-              lesson.id,
-              video
-            );
           }
+
+
+          tracker.completed =
+            true;
 
 
           await completeLesson(
             lesson.id,
-            false
-          );
-
-        }
-      );
-
-    }
-
-
-    buttonRow.appendChild(
-      completeButton
-    );
-
-
-    /* ================= PDF ================= */
-
-    if (lesson.pdf_path) {
-
-      const pdfButton =
-        document.createElement("a");
-
-      pdfButton.className =
-        "pdf-btn";
-
-      pdfButton.textContent =
-        "📄 Download PDF";
-
-      pdfButton.href =
-        "#";
-
-
-      pdfButton.addEventListener(
-        "click",
-        async event => {
-
-          event.preventDefault();
-
-          await downloadPdf(
-            lesson.pdf_path,
-            pdfButton
+            tracker
           );
 
         }
       );
 
 
-      buttonRow.appendChild(
-        pdfButton
-      );
+      /* =====================================
+         PAGE HIDDEN
+      ===================================== */
 
-    }
+      document.addEventListener(
+        "visibilitychange",
+        async function() {
 
+          if (
+            document.hidden
+          ) {
 
-    lessonBox.appendChild(
-      buttonRow
-    );
-
-
-    return lessonBox;
-  }
-
-
-  /* =========================================================
-     LOAD SECURE VIDEO
-  ========================================================= */
-
-  async function loadSecureVideo(
-    videoPath,
-    video
-  ) {
-
-    if (!videoPath) {
-      return;
-    }
+            tracker.lastTick =
+              null;
 
 
-    const {
-      data,
-      error
-    } = await supabaseClient
-      .storage
-      .from("Video")
-      .createSignedUrl(
-        videoPath,
-        7200
-      );
+            await saveLessonProgress(
+              lesson.id,
+              tracker
+            );
 
+          }
 
-    if (error || !data?.signedUrl) {
-
-      console.error(error);
-
-      video.outerHTML = `
-        <div class="locked-message">
-          ❌ Video could not be loaded.
-        </div>
-      `;
-
-      return;
-    }
-
-
-    video.src =
-      data.signedUrl;
-
-  }
-
-
-  /* =========================================================
-     DOWNLOAD PDF
-  ========================================================= */
-
-  async function downloadPdf(
-    pdfPath,
-    button
-  ) {
-
-    if (!pdfPath) {
-      return;
-    }
-
-
-    const originalText =
-      button.textContent;
-
-
-    button.textContent =
-      "Preparing PDF...";
-
-
-    button.style.pointerEvents =
-      "none";
-
-
-    const {
-      data,
-      error
-    } = await supabaseClient
-      .storage
-      .from("Video")
-      .createSignedUrl(
-        pdfPath,
-        3600,
-        {
-          download: true
         }
       );
 
+    }
 
-    if (
-      error ||
-      !data?.signedUrl
+
+    /* =====================================
+       START LESSON PROGRESS
+    ===================================== */
+
+    async function startLessonProgress(
+      lessonId,
+      duration
     ) {
 
-      console.error(error);
+      const existing =
+        getProgress(
+          lessonId
+        );
 
-      showMessage(
-        "PDF download failed.",
-        "error"
-      );
-
-    } else {
-
-      window.open(
-        data.signedUrl,
-        "_blank"
-      );
-
-    }
-
-
-    button.textContent =
-      originalText;
-
-    button.style.pointerEvents =
-      "auto";
-  }
-
-
-  /* =========================================================
-     ENSURE PROGRESS ROW
-  ========================================================= */
-
-  async function ensureProgressRow(
-    lessonId,
-    duration
-  ) {
-
-    if (!CURRENT_USER) return;
-
-
-    let existing =
-      getLessonProgress(
-        lessonId
-      );
-
-
-    if (existing) {
 
       if (
-        !existing.video_duration_seconds &&
-        duration
+        existing &&
+        existing.first_opened_at
       ) {
 
-        await supabaseClient
-          .from("lesson_progress")
-          .update({
-            video_duration_seconds:
-              Math.round(duration),
-            updated_at:
-              new Date().toISOString()
-          })
-          .eq("id", existing.id);
+        return;
 
-
-        existing.video_duration_seconds =
-          Math.round(duration);
       }
 
 
-      return;
-    }
+      const now =
+        new Date().toISOString();
 
 
-    const now =
-      new Date().toISOString();
+      const row = {
 
-
-    const {
-      data,
-      error
-    } = await supabaseClient
-      .from("lesson_progress")
-      .insert({
         student_id:
-          CURRENT_USER.id,
+          CURRENT_STUDENT.id,
 
         lesson_id:
-          lessonId,
+          Number(lessonId),
 
         first_opened_at:
           now,
 
         last_watched_at:
-          null,
+          now,
 
         watch_seconds:
-          0,
+          Number(
+            existing?.watch_seconds || 0
+          ),
 
         video_duration_seconds:
           duration
-            ? Math.round(duration)
+            ? Number(duration)
             : null,
 
         completed_at:
-          null
-      })
-      .select()
-      .single();
+          existing?.completed_at ||
+          null,
 
+        updated_at:
+          now
 
-    if (error) {
-
-      /*
-        A duplicate can happen if two browser events
-        try to create the same row.
-      */
-
-      console.error(
-        "Progress insert:",
-        error
-      );
-
-      return;
-    }
-
-
-    if (data) {
-
-      ALL_PROGRESS.push(
-        data
-      );
-
-    }
-
-  }
-
-
-  /* =========================================================
-     START TRACKING
-  ========================================================= */
-
-  function startLessonProgress(
-    lessonId,
-    video
-  ) {
-
-    if (!CURRENT_USER) return;
-
-
-    const existing =
-      ACTIVE_TRACKERS[
-        lessonId
-      ];
-
-
-    if (!existing) {
-
-      ACTIVE_TRACKERS[
-        lessonId
-      ] = {
-        lastTick:
-          video.currentTime,
-
-        lastSave:
-          Date.now()
       };
 
-    } else {
 
-      existing.lastTick =
-        video.currentTime;
-
-    }
-
-  }
-
-
-  /* =========================================================
-     TRACK VIDEO TIME
-  ========================================================= */
-
-  function trackVideoTime(
-    lessonId,
-    video
-  ) {
-
-    if (!CURRENT_USER) return;
-
-
-    if (video.paused) {
-      return;
-    }
-
-
-    if (!ACTIVE_TRACKERS[lessonId]) {
-
-      startLessonProgress(
-        lessonId,
-        video
-      );
-
-      return;
-    }
-
-
-    const tracker =
-      ACTIVE_TRACKERS[lessonId];
-
-
-    const current =
-      video.currentTime;
-
-
-    const previous =
-      tracker.lastTick;
-
-
-    const difference =
-      current - previous;
-
-
-    /*
-      Count only reasonable forward playback.
-      This prevents seeking from adding huge watch time.
-    */
-
-    if (
-      difference > 0 &&
-      difference <= 5
-    ) {
-
-      const progress =
-        getLessonProgress(
-          lessonId
-        );
-
-
-      if (progress) {
-
-        progress.watch_seconds =
-          Number(
-            progress.watch_seconds || 0
-          ) + difference;
-
-        progress.last_watched_at =
-          new Date().toISOString();
-
-      }
-
-    }
-
-
-    tracker.lastTick =
-      current;
-
-
-    if (
-      Date.now() -
-      tracker.lastSave >
-      10000
-    ) {
-
-      tracker.lastSave =
-        Date.now();
-
-
-      saveLessonProgress(
-        lessonId,
-        video
-      );
-
-    }
-
-  }
-
-
-  /* =========================================================
-     SAVE PROGRESS
-  ========================================================= */
-
-  async function saveLessonProgress(
-    lessonId,
-    video
-  ) {
-
-    if (!CURRENT_USER) return;
-
-
-    const progress =
-      getLessonProgress(
-        lessonId
-      );
-
-
-    if (!progress) {
-
-      await ensureProgressRow(
-        lessonId,
-        video?.duration || null
-      );
-
-    }
-
-
-    const currentProgress =
-      getLessonProgress(
-        lessonId
-      );
-
-
-    if (!currentProgress) {
-      return;
-    }
-
-
-    const updateData = {
-
-      watch_seconds:
-        Math.max(
-          0,
-          Math.floor(
-            Number(
-              currentProgress.watch_seconds || 0
-            )
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("lesson_progress")
+          .upsert(
+            row,
+            {
+              onConflict:
+                "student_id,lesson_id"
+            }
           )
-        ),
-
-      last_watched_at:
-        new Date().toISOString(),
-
-      updated_at:
-        new Date().toISOString()
-
-    };
-
-
-    if (
-      video &&
-      Number.isFinite(
-        video.duration
-      ) &&
-      video.duration > 0
-    ) {
-
-      updateData.video_duration_seconds =
-        Math.round(
-          video.duration
-        );
-
-    }
-
-
-    const {
-      error
-    } = await supabaseClient
-      .from("lesson_progress")
-      .update(updateData)
-      .eq("id", currentProgress.id)
-      .eq(
-        "student_id",
-        CURRENT_USER.id
-      );
-
-
-    if (error) {
-
-      console.error(
-        "Save progress error:",
-        error
-      );
-
-      return;
-    }
-
-
-    Object.assign(
-      currentProgress,
-      updateData
-    );
-
-  }
-
-
-  /* =========================================================
-     COMPLETE LESSON
-  ========================================================= */
-
-  async function completeLesson(
-    lessonId,
-    automatic = false
-  ) {
-
-    if (!CURRENT_USER) return;
-
-
-    let progress =
-      getLessonProgress(
-        lessonId
-      );
-
-
-    /*
-      If the student presses Complete without
-      watching the video, create the progress row.
-    */
-
-    if (!progress) {
-
-      const now =
-        new Date().toISOString();
-
-
-      const {
-        data,
-        error
-      } = await supabaseClient
-        .from("lesson_progress")
-        .insert({
-          student_id:
-            CURRENT_USER.id,
-
-          lesson_id:
-            lessonId,
-
-          first_opened_at:
-            now,
-
-          last_watched_at:
-            now,
-
-          watch_seconds:
-            0,
-
-          completed_at:
-            now
-        })
-        .select()
-        .single();
+          .select()
+          .maybeSingle();
 
 
       if (error) {
 
-        console.error(error);
-
-        showMessage(
-          "Lesson could not be completed.",
-          "error"
+        console.error(
+          "Start progress error:",
+          error
         );
 
         return;
-      }
 
-
-      progress = data;
-
-      ALL_PROGRESS.push(
-        data
-      );
-
-    } else {
-
-      const now =
-        new Date().toISOString();
-
-
-      const {
-        data,
-        error
-      } = await supabaseClient
-        .from("lesson_progress")
-        .update({
-
-          completed_at:
-            now,
-
-          last_watched_at:
-            now,
-
-          updated_at:
-            now
-
-        })
-        .eq(
-          "id",
-          progress.id
-        )
-        .eq(
-          "student_id",
-          CURRENT_USER.id
-        )
-        .select()
-        .single();
-
-
-      if (error) {
-
-        console.error(error);
-
-        showMessage(
-          "Lesson could not be completed.",
-          "error"
-        );
-
-        return;
       }
 
 
       if (data) {
 
-        Object.assign(
-          progress,
-          data
-        );
+        const index =
+          ALL_PROGRESS.findIndex(
+            item =>
+              Number(item.lesson_id) ===
+              Number(lessonId)
+          );
+
+
+        if (index >= 0) {
+
+          ALL_PROGRESS[index] =
+            data;
+
+        }
+
+        else {
+
+          ALL_PROGRESS.push(
+            data
+          );
+
+        }
 
       }
 
     }
 
 
-    /* Stop active tracker */
+    /* =====================================
+       SAVE LESSON PROGRESS
+    ===================================== */
 
-    delete ACTIVE_TRACKERS[
-      lessonId
-    ];
+    async function saveLessonProgress(
+      lessonId,
+      tracker
+    ) {
 
+      if (
+        !CURRENT_STUDENT ||
+        !tracker ||
+        tracker.saving
+      ) {
 
-    showMessage(
-      automatic
-        ? "🎉 Lesson completed automatically!"
-        : "✅ Lesson completed!"
-    );
+        return;
 
-
-    /*
-      Re-render.
-      This automatically unlocks the next lesson.
-    */
-
-    renderCourses();
+      }
 
 
-    /*
-      Try to scroll to next lesson after render.
-    */
+      tracker.saving =
+        true;
 
-    setTimeout(() => {
 
-      const lessons =
+      try {
+
+        const existing =
+          getProgress(
+            lessonId
+          );
+
+
+        const now =
+          new Date().toISOString();
+
+
+        const firstOpened =
+          existing?.first_opened_at ||
+          now;
+
+
+        const duration =
+          tracker.videoDuration ||
+          existing?.video_duration_seconds ||
+          null;
+
+
+        const row = {
+
+          student_id:
+            CURRENT_STUDENT.id,
+
+          lesson_id:
+            Number(lessonId),
+
+          first_opened_at:
+            firstOpened,
+
+          last_watched_at:
+            now,
+
+          watch_seconds:
+            Math.max(
+              0,
+              Math.round(
+                tracker.watchSeconds || 0
+              )
+            ),
+
+          video_duration_seconds:
+            duration
+              ? Number(duration)
+              : null,
+
+          completed_at:
+            existing?.completed_at ||
+            null,
+
+          updated_at:
+            now
+
+        };
+
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .from("lesson_progress")
+            .upsert(
+              row,
+              {
+                onConflict:
+                  "student_id,lesson_id"
+              }
+            )
+            .select()
+            .maybeSingle();
+
+
+        if (error) {
+
+          console.error(
+            "Save progress error:",
+            error
+          );
+
+          return;
+
+        }
+
+
+        if (data) {
+
+          const index =
+            ALL_PROGRESS.findIndex(
+              item =>
+                Number(item.lesson_id) ===
+                Number(lessonId)
+            );
+
+
+          if (index >= 0) {
+
+            ALL_PROGRESS[index] =
+              data;
+
+          }
+
+          else {
+
+            ALL_PROGRESS.push(
+              data
+            );
+
+          }
+
+        }
+
+      }
+
+      finally {
+
+        tracker.saving =
+          false;
+
+      }
+
+    }
+
+
+    /* =====================================
+       COMPLETE LESSON
+    ===================================== */
+
+    async function completeLesson(
+      lessonId,
+      tracker
+    ) {
+
+      if (!CURRENT_STUDENT) {
+        return;
+      }
+
+
+      const existing =
+        getProgress(
+          lessonId
+        );
+
+
+      const now =
+        new Date().toISOString();
+
+
+      const duration =
+        tracker?.videoDuration ||
+        existing?.video_duration_seconds ||
+        null;
+
+
+      const watchSeconds =
+        Math.max(
+          0,
+          Math.round(
+            tracker?.watchSeconds ||
+            existing?.watch_seconds ||
+            0
+          )
+        );
+
+
+      /*
+        If this is a manual Complete
+        without watching the video,
+        first_opened_at can still be
+        created now.
+      */
+
+      const row = {
+
+        student_id:
+          CURRENT_STUDENT.id,
+
+        lesson_id:
+          Number(lessonId),
+
+        first_opened_at:
+          existing?.first_opened_at ||
+          now,
+
+        last_watched_at:
+          now,
+
+        watch_seconds:
+          watchSeconds,
+
+        video_duration_seconds:
+          duration
+            ? Number(duration)
+            : null,
+
+        completed_at:
+          now,
+
+        updated_at:
+          now
+
+      };
+
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("lesson_progress")
+          .upsert(
+            row,
+            {
+              onConflict:
+                "student_id,lesson_id"
+            }
+          )
+          .select()
+          .maybeSingle();
+
+
+      if (error) {
+
+        console.error(
+          "Complete lesson error:",
+          error
+        );
+
+        throw error;
+
+      }
+
+
+      if (data) {
+
+        const index =
+          ALL_PROGRESS.findIndex(
+            item =>
+              Number(item.lesson_id) ===
+              Number(lessonId)
+          );
+
+
+        if (index >= 0) {
+
+          ALL_PROGRESS[index] =
+            data;
+
+        }
+
+        else {
+
+          ALL_PROGRESS.push(
+            data
+          );
+
+        }
+
+      }
+
+
+      /*
+        Stop active tracker.
+      */
+
+      activeTrackers.delete(
+        Number(lessonId)
+      );
+
+
+      /*
+        Find next lesson.
+      */
+
+      const currentLesson =
+        ALL_LESSONS.find(
+          lesson =>
+            Number(lesson.id) ===
+            Number(lessonId)
+        );
+
+
+      if (!currentLesson) {
+
+        renderCourses();
+
+        return;
+
+      }
+
+
+      const courseLessons =
         ALL_LESSONS
           .filter(
             lesson =>
               lesson.course ===
-              (
-                ALL_LESSONS.find(
-                  item =>
-                    Number(item.id) ===
-                    Number(lessonId)
-                )?.course
-              )
+              currentLesson.course
           )
           .sort(
             (a, b) =>
@@ -1915,435 +3134,288 @@
 
 
       const currentIndex =
-        lessons.findIndex(
+        courseLessons.findIndex(
           lesson =>
             Number(lesson.id) ===
             Number(lessonId)
         );
 
 
-      if (
-        currentIndex !== -1 &&
-        currentIndex + 1 <
-        lessons.length
-      ) {
-
-        const nextLesson =
-          lessons[currentIndex + 1];
+      const nextLesson =
+        courseLessons[
+          currentIndex + 1
+        ];
 
 
-        const headings =
-          document.querySelectorAll(
-            ".lesson-title"
-          );
+      /*
+        Re-render.
+        This unlocks the next lesson.
+      */
+
+      renderCourses();
 
 
-        headings.forEach(
-          heading => {
+      /*
+        Scroll to next lesson.
+      */
 
-            if (
-              heading.textContent.includes(
-                nextLesson.title
-              )
-            ) {
+      if (nextLesson) {
 
-              heading.scrollIntoView({
+        setTimeout(
+          function() {
+
+            const nextElement =
+              document.getElementById(
+                "lesson-" +
+                nextLesson.id
+              );
+
+
+            if (nextElement) {
+
+              nextElement.scrollIntoView({
                 behavior: "smooth",
-                block: "center"
+                block: "start"
               });
 
+
+              nextElement.style.border =
+                "2px solid #22c55e";
+
+
+              setTimeout(
+                function() {
+
+                  nextElement.style.border =
+                    "1px solid #e5e7eb";
+
+                },
+                3000
+              );
+
             }
 
-          }
+          },
+          700
         );
 
       }
 
-    }, 300);
-
-  }
-
-
-  /* =========================================================
-     WATERMARK MOVEMENT
-  ========================================================= */
-
-  function moveWatermarks() {
-
-    const watermarks =
-      document.querySelectorAll(
-        ".watermark"
-      );
-
-
-    const positions = [
-
-      {
-        top: "8%",
-        left: "5%"
-      },
-
-      {
-        top: "8%",
-        right: "5%"
-      },
-
-      {
-        bottom: "12%",
-        left: "5%"
-      },
-
-      {
-        bottom: "12%",
-        right: "5%"
-      },
-
-      {
-        top: "45%",
-        left: "38%"
-      }
-
-    ];
-
-
-    watermarks.forEach(
-      watermark => {
-
-        const position =
-          positions[
-            Math.floor(
-              Math.random() *
-              positions.length
-            )
-          ];
-
-
-        watermark.style.top =
-          position.top || "";
-
-        watermark.style.bottom =
-          position.bottom || "";
-
-        watermark.style.left =
-          position.left || "";
-
-        watermark.style.right =
-          position.right || "";
-
-      }
-    );
-
-  }
-
-
-  /* =========================================================
-     FULLSCREEN
-  ========================================================= */
-
-  document.addEventListener(
-    "fullscreenchange",
-    () => {
-
-      /*
-        Watermark is inside the video wrapper,
-        so it remains visible with the video.
-      */
-
-    }
-  );
-
-
-  /* =========================================================
-     CHANGE PASSWORD
-  ========================================================= */
-
-  async function changePassword() {
-
-    const password =
-      document.getElementById(
-        "newPassword"
-      ).value.trim();
-
-
-    const confirmPassword =
-      document.getElementById(
-        "confirmPassword"
-      ).value.trim();
-
-
-    if (!password) {
-
-      showMessage(
-        "Enter a new password.",
-        "error"
-      );
-
-      return;
     }
 
 
-    if (password.length < 6) {
+    /* =====================================
+       CHANGE PASSWORD
+    ===================================== */
 
-      showMessage(
-        "Password must be at least 6 characters.",
-        "error"
-      );
+    passwordForm.addEventListener(
+      "submit",
+      async function(event) {
 
-      return;
-    }
-
-
-    if (
-      password !==
-      confirmPassword
-    ) {
-
-      showMessage(
-        "Passwords do not match.",
-        "error"
-      );
-
-      return;
-    }
+        event.preventDefault();
 
 
-    const {
-      error
-    } = await supabaseClient.auth
-      .updateUser({
-        password: password
-      });
+        const newPassword =
+          document.getElementById(
+            "newPassword"
+          ).value;
 
 
-    if (error) {
-
-      console.error(error);
-
-      showMessage(
-        error.message ||
-        "Password change failed.",
-        "error"
-      );
-
-      return;
-    }
+        const confirmPassword =
+          document.getElementById(
+            "confirmPassword"
+          ).value;
 
 
-    document.getElementById(
-      "newPassword"
-    ).value = "";
+        if (
+          newPassword.length < 6
+        ) {
 
+          showPasswordMessage(
+            "Password must contain at least 6 characters.",
+            "error"
+          );
 
-    document.getElementById(
-      "confirmPassword"
-    ).value = "";
-
-
-    showMessage(
-      "✅ Password changed successfully."
-    );
-
-  }
-
-
-  /* =========================================================
-     LOGOUT
-  ========================================================= */
-
-  async function logout() {
-
-    /*
-      Save active video progress before logout.
-    */
-
-    const savePromises = [];
-
-
-    document
-      .querySelectorAll("video")
-      .forEach(video => {
-
-        const lessonElement =
-          video.closest(".lesson");
-
-        if (!lessonElement) {
           return;
-        }
-
-
-        const title =
-          lessonElement.querySelector(
-            ".lesson-title"
-          )?.textContent || "";
-
-
-        const lesson =
-          ALL_LESSONS.find(
-            item =>
-              title.includes(
-                item.title
-              )
-          );
-
-
-        if (lesson) {
-
-          savePromises.push(
-            saveLessonProgress(
-              lesson.id,
-              video
-            )
-          );
 
         }
 
-      });
+
+        if (
+          newPassword !==
+          confirmPassword
+        ) {
+
+          showPasswordMessage(
+            "Passwords do not match.",
+            "error"
+          );
+
+          return;
+
+        }
 
 
-    await Promise.allSettled(
-      savePromises
+        const button =
+          document.getElementById(
+            "changePasswordBtn"
+          );
+
+
+        button.disabled =
+          true;
+
+
+        button.textContent =
+          "Changing...";
+
+
+        try {
+
+          const {
+            error
+          } =
+            await supabaseClient.auth
+              .updateUser({
+                password:
+                  newPassword
+              });
+
+
+          if (error) {
+
+            throw error;
+
+          }
+
+
+          showPasswordMessage(
+            "Password changed successfully!",
+            "success"
+          );
+
+
+          passwordForm.reset();
+
+        }
+
+        catch (error) {
+
+          console.error(
+            error
+          );
+
+
+          showPasswordMessage(
+            error.message ||
+            "Could not change password.",
+            "error"
+          );
+
+        }
+
+        finally {
+
+          button.disabled =
+            false;
+
+
+          button.textContent =
+            "Change Password";
+
+        }
+
+      }
     );
 
 
-    await supabaseClient.auth.signOut();
+    /* =====================================
+       LOGOUT
+    ===================================== */
 
+    document.getElementById(
+      "logoutBtn"
+    ).addEventListener(
+      "click",
+      async function() {
 
-    window.location.href =
-      "login.html";
+        /*
+          Save active video progress
+          before logout.
+        */
 
-  }
+        for (
+          const tracker of
+          activeTrackers.values()
+        ) {
 
-
-  /* =========================================================
-     PAGE VISIBILITY
-  ========================================================= */
-
-  document.addEventListener(
-    "visibilitychange",
-    async () => {
-
-      if (
-        document.visibilityState ===
-        "hidden"
-      ) {
-
-        const videos =
-          document.querySelectorAll(
-            "video"
+          await saveLessonProgress(
+            tracker.lessonId,
+            tracker
           );
 
-
-        const saves = [];
-
-
-        videos.forEach(
-          video => {
-
-            const lessonElement =
-              video.closest(".lesson");
-
-            if (!lessonElement) {
-              return;
-            }
+        }
 
 
-            const title =
-              lessonElement.querySelector(
-                ".lesson-title"
-              )?.textContent || "";
+        await supabaseClient.auth.signOut();
 
 
-            const lesson =
-              ALL_LESSONS.find(
-                item =>
-                  title.includes(
-                    item.title
-                  )
-              );
+        window.location.href =
+          "login.html";
+
+      }
+    );
 
 
-            if (lesson) {
+    /* =====================================
+       SAVE BEFORE PAGE CLOSE
+    ===================================== */
 
-              saves.push(
-                saveLessonProgress(
-                  lesson.id,
-                  video
-                )
-              );
+    window.addEventListener(
+      "beforeunload",
+      function() {
 
-            }
+        /*
+          Browser may not wait for async
+          Supabase requests here.
+        */
+
+        activeTrackers.forEach(
+          tracker => {
+
+            tracker.lastTick =
+              null;
 
           }
         );
 
+      }
+    );
 
-        await Promise.allSettled(
-          saves
-        );
+
+    /* =====================================
+       START
+    ===================================== */
+
+    (async function() {
+
+      const student =
+        await loadStudent();
+
+
+      if (!student) {
+
+        return;
 
       }
 
-    }
-  );
 
+      await loadCourses();
 
-  /* =========================================================
-     BEFORE UNLOAD
-  ========================================================= */
+    })();
 
-  window.addEventListener(
-    "beforeunload",
-    () => {
-
-      /*
-        Do not perform long async operations here.
-        Browser may cancel them.
-      */
-
-      Object.values(
-        ACTIVE_TRACKERS
-      ).forEach(
-        tracker => {
-
-          tracker.lastTick =
-            null;
-
-        }
-      );
-
-    }
-  );
-
-
-  /* =========================================================
-     START
-  ========================================================= */
-
-  (async function start() {
-
-    await loadStudent();
-
-
-    /*
-      Move watermark immediately.
-    */
-
-    moveWatermarks();
-
-
-    /*
-      Move watermark every 15 seconds.
-    */
-
-    watermarkTimer =
-      setInterval(
-        moveWatermarks,
-        15000
-      );
-
-  })();
-
-</script>
+  </script>
 
 </body>
+
 </html>
