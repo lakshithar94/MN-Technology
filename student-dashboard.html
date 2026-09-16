@@ -11,7 +11,6 @@
 
   <title>Student Dashboard | MN Technology</title>
 
-
   <style>
 
     * {
@@ -21,50 +20,39 @@
       font-family: Arial, sans-serif;
     }
 
-
     body {
       background: #f4f7fb;
       color: #172033;
     }
 
-
     nav {
       background: #051223;
       color: white;
       padding: 15px 25px;
-
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-
     .logo {
       display: flex;
       align-items: center;
       gap: 10px;
-
       font-size: 20px;
       font-weight: bold;
     }
 
-
     .logo-box {
       width: 42px;
       height: 42px;
-
       background: #22d3ee;
       color: #051223;
-
       border-radius: 10px;
-
       display: flex;
       align-items: center;
       justify-content: center;
-
       font-weight: bold;
     }
-
 
     .nav-right {
       display: flex;
@@ -72,23 +60,18 @@
       gap: 15px;
     }
 
-
     .username-display {
       color: #cbd5e1;
     }
-
 
     .logout-btn {
       background: #ef4444;
       border: none;
       color: white;
-
       padding: 9px 15px;
       border-radius: 7px;
-
       cursor: pointer;
     }
-
 
     .container {
       max-width: 1100px;
@@ -96,69 +79,85 @@
       padding: 0 20px;
     }
 
-
     .welcome {
       background: white;
       padding: 25px;
-
       border-radius: 12px;
-
-      box-shadow:
-        0 3px 12px rgba(0,0,0,0.08);
-
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
       margin-bottom: 25px;
     }
-
 
     .welcome h1 {
       margin-bottom: 8px;
     }
 
-
     .welcome p {
       color: #64748b;
     }
 
-
     .section {
       background: white;
       padding: 25px;
-
       border-radius: 12px;
-
-      box-shadow:
-        0 3px 12px rgba(0,0,0,0.08);
-
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
       margin-bottom: 25px;
     }
-
 
     .section h2 {
       margin-bottom: 20px;
     }
 
+    .course-section {
+      margin-bottom: 30px;
+    }
+
+    .course-title {
+      background: #051223;
+      color: white;
+      padding: 14px 18px;
+      border-radius: 9px;
+      margin-bottom: 15px;
+      font-size: 19px;
+    }
+
+    .course-locked {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 30px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .lock-icon {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    .course-locked h3 {
+      margin-bottom: 8px;
+      color: #334155;
+    }
+
+    .course-locked p {
+      color: #64748b;
+    }
 
     .lesson {
       border: 1px solid #e5e7eb;
-
       border-radius: 10px;
-
       padding: 20px;
-
       margin-bottom: 18px;
     }
-
 
     .lesson:last-child {
       margin-bottom: 0;
     }
 
-
     .lesson h3 {
       margin-bottom: 8px;
       font-size: 20px;
     }
-
 
     .course {
       color: #0284c7;
@@ -166,25 +165,60 @@
       margin-bottom: 10px;
     }
 
-
     .description {
       color: #64748b;
       margin-bottom: 15px;
       line-height: 1.5;
     }
 
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      background: black;
+      border-radius: 10px;
+      overflow: hidden;
+    }
 
     video {
       width: 100%;
-      max-width: 800px;
-
       display: block;
-
       background: black;
-
       border-radius: 10px;
     }
 
+    /*
+      WATERMARK
+    */
+
+    .video-watermark {
+      position: absolute;
+
+      color: rgba(255,255,255,0.65);
+
+      font-size: 15px;
+      font-weight: bold;
+
+      padding: 6px 10px;
+
+      background: rgba(0,0,0,0.20);
+
+      border-radius: 5px;
+
+      pointer-events: none;
+
+      user-select: none;
+
+      z-index: 10;
+
+      transition:
+        top 1s ease,
+        left 1s ease,
+        right 1s ease,
+        bottom 1s ease;
+
+      white-space: nowrap;
+    }
 
     .no-lessons {
       color: #64748b;
@@ -192,11 +226,9 @@
       padding: 30px;
     }
 
-
     .password-form {
       max-width: 500px;
     }
-
 
     label {
       display: block;
@@ -204,66 +236,46 @@
       margin-bottom: 7px;
     }
 
-
     input {
       width: 100%;
-
       padding: 12px;
-
       border: 1px solid #d1d5db;
-
       border-radius: 7px;
-
       margin-bottom: 15px;
-
       font-size: 15px;
     }
-
 
     .change-btn {
       background: #0ea5e9;
       color: white;
-
       border: none;
-
       padding: 12px 20px;
-
       border-radius: 7px;
-
       font-weight: bold;
-
       cursor: pointer;
     }
-
 
     .change-btn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
 
-
     .message {
       display: none;
-
       padding: 12px;
-
       border-radius: 7px;
-
       margin-bottom: 15px;
     }
-
 
     .success {
       background: #dcfce7;
       color: #166534;
     }
 
-
     .error {
       background: #fee2e2;
       color: #991b1b;
     }
-
 
     @media (max-width: 700px) {
 
@@ -285,6 +297,11 @@
 
       .container {
         padding: 0 12px;
+      }
+
+      .video-watermark {
+        font-size: 11px;
+        padding: 4px 7px;
       }
 
     }
@@ -342,7 +359,8 @@
   <div class="welcome">
 
     <h1>
-      Welcome, <span id="welcomeUsername">
+      Welcome,
+      <span id="welcomeUsername">
         Student
       </span>!
     </h1>
@@ -382,8 +400,9 @@
     </h2>
 
 
-    <div id="passwordMessage"
-         class="message">
+    <div
+      id="passwordMessage"
+      class="message">
     </div>
 
 
@@ -435,6 +454,8 @@
 
 </div>
 
+
+<!-- IMPORTANT: lowercase @supabase -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -498,6 +519,14 @@ const passwordMessage =
 
 
 /* =====================================
+   CURRENT STUDENT
+===================================== */
+
+
+let CURRENT_STUDENT = null;
+
+
+/* =====================================
    MESSAGE
 ===================================== */
 
@@ -526,6 +555,7 @@ function showPasswordMessage(
 
 async function loadStudent() {
 
+
   const {
     data: sessionData,
     error: sessionError
@@ -543,6 +573,7 @@ async function loadStudent() {
       "login.html";
 
     return null;
+
   }
 
 
@@ -556,8 +587,13 @@ async function loadStudent() {
   } =
     await supabaseClient
       .from("student_accounts")
-      .select("id, username")
-      .eq("id", user.id)
+      .select(
+        "id, username, course_access"
+      )
+      .eq(
+        "id",
+        user.id
+      )
       .maybeSingle();
 
 
@@ -566,13 +602,20 @@ async function loadStudent() {
     !student
   ) {
 
+    console.error(error);
+
     await supabaseClient.auth.signOut();
 
     window.location.href =
       "login.html";
 
     return null;
+
   }
+
+
+  CURRENT_STUDENT =
+    student;
 
 
   navUsername.textContent =
@@ -589,133 +632,637 @@ async function loadStudent() {
 
 
 /* =====================================
-   LOAD LESSONS
+   LOAD COURSES
 ===================================== */
 
 
-async function loadLessons() {
-
-  lessonsList.innerHTML =
-    '<p class="no-lessons">Loading lessons...</p>';
+async function loadCourses() {
 
 
   const {
-    data,
-    error
+    data: courses,
+    error: courseError
+  } =
+    await supabaseClient
+      .from("courses")
+      .select("id, name")
+      .order(
+        "id",
+        {
+          ascending: true
+        }
+      );
+
+
+  if (courseError) {
+
+    console.error(courseError);
+
+    lessonsList.innerHTML =
+      '<p class="no-lessons">Could not load courses.</p>';
+
+    return;
+
+  }
+
+
+  if (
+    !courses ||
+    courses.length === 0
+  ) {
+
+    lessonsList.innerHTML =
+      '<p class="no-lessons">No courses available yet.</p>';
+
+    return;
+
+  }
+
+
+  const {
+    data: lessons,
+    error: lessonError
   } =
     await supabaseClient
       .from("lessons")
       .select("*")
-      .order("created_at", {
-        ascending: false
-      });
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      );
 
 
-  if (error) {
+  if (lessonError) {
 
-    console.error(error);
+    console.error(lessonError);
 
     lessonsList.innerHTML =
       '<p class="no-lessons">Could not load lessons.</p>';
 
     return;
+
   }
 
 
-  if (!data || data.length === 0) {
+  /*
+    Student course access
+  */
 
-    lessonsList.innerHTML =
-      '<p class="no-lessons">No lessons available yet.</p>';
-
-    return;
-  }
+  const access =
+    Array.isArray(
+      CURRENT_STUDENT.course_access
+    )
+      ? CURRENT_STUDENT.course_access
+      : [];
 
 
   lessonsList.innerHTML = "";
 
 
-  data.forEach(lesson => {
+  courses.forEach(
+    course => {
 
 
-    const item =
+      const courseName =
+        course.name;
+
+
+      const hasAccess =
+        access.includes(
+          courseName
+        );
+
+
+      const courseBox =
+        document.createElement(
+          "div"
+        );
+
+
+      courseBox.className =
+        "course-section";
+
+
+      /*
+        COURSE TITLE
+      */
+
+      const title =
+        document.createElement(
+          "div"
+        );
+
+
+      title.className =
+        "course-title";
+
+
+      title.textContent =
+        hasAccess
+          ? "📚 " + courseName
+          : "🔒 " + courseName;
+
+
+      courseBox.appendChild(
+        title
+      );
+
+
+      /*
+        LOCKED COURSE
+      */
+
+      if (!hasAccess) {
+
+        const locked =
+          document.createElement(
+            "div"
+          );
+
+
+        locked.className =
+          "course-locked";
+
+
+        locked.innerHTML = `
+
+          <div class="lock-icon">
+            🔒
+          </div>
+
+          <h3>
+            Course Locked
+          </h3>
+
+          <p>
+            You don't have access to this course yet.
+          </p>
+
+          <p style="margin-top:8px;">
+            Please contact the administrator to get access.
+          </p>
+
+        `;
+
+
+        courseBox.appendChild(
+          locked
+        );
+
+
+        lessonsList.appendChild(
+          courseBox
+        );
+
+
+        return;
+
+      }
+
+
+      /*
+        OPEN COURSE
+      */
+
+      const courseLessons =
+        lessons.filter(
+          lesson =>
+            lesson.course ===
+            courseName
+        );
+
+
+      if (
+        courseLessons.length === 0
+      ) {
+
+        const noLesson =
+          document.createElement(
+            "div"
+          );
+
+
+        noLesson.className =
+          "no-lessons";
+
+
+        noLesson.textContent =
+          "No lessons available in this course yet.";
+
+
+        courseBox.appendChild(
+          noLesson
+        );
+
+      }
+      else {
+
+        courseLessons.forEach(
+          lesson => {
+
+            courseBox.appendChild(
+              createLessonElement(
+                lesson
+              )
+            );
+
+          }
+        );
+
+      }
+
+
+      lessonsList.appendChild(
+        courseBox
+      );
+
+    }
+  );
+
+}
+
+
+/* =====================================
+   CREATE LESSON
+===================================== */
+
+
+function createLessonElement(
+  lesson
+) {
+
+
+  const item =
+    document.createElement(
+      "div"
+    );
+
+
+  item.className =
+    "lesson";
+
+
+  const title =
+    document.createElement(
+      "h3"
+    );
+
+
+  title.textContent =
+    lesson.title || "";
+
+
+  const course =
+    document.createElement(
+      "div"
+    );
+
+
+  course.className =
+    "course";
+
+
+  course.textContent =
+    "Course: " +
+    (lesson.course || "");
+
+
+  const description =
+    document.createElement(
+      "div"
+    );
+
+
+  description.className =
+    "description";
+
+
+  description.textContent =
+    lesson.description || "";
+
+
+  item.appendChild(
+    title
+  );
+
+
+  item.appendChild(
+    course
+  );
+
+
+  item.appendChild(
+    description
+  );
+
+
+  /*
+    VIDEO
+  */
+
+  if (lesson.video_path) {
+
+    const videoWrapper =
       document.createElement(
         "div"
       );
 
 
-    item.className =
-      "lesson";
+    videoWrapper.className =
+      "video-wrapper";
 
 
-    let videoHtml = "";
+    const video =
+      document.createElement(
+        "video"
+      );
 
 
-    if (lesson.video_path) {
+    video.controls = true;
+
+    video.preload =
+      "metadata";
+
+    /*
+      Hide browser download button
+      where supported.
+    */
+
+    video.setAttribute(
+      "controlsList",
+      "nodownload noremoteplayback"
+    );
+
+    video.setAttribute(
+      "disablePictureInPicture",
+      ""
+    );
 
 
-      const {
-        data: publicUrlData
-      } =
-        supabaseClient.storage
-          .from("Video")
-          .getPublicUrl(
-            lesson.video_path
-          );
+    /*
+      Prevent right-click
+      on video.
+    */
+
+    video.addEventListener(
+      "contextmenu",
+      function(event) {
+
+        event.preventDefault();
+
+      }
+    );
 
 
-      const videoUrl =
-        publicUrlData.publicUrl;
+    /*
+      WATERMARK
+    */
+
+    const watermark =
+      document.createElement(
+        "div"
+      );
 
 
-      videoHtml = `
+    watermark.className =
+      "video-watermark";
 
-        <video
-          controls
-          preload="metadata"
-        >
 
-          <source
-            src="${videoUrl}"
-            type="video/mp4"
-          >
+    watermark.textContent =
+      "MN TECHNOLOGY • " +
+      CURRENT_STUDENT.username;
 
-          Your browser does not support
-          HTML5 video.
 
-        </video>
+    videoWrapper.appendChild(
+      video
+    );
 
-      `;
+
+    videoWrapper.appendChild(
+      watermark
+    );
+
+
+    item.appendChild(
+      videoWrapper
+    );
+
+
+    /*
+      Load private video
+      with signed URL.
+    */
+
+    loadSecureVideo(
+      lesson.video_path,
+      video
+    );
+
+
+    /*
+      Move watermark.
+    */
+
+    startWatermarkMovement(
+      watermark,
+      videoWrapper
+    );
+
+  }
+
+
+  return item;
+
+}
+
+
+/* =====================================
+   SECURE VIDEO
+===================================== */
+
+
+async function loadSecureVideo(
+  videoPath,
+  videoElement
+) {
+
+
+  try {
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.storage
+        .from("Video")
+        .createSignedUrl(
+          videoPath,
+          7200
+        );
+
+
+    if (error) {
+
+      console.error(
+        "Video signed URL error:",
+        error
+      );
+
+      videoElement.outerHTML =
+        '<p style="color:#991b1b;padding:15px;">Unable to load this video.</p>';
+
+      return;
 
     }
 
 
-    item.innerHTML = `
+    if (
+      !data ||
+      !data.signedUrl
+    ) {
 
-      <h3>
-        ${escapeHtml(lesson.title)}
-      </h3>
+      videoElement.outerHTML =
+        '<p style="color:#991b1b;padding:15px;">Video URL could not be created.</p>';
 
-      <div class="course">
-        Course:
-        ${escapeHtml(lesson.course)}
-      </div>
+      return;
 
-      <div class="description">
-        ${escapeHtml(
-          lesson.description || ""
-        )}
-      </div>
-
-      ${videoHtml}
-
-    `;
+    }
 
 
-    lessonsList.appendChild(
-      item
+    /*
+      Add signed URL.
+    */
+
+    videoElement.src =
+      data.signedUrl;
+
+
+    videoElement.load();
+
+
+  }
+  catch (error) {
+
+    console.error(error);
+
+    videoElement.outerHTML =
+      '<p style="color:#991b1b;padding:15px;">Unable to load this video.</p>';
+
+  }
+
+}
+
+
+/* =====================================
+   MOVING WATERMARK
+===================================== */
+
+
+function startWatermarkMovement(
+  watermark,
+  wrapper
+) {
+
+
+  const positions = [
+
+    {
+      top: "8%",
+      left: "8%"
+    },
+
+    {
+      top: "8%",
+      left: "auto",
+      right: "8%"
+    },
+
+    {
+      top: "auto",
+      bottom: "18%",
+      left: "8%"
+    },
+
+    {
+      top: "auto",
+      bottom: "18%",
+      left: "auto",
+      right: "8%"
+    },
+
+    {
+      top: "42%",
+      left: "40%"
+    },
+
+    {
+      top: "25%",
+      left: "20%"
+    },
+
+    {
+      top: "60%",
+      left: "55%"
+    }
+
+  ];
+
+
+  let index =
+    Math.floor(
+      Math.random() *
+      positions.length
     );
 
-  });
+
+  function moveWatermark() {
+
+
+    const position =
+      positions[index];
+
+
+    watermark.style.top =
+      position.top ||
+      "auto";
+
+
+    watermark.style.bottom =
+      position.bottom ||
+      "auto";
+
+
+    watermark.style.left =
+      position.left ||
+      "auto";
+
+
+    watermark.style.right =
+      position.right ||
+      "auto";
+
+
+    index =
+      (index + 1) %
+      positions.length;
+
+  }
+
+
+  moveWatermark();
+
+
+  /*
+    Every 15 seconds
+  */
+
+  setInterval(
+    moveWatermark,
+    15000
+  );
 
 }
 
@@ -728,6 +1275,7 @@ async function loadLessons() {
 passwordForm.addEventListener(
   "submit",
   async function(event) {
+
 
     event.preventDefault();
 
@@ -744,7 +1292,9 @@ passwordForm.addEventListener(
       ).value;
 
 
-    if (newPassword.length < 6) {
+    if (
+      newPassword.length < 6
+    ) {
 
       showPasswordMessage(
         "Password must contain at least 6 characters.",
@@ -752,6 +1302,7 @@ passwordForm.addEventListener(
       );
 
       return;
+
     }
 
 
@@ -766,6 +1317,7 @@ passwordForm.addEventListener(
       );
 
       return;
+
     }
 
 
@@ -775,7 +1327,9 @@ passwordForm.addEventListener(
       );
 
 
-    button.disabled = true;
+    button.disabled =
+      true;
+
 
     button.textContent =
       "Changing...";
@@ -825,7 +1379,8 @@ passwordForm.addEventListener(
     }
     finally {
 
-      button.disabled = false;
+      button.disabled =
+        false;
 
       button.textContent =
         "Change Password";
@@ -847,45 +1402,16 @@ document.getElementById(
   "click",
   async function() {
 
+
     await supabaseClient.auth.signOut();
+
 
     window.location.href =
       "login.html";
 
+
   }
 );
-
-
-/* =====================================
-   HTML ESCAPE
-===================================== */
-
-
-function escapeHtml(value) {
-
-  return String(value)
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-    .replace(
-      /</g,
-      "&lt;"
-    )
-    .replace(
-      />/g,
-      "&gt;"
-    )
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-    .replace(
-      /'/g,
-      "&#039;"
-    );
-
-}
 
 
 /* =====================================
@@ -895,6 +1421,7 @@ function escapeHtml(value) {
 
 (async function() {
 
+
   const student =
     await loadStudent();
 
@@ -902,7 +1429,8 @@ function escapeHtml(value) {
   if (!student) return;
 
 
-  await loadLessons();
+  await loadCourses();
+
 
 })();
 
