@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,8 +8,8 @@
   <title>Login | MN Technology</title>
 
   <!-- Supabase JavaScript Library -->
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -33,7 +33,7 @@
       background: white;
       border-radius: 20px;
       padding: 35px 30px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
     }
 
     .logo {
@@ -167,431 +167,458 @@
       pointer-events: none;
     }
   </style>
-
 </head>
 
 <body>
 
-<div class="login-box">
+  <div class="login-box">
 
-  <div class="logo">MN Technology</div>
+    <div class="logo">MN Technology</div>
 
-  <div class="subtitle">
-    Electronic & Technical Learning
+    <div class="subtitle">
+      Electronic & Technical Learning
+    </div>
+
+    <div class="user-type">
+
+      <button
+        id="studentBtn"
+        class="active"
+        type="button"
+        onclick="selectType('student')">
+        Student
+      </button>
+
+      <button
+        id="adminBtn"
+        type="button"
+        onclick="selectType('admin')">
+        Admin
+      </button>
+
+    </div>
+
+    <form id="loginForm">
+
+      <div class="input-group">
+
+        <label for="username">Username</label>
+
+        <input
+          type="text"
+          id="username"
+          placeholder="Enter username"
+          required
+          autocomplete="username">
+
+      </div>
+
+      <div class="input-group">
+
+        <label for="password">Password</label>
+
+        <div class="password-wrapper">
+
+          <input
+            type="password"
+            id="password"
+            placeholder="Enter password"
+            required
+            autocomplete="current-password">
+
+          <button
+            type="button"
+            id="showPasswordBtn"
+            class="show-password-btn">
+            👁️
+          </button>
+
+        </div>
+
+      </div>
+
+      <button
+        type="submit"
+        class="login-btn"
+        id="loginBtn">
+        Login
+      </button>
+
+      <div class="forgot-password">
+        <a href="forgot-password.html">
+          Forgot Password?
+        </a>
+      </div>
+
+    </form>
+
+    <div class="message" id="message"></div>
+
+    <div class="info">
+      MN Technology Learning System
+      <br>
+      Secure Admin Login
+    </div>
+
   </div>
 
-  <div class="user-type">
+  <script>
 
-```
-<button
-  id="studentBtn"
-  class="active"
-  type="button"
-  onclick="selectType('student')">
-  Student
-</button>
+    /* =========================
+       SUPABASE CONFIGURATION
+    ========================= */
 
-<button
-  id="adminBtn"
-  type="button"
-  onclick="selectType('admin')">
-  Admin
-</button>
-```
+    const SUPABASE_URL =
+      "https://ekanfqwbqwfhjfgctouk.supabase.co";
 
-  </div>
+    const SUPABASE_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrYW5mcXdicXdmaGpmZ2N0b3VrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzODI4MDcsImV4cCI6MjEwNDk1ODgwN30.EjfM_-4NYuLdoPzi66J00CZPAKdyUecTahWo2JGrN_Y";
 
-  <form id="loginForm">
-
-```
-<div class="input-group">
-
-  <label for="username">Username</label>
-
-  <input
-    type="text"
-    id="username"
-    placeholder="Enter username"
-    required
-    autocomplete="username">
-
-</div>
-
-<div class="input-group">
-
-  <label for="password">Password</label>
-
-  <div class="password-wrapper">
-
-    <input
-      type="password"
-      id="password"
-      placeholder="Enter password"
-      required
-      autocomplete="current-password">
-
-    <button
-      type="button"
-      id="showPasswordBtn"
-      class="show-password-btn">
-      👁️
-    </button>
-
-  </div>
-
-</div>
-
-<button
-  type="submit"
-  class="login-btn"
-  id="loginBtn">
-  Login
-</button>
-
-<div class="forgot-password">
-  <a href="forgot-password.html">
-    Forgot Password?
-  </a>
-</div>
-```
-
-  </form>
-
-  <div class="message" id="message"></div>
-
-  <div class="info">
-    MN Technology Learning System
-    <br>
-    Secure Admin Login
-  </div>
-
-</div>
-
-<script>
-
-const SUPABASE_URL =
-  "https://ekanfqwbqwfhjfgctouk.supabase.co";
-
-const SUPABASE_KEY =
-   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrYW5mcXdicXdmaGpmZ2N0b3VrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzODI4MDcsImV4cCI6MjEwNDk1ODgwN30.EjfM_-4NYlD3oPzi66J00CZPAKdyUecTahWo2JGrN_Y";
-const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
 
 
-const ADMIN_EMAIL =
-  "Lakshitha94314@gmail.com";
+    const ADMIN_EMAIL =
+      "Lakshitha94314@gmail.com";
 
-let loginType = "student";
+    let loginType = "student";
 
 
-/* =========================
-   SHOW / HIDE PASSWORD
-========================= */
+    /* =========================
+       CHECK SUPABASE
+    ========================= */
 
-const passwordInput =
-  document.getElementById("password");
+    if (!window.supabase) {
 
-const showPasswordBtn =
-  document.getElementById("showPasswordBtn");
+      document.getElementById("message").style.color = "red";
 
-showPasswordBtn.addEventListener(
-  "click",
-  function () {
+      document.getElementById("message").textContent =
+        "Supabase library failed to load.";
 
-    if (passwordInput.type === "password") {
+      console.error(
+        "Supabase JavaScript library failed to load."
+      );
+    }
 
-      passwordInput.type = "text";
-      showPasswordBtn.textContent = "🙈";
 
-    } else {
+    /* =========================
+       SHOW / HIDE PASSWORD
+    ========================= */
+
+    const passwordInput =
+      document.getElementById("password");
+
+    const showPasswordBtn =
+      document.getElementById("showPasswordBtn");
+
+    showPasswordBtn.addEventListener(
+      "click",
+      function () {
+
+        if (passwordInput.type === "password") {
+
+          passwordInput.type = "text";
+          showPasswordBtn.textContent = "🙈";
+
+        } else {
+
+          passwordInput.type = "password";
+          showPasswordBtn.textContent = "👁️";
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       SELECT LOGIN TYPE
+    ========================= */
+
+    function selectType(type) {
+
+      loginType = type;
+
+      document
+        .getElementById("studentBtn")
+        .classList.toggle(
+          "active",
+          type === "student"
+        );
+
+      document
+        .getElementById("adminBtn")
+        .classList.toggle(
+          "active",
+          type === "admin"
+        );
+
+      document.getElementById("username").value = "";
+
+      document.getElementById("password").value = "";
+
+      document.getElementById("message").textContent = "";
 
       passwordInput.type = "password";
+
       showPasswordBtn.textContent = "👁️";
-
     }
 
-  }
-);
+
+    /* =========================
+       LOGIN FORM
+    ========================= */
+
+    document
+      .getElementById("loginForm")
+      .addEventListener(
+        "submit",
+        async function (event) {
+
+          event.preventDefault();
+
+          const username =
+            document
+              .getElementById("username")
+              .value
+              .trim();
+
+          const password =
+            document
+              .getElementById("password")
+              .value;
+
+          const message =
+            document.getElementById("message");
+
+          const loginBtn =
+            document.getElementById("loginBtn");
 
 
-/* =========================
-   SELECT LOGIN TYPE
-========================= */
-
-function selectType(type) {
-
-  loginType = type;
-
-  document
-    .getElementById("studentBtn")
-    .classList.toggle(
-      "active",
-      type === "student"
-    );
-
-  document
-    .getElementById("adminBtn")
-    .classList.toggle(
-      "active",
-      type === "admin"
-    );
-
-  document.getElementById(
-    "username"
-  ).value = "";
-
-  document.getElementById(
-    "password"
-  ).value = "";
-
-  document.getElementById(
-    "message"
-  ).textContent = "";
-
-  passwordInput.type = "password";
-  showPasswordBtn.textContent = "👁️";
-}
+          message.textContent = "";
 
 
-/* =========================
-   LOGIN
-========================= */
+          /* =========================
+             ADMIN LOGIN
+          ========================= */
 
-document
-  .getElementById("loginForm")
-  .addEventListener(
-    "submit",
-    async function(event) {
+          if (loginType === "admin") {
 
-      event.preventDefault();
+            if (
+              username.toLowerCase() !== "admin"
+            ) {
 
-      const username =
-        document
-          .getElementById("username")
-          .value
-          .trim();
+              message.style.color = "red";
 
-      const password =
-        document
-          .getElementById("password")
-          .value;
+              message.textContent =
+                "Username must be admin.";
 
-      const message =
-        document.getElementById("message");
-
-      const loginBtn =
-        document.getElementById("loginBtn");
+              return;
+            }
 
 
-      message.textContent = "";
+            loginBtn.textContent =
+              "Logging in...";
+
+            loginBtn.classList.add("loading");
 
 
-      /* =====================
-         ADMIN LOGIN
-      ===================== */
+            try {
 
-      if (loginType === "admin") {
+              /* SUPABASE AUTH LOGIN */
 
-        if (
-          username.toLowerCase() !==
-          "admin"
-        ) {
+              const {
+                data,
+                error
+              } =
+                await supabaseClient.auth
+                  .signInWithPassword({
 
-          message.style.color = "red";
+                    email: ADMIN_EMAIL,
 
-          message.textContent =
-            "Username must be admin.";
+                    password: password
 
-          return;
+                  });
+
+
+              if (error) {
+
+                console.error(
+                  "Supabase Auth Error:",
+                  error
+                );
+
+                throw new Error(
+                  "Supabase Auth: " +
+                  error.message
+                );
+              }
+
+
+              if (!data || !data.user) {
+
+                throw new Error(
+                  "Supabase Auth: User not found."
+                );
+              }
+
+
+              console.log(
+                "Logged in user:",
+                data.user.email
+              );
+
+
+              /* =========================
+                 CHECK ADMIN TABLE
+              ========================= */
+
+              const {
+                data: adminRow,
+                error: adminError
+              } =
+                await supabaseClient
+                  .from("admins")
+                  .select("username")
+                  .eq(
+                    "id",
+                    data.user.id
+                  )
+                  .maybeSingle();
+
+
+              if (adminError) {
+
+                console.error(
+                  "Admin Table Error:",
+                  adminError
+                );
+
+                await supabaseClient.auth.signOut();
+
+                throw new Error(
+                  "Admin table: " +
+                  adminError.message
+                );
+              }
+
+
+              if (!adminRow) {
+
+                await supabaseClient.auth.signOut();
+
+                throw new Error(
+                  "Admin table: No admin record found."
+                );
+              }
+
+
+              /* =========================
+                 ADMIN LOGIN SUCCESS
+              ========================= */
+
+              message.style.color = "green";
+
+              message.textContent =
+                "Admin login successful!";
+
+
+              setTimeout(
+                function () {
+
+                  window.location.href =
+                    "admin-dashboard.html";
+
+                },
+                500
+              );
+
+            }
+
+
+            catch (error) {
+
+              console.error(
+                "ADMIN LOGIN ERROR:",
+                error
+              );
+
+              message.style.color = "red";
+
+              message.textContent =
+                error.message ||
+                "Unknown login error.";
+
+            }
+
+
+            finally {
+
+              loginBtn.textContent =
+                "Login";
+
+              loginBtn.classList.remove(
+                "loading"
+              );
+
+            }
+
+            return;
+          }
+
+
+          /* =========================
+             STUDENT LOGIN
+          ========================= */
+
+          if (
+            username.toLowerCase() === "student" &&
+            password === "1234"
+          ) {
+
+            localStorage.setItem(
+              "studentLoggedIn",
+              "true"
+            );
+
+            localStorage.removeItem(
+              "selectedCourse"
+            );
+
+            message.style.color = "green";
+
+            message.textContent =
+              "Student login successful.";
+
+
+            setTimeout(
+              function () {
+
+                window.location.href =
+                  "student-dashboard.html";
+
+              },
+              500
+            );
+
+          }
+
+          else {
+
+            message.style.color = "red";
+
+            message.textContent =
+              "Invalid Student username or password.";
+
+          }
+
         }
+      );
 
-
-        loginBtn.textContent =
-          "Logging in...";
-
-        loginBtn.classList.add(
-          "loading"
-        );
-
-
-        try {
-
-          /* AUTH LOGIN */
-
-          const {
-            data,
-            error
-          } =
-            await supabaseClient.auth
-              .signInWithPassword({
-
-                email: ADMIN_EMAIL,
-
-                password: password
-
-              });
-
-
-          if (error) {
-
-            throw new Error(
-              "Supabase Auth: " +
-              error.message
-            );
-
-          }
-
-
-          if (!data.user) {
-
-            throw new Error(
-              "Supabase Auth: User not found."
-            );
-
-          }
-
-
-          /* ADMIN TABLE */
-
-          const {
-            data: adminRow,
-            error: adminError
-          } =
-            await supabaseClient
-              .from("admins")
-              .select("username")
-              .eq(
-                "id",
-                data.user.id
-              )
-              .maybeSingle();
-
-
-          if (adminError) {
-
-            await supabaseClient.auth
-              .signOut();
-
-            throw new Error(
-              "Admin table: " +
-              adminError.message
-            );
-
-          }
-
-
-          if (!adminRow) {
-
-            await supabaseClient.auth
-              .signOut();
-
-            throw new Error(
-              "Admin table: No admin record found."
-            );
-
-          }
-
-
-          /* SUCCESS */
-
-          message.style.color =
-            "green";
-
-          message.textContent =
-            "Admin login successful!";
-
-          setTimeout(
-            function() {
-
-              window.location.href =
-                "admin-dashboard.html";
-
-            },
-            500
-          );
-
-
-        } catch (error) {
-
-          console.error(
-            "ADMIN LOGIN ERROR:",
-            error
-          );
-
-          message.style.color =
-            "red";
-
-          message.textContent =
-            error.message ||
-            "Unknown login error.";
-
-        } finally {
-
-          loginBtn.textContent =
-            "Login";
-
-          loginBtn.classList.remove(
-            "loading"
-          );
-
-        }
-
-        return;
-      }
-
-
-      /* =====================
-         STUDENT LOGIN
-      ===================== */
-
-      if (
-        username.toLowerCase() ===
-          "student" &&
-        password === "1234"
-      ) {
-
-        localStorage.setItem(
-          "studentLoggedIn",
-          "true"
-        );
-
-        localStorage.removeItem(
-          "selectedCourse"
-        );
-
-        message.style.color =
-          "green";
-
-        message.textContent =
-          "Student login successful.";
-
-        setTimeout(
-          function() {
-
-            window.location.href =
-              "student-dashboard.html";
-
-          },
-          500
-        );
-
-      } else {
-
-        message.style.color =
-          "red";
-
-        message.textContent =
-          "Invalid Student username or password.";
-
-      }
-
-    }
-  );
-
-</script>
+  </script>
 
 </body>
 </html>
