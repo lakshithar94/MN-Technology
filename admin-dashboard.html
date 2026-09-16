@@ -405,120 +405,6 @@ video{
 }
 
 
-/* ==========================================
-   GROUPED STUDENT MONITORING
-   ========================================== */
-
-.student-monitor{
-    border:1px solid #e2e8f0;
-    border-radius:10px;
-    margin-bottom:12px;
-    overflow:hidden;
-    background:#ffffff;
-}
-
-.student-monitor-header{
-    width:100%;
-    padding:15px 17px;
-    background:#f8fafc;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:12px;
-    cursor:pointer;
-    user-select:none;
-    transition:.2s;
-}
-
-.student-monitor-header:hover{
-    background:#eef6ff;
-}
-
-.student-monitor-name{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-size:17px;
-    font-weight:bold;
-    color:#172033;
-}
-
-.student-monitor-arrow{
-    display:inline-block;
-    font-size:16px;
-    transition:transform .2s;
-}
-
-.student-monitor.open .student-monitor-arrow{
-    transform:rotate(90deg);
-}
-
-.student-monitor-summary{
-    color:#64748b;
-    font-size:13px;
-    font-weight:normal;
-}
-
-.student-monitor-details{
-    display:none;
-    padding:0;
-    border-top:1px solid #e2e8f0;
-}
-
-.student-monitor.open .student-monitor-details{
-    display:block;
-}
-
-.student-monitor-table{
-    width:100%;
-    border-collapse:collapse;
-    min-width:850px;
-}
-
-.student-monitor-table th{
-    background:#051223;
-    color:white;
-    padding:11px;
-    text-align:left;
-    font-size:12px;
-}
-
-.student-monitor-table td{
-    padding:11px;
-    border-bottom:1px solid #e2e8f0;
-    font-size:14px;
-    vertical-align:middle;
-}
-
-.student-monitor-table tr:last-child td{
-    border-bottom:0;
-}
-
-.student-monitor-table tr:hover{
-    background:#f8fafc;
-}
-
-.student-monitor-count{
-    display:inline-block;
-    padding:5px 9px;
-    border-radius:20px;
-    background:#e0f2fe;
-    color:#0369a1;
-    font-size:12px;
-    font-weight:bold;
-}
-
-.student-monitor-whatsapp{
-    padding:12px;
-    background:#f8fafc;
-    border-bottom:1px solid #e2e8f0;
-}
-
-.student-monitor-whatsapp .whatsapp-btn{
-    margin-left:0;
-}
-
-
 /* MOBILE */
 
 @media(max-width:700px){
@@ -543,18 +429,6 @@ video{
 
     .course-actions{
         width:100%;
-    }
-
-    .student-monitor-header{
-        padding:14px;
-    }
-
-    .student-monitor-name{
-        font-size:15px;
-    }
-
-    .student-monitor-table{
-        min-width:800px;
     }
 
 }
@@ -809,20 +683,40 @@ video{
         class="whatsapp-btn"
         onclick="sendMonitoringWhatsApp()"
     >
-        📱 Send All Report WhatsApp
+        📱 Send Report WhatsApp
     </button>
 
 </div>
 
 <div class="monitor-wrap">
 
-    <div id="monitoringBody">
+    <table class="monitor-table">
 
-        <div class="empty">
-            Loading monitoring...
-        </div>
+        <thead>
 
-    </div>
+            <tr>
+                <th>Student</th>
+                <th>Lesson</th>
+                <th>Date</th>
+                <th>Started</th>
+                <th>Last Watched</th>
+                <th>Watch Time</th>
+                <th>Status</th>
+            </tr>
+
+        </thead>
+
+        <tbody id="monitoringBody">
+
+            <tr>
+                <td colspan="7" class="empty">
+                    Loading monitoring...
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
 
 </div>
 
@@ -2918,9 +2812,11 @@ async function loadMonitoring(){
 
     body.innerHTML = `
 
-        <div class="empty">
-            Loading monitoring...
-        </div>
+        <tr>
+            <td colspan="7" class="empty">
+                Loading monitoring...
+            </td>
+        </tr>
 
     `;
 
@@ -3024,9 +2920,16 @@ async function loadMonitoring(){
 
             body.innerHTML = `
 
-                <div class="empty">
-                    No student lesson activity yet.
-                </div>
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="empty"
+                    >
+                        No student lesson activity yet.
+                    </td>
+
+                </tr>
 
             `;
 
@@ -3068,12 +2971,8 @@ async function loadMonitoring(){
         MONITORING_ROWS = [];
 
 
-        const grouped = {};
+        body.innerHTML = "";
 
-
-        /*
-         * Build monitoring data
-         */
 
         progress.forEach(row => {
 
@@ -3118,6 +3017,9 @@ async function loadMonitoring(){
              * IMPORTANT
              *
              * Started = TIME ONLY
+             *
+             * Example:
+             * 7:05 PM
              */
 
             const started =
@@ -3130,6 +3032,9 @@ async function loadMonitoring(){
              * IMPORTANT
              *
              * Last Watched = TIME ONLY
+             *
+             * Example:
+             * 7:42 PM
              */
 
             const lastWatched =
@@ -3150,18 +3055,7 @@ async function loadMonitoring(){
                 );
 
 
-            const statusText =
-                getMonitoringStatusText(
-                    row
-                );
-
-
-            /*
-             * Keep all rows
-             * for All WhatsApp Report
-             */
-
-            const monitorRow = {
+            MONITORING_ROWS.push({
 
                 student:studentName,
 
@@ -3177,375 +3071,76 @@ async function loadMonitoring(){
 
                 watchTime:watchTime,
 
-                statusText:statusText
-
-            };
-
-
-            MONITORING_ROWS.push(
-                monitorRow
-            );
-
-
-            /*
-             * Group by student
-             */
-
-            const studentKey =
-                String(row.student_id);
-
-
-            if(!grouped[studentKey]){
-
-                grouped[studentKey] = {
-
-                    studentName:
-                        studentName,
-
-                    rows:[]
-
-                };
-
-            }
-
-
-            grouped[
-                studentKey
-            ].rows.push({
-
-                lessonName:
-                    lessonName,
-
-                courseName:
-                    courseName,
-
-                date:
-                    date,
-
-                started:
-                    started,
-
-                lastWatched:
-                    lastWatched,
-
-                watchTime:
-                    watchTime,
-
-                status:
-                    status
+                statusText:
+                    getMonitoringStatusText(row)
 
             });
 
+
+            body.innerHTML += `
+
+                <tr>
+
+                    <td>
+
+                        <strong>
+                            ${escapeHtml(studentName)}
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+
+                        <strong>
+                            ${escapeHtml(lessonName)}
+                        </strong>
+
+                        ${
+                            courseName
+                            ?
+                            `<br>
+                            <small style="
+                                color:#64748b;
+                            ">
+                                ${escapeHtml(courseName)}
+                            </small>`
+                            :
+                            ""
+                        }
+
+                    </td>
+
+
+                    <td>
+                        ${escapeHtml(date)}
+                    </td>
+
+
+                    <td>
+                        ${escapeHtml(started)}
+                    </td>
+
+
+                    <td>
+                        ${escapeHtml(lastWatched)}
+                    </td>
+
+
+                    <td>
+                        ${escapeHtml(watchTime)}
+                    </td>
+
+
+                    <td>
+                        ${status}
+                    </td>
+
+                </tr>
+
+            `;
+
         });
-
-
-        body.innerHTML = "";
-
-
-        /*
-         * Create one expandable box
-         * for each student
-         */
-
-        Object.values(grouped).forEach(
-            group => {
-
-                const studentBox =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                studentBox.className =
-                    "student-monitor";
-
-
-                /*
-                 * Student header
-                 */
-
-                const header =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                header.className =
-                    "student-monitor-header";
-
-
-                header.innerHTML = `
-
-                    <div class="student-monitor-name">
-
-                        <span>
-                            👤
-                        </span>
-
-                        <span>
-                            ${escapeHtml(
-                                group.studentName
-                            )}
-                        </span>
-
-                        <span class="student-monitor-arrow">
-                            ▶
-                        </span>
-
-                    </div>
-
-
-                    <div class="student-monitor-count">
-
-                        ${group.rows.length}
-
-                        lesson${group.rows.length === 1 ? "" : "s"}
-                        watched
-
-                    </div>
-
-                `;
-
-
-                /*
-                 * Student details
-                 */
-
-                const details =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                details.className =
-                    "student-monitor-details";
-
-
-                /*
-                 * WhatsApp button area
-                 */
-
-                const whatsappBox =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                whatsappBox.className =
-                    "student-monitor-whatsapp";
-
-
-                const whatsappButton =
-                    document.createElement(
-                        "button"
-                    );
-
-
-                whatsappButton.type =
-                    "button";
-
-
-                whatsappButton.className =
-                    "whatsapp-btn";
-
-
-                whatsappButton.innerHTML =
-                    "📱 " +
-                    group.studentName +
-                    " Report WhatsApp";
-
-
-                /*
-                 * IMPORTANT:
-                 *
-                 * Stop click from opening/closing
-                 * the student box.
-                 */
-
-                whatsappButton.addEventListener(
-                    "click",
-                    function(event){
-
-                        event.stopPropagation();
-
-                        sendStudentWhatsApp(
-                            group.studentName
-                        );
-
-                    }
-                );
-
-
-                whatsappBox.appendChild(
-                    whatsappButton
-                );
-
-
-                details.appendChild(
-                    whatsappBox
-                );
-
-
-                /*
-                 * Table
-                 */
-
-                let tableHTML = `
-
-                    <div class="monitor-wrap">
-
-                        <table class="student-monitor-table">
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>Lesson</th>
-
-                                    <th>Date</th>
-
-                                    <th>Started</th>
-
-                                    <th>Last Watched</th>
-
-                                    <th>Watch Time</th>
-
-                                    <th>Status</th>
-
-                                </tr>
-
-                            </thead>
-
-                            <tbody>
-
-                `;
-
-
-                group.rows.forEach(
-                    row => {
-
-                        tableHTML += `
-
-                            <tr>
-
-                                <td>
-
-                                    <strong>
-                                        ${escapeHtml(
-                                            row.lessonName
-                                        )}
-                                    </strong>
-
-                                    ${
-                                        row.courseName
-                                        ?
-                                        `<br>
-
-                                        <small style="
-                                            color:#64748b;
-                                        ">
-
-                                            ${escapeHtml(
-                                                row.courseName
-                                            )}
-
-                                        </small>`
-                                        :
-                                        ""
-                                    }
-
-                                </td>
-
-
-                                <td>
-                                    ${escapeHtml(
-                                        row.date
-                                    )}
-                                </td>
-
-
-                                <td>
-                                    ${escapeHtml(
-                                        row.started
-                                    )}
-                                </td>
-
-
-                                <td>
-                                    ${escapeHtml(
-                                        row.lastWatched
-                                    )}
-                                </td>
-
-
-                                <td>
-                                    ${escapeHtml(
-                                        row.watchTime
-                                    )}
-                                </td>
-
-
-                                <td>
-                                    ${row.status}
-                                </td>
-
-                            </tr>
-
-                        `;
-
-                    }
-                );
-
-
-                tableHTML += `
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                `;
-
-
-                details.insertAdjacentHTML(
-                    "beforeend",
-                    tableHTML
-                );
-
-
-                /*
-                 * Open / Close student
-                 */
-
-                header.addEventListener(
-                    "click",
-                    function(){
-
-                        studentBox.classList.toggle(
-                            "open"
-                        );
-
-                    }
-                );
-
-
-                studentBox.appendChild(
-                    header
-                );
-
-
-                studentBox.appendChild(
-                    details
-                );
-
-
-                body.appendChild(
-                    studentBox
-                );
-
-            }
-        );
 
     }
     catch(err){
@@ -3561,21 +3156,25 @@ async function loadMonitoring(){
 
         body.innerHTML = `
 
-            <div
-                style="
-                    color:#991b1b;
-                    padding:15px;
-                "
-            >
+            <tr>
 
-                ❌ Monitoring load failed:
+                <td
+                    colspan="7"
+                    style="
+                        color:#991b1b;
+                        padding:15px;
+                    "
+                >
 
-                ${escapeHtml(
-                    err.message ||
-                    "Unknown error"
-                )}
+                    ❌ Monitoring load failed:
+                    ${escapeHtml(
+                        err.message ||
+                        "Unknown error"
+                    )}
 
-            </div>
+                </td>
+
+            </tr>
 
         `;
 
@@ -3823,7 +3422,7 @@ function formatWatchTime(seconds){
 
 
 /* ==========================================
-   WHATSAPP ALL STUDENTS REPORT
+   WHATSAPP MONITORING REPORT
    ========================================== */
 
 function sendMonitoringWhatsApp(){
@@ -3857,11 +3456,6 @@ function sendMonitoringWhatsApp(){
             message +=
                 "🎬 Lesson: " +
                 row.lesson +
-                "\n";
-
-            message +=
-                "📚 Course: " +
-                row.course +
                 "\n";
 
             message +=
@@ -3907,129 +3501,6 @@ function sendMonitoringWhatsApp(){
     message +=
         "\n\nMN TECHNOLOGY";
 
-
-    const whatsappURL =
-        "https://wa.me/?text=" +
-        encodeURIComponent(
-            message
-        );
-
-
-    window.open(
-        whatsappURL,
-        "_blank"
-    );
-
-}
-
-
-/* ==========================================
-   SINGLE STUDENT WHATSAPP REPORT
-   ========================================== */
-
-function sendStudentWhatsApp(
-    studentName
-){
-
-    /*
-     * Get only this student's rows
-     */
-
-    const studentRows =
-        MONITORING_ROWS.filter(
-            row =>
-                row.student === studentName
-        );
-
-
-    if(
-        !studentRows ||
-        studentRows.length === 0
-    ){
-
-        alert(
-            "මෙම Student සඳහා Monitoring Report එකක් නැහැ."
-        );
-
-        return;
-
-    }
-
-
-    /*
-     * Build report
-     */
-
-    let message =
-        "📊 MN TECHNOLOGY - STUDENT MONITORING REPORT\n\n";
-
-
-    message +=
-        "👨‍🎓 Student: " +
-        studentName +
-        "\n\n";
-
-
-    studentRows.forEach(
-        (row,index) => {
-
-            message +=
-                "🎬 Lesson: " +
-                row.lesson +
-                "\n";
-
-            message +=
-                "📚 Course: " +
-                row.course +
-                "\n";
-
-            message +=
-                "📅 Date: " +
-                row.date +
-                "\n";
-
-            message +=
-                "▶️ Started: " +
-                row.started +
-                "\n";
-
-            message +=
-                "👀 Last Watched: " +
-                row.lastWatched +
-                "\n";
-
-            message +=
-                "⏱️ Watch Time: " +
-                row.watchTime +
-                "\n";
-
-            message +=
-                "📌 Status: " +
-                row.statusText +
-                "\n";
-
-
-            if(
-                index <
-                studentRows.length - 1
-            ){
-
-                message +=
-                    "\n--------------------\n\n";
-
-            }
-
-        }
-    );
-
-
-    message +=
-        "\n\nMN TECHNOLOGY";
-
-
-    /*
-     * Open WhatsApp
-     */
 
     const whatsappURL =
         "https://wa.me/?text=" +
