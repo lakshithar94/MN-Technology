@@ -149,6 +149,12 @@ button{
     color:white;
 }
 
+.edit-btn{
+    background:#f59e0b;
+    color:white;
+    margin-right:6px;
+}
+
 .course-grid{
     display:grid;
     grid-template-columns:repeat(2,1fr);
@@ -264,7 +270,44 @@ video{
     color:#991b1b;
 }
 
+/* COURSE MANAGEMENT */
+.course-management{
+    border:1px solid #e2e8f0;
+    border-radius:10px;
+    padding:15px;
+    margin-bottom:12px;
+    background:#f8fafc;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+}
+
+.course-management-name{
+    font-size:17px;
+    font-weight:bold;
+}
+
+.course-actions{
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap;
+}
+
+.add-course-box{
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:10px;
+    padding:15px;
+    margin-bottom:15px;
+}
+
+.add-course-box input{
+    margin-bottom:10px;
+}
+
 @media(max-width:700px){
+
     .stats{
         grid-template-columns:1fr;
     }
@@ -277,6 +320,15 @@ video{
     .container{
         padding:15px;
     }
+
+    .course-management{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .course-actions{
+        width:100%;
+    }
 }
 </style>
 </head>
@@ -284,12 +336,16 @@ video{
 <body>
 
 <nav class="navbar">
+
     <div class="logo">
         <div class="logo-box">MN</div>
         MN Technology
     </div>
 
-    <button class="logout-btn" onclick="logout()">Logout</button>
+    <button class="logout-btn" onclick="logout()">
+        Logout
+    </button>
+
 </nav>
 
 <div class="container">
@@ -297,6 +353,7 @@ video{
 <h1>Admin Dashboard</h1>
 
 <!-- STATS -->
+
 <div class="stats">
 
     <div class="stat">
@@ -306,7 +363,7 @@ video{
 
     <div class="stat">
         <h3>Total Courses</h3>
-        <p id="courseCount">4</p>
+        <p id="courseCount">0</p>
     </div>
 
     <div class="stat">
@@ -318,6 +375,7 @@ video{
 
 
 <!-- CREATE STUDENT -->
+
 <div class="card">
 
 <h2>👨‍🎓 Create Student</h2>
@@ -325,6 +383,7 @@ video{
 <form id="studentForm">
 
 <label>Username</label>
+
 <input
     type="text"
     id="studentUsername"
@@ -333,6 +392,7 @@ video{
 >
 
 <label>Password</label>
+
 <input
     type="password"
     id="studentPassword"
@@ -356,28 +416,67 @@ video{
 
 
 <!-- COURSES -->
+
 <div class="card">
 
 <h2>📚 Courses</h2>
 
-<div id="coursesList"></div>
+<!-- ADD COURSE -->
+
+<div class="add-course-box">
+
+    <label>Add New Course</label>
+
+    <input
+        type="text"
+        id="newCourseName"
+        placeholder="Example: Computer Hardware"
+    >
+
+    <button
+        type="button"
+        class="primary"
+        onclick="addCourse()"
+    >
+        ➕ Add Course
+    </button>
+
+    <div id="courseMessage" class="message"></div>
+
+</div>
+
+<!-- COURSE LIST -->
+
+<div id="coursesList">
+
+    <div class="empty">
+        Loading courses...
+    </div>
+
+</div>
 
 </div>
 
 
 <!-- STUDENTS -->
+
 <div class="card">
 
 <h2>👨‍🎓 Students & Course Access</h2>
 
 <div id="studentsList">
-    <div class="empty">Loading students...</div>
+
+    <div class="empty">
+        Loading students...
+    </div>
+
 </div>
 
 </div>
 
 
 <!-- ADD LESSON -->
+
 <div class="card">
 
 <h2>➕ Add New Lesson</h2>
@@ -385,6 +484,7 @@ video{
 <form id="lessonForm">
 
 <label>Lesson Title</label>
+
 <input
     type="text"
     id="lessonTitle"
@@ -395,7 +495,11 @@ video{
 <label>Course</label>
 
 <select id="lessonCourse" required>
-    <option value="">Select Course</option>
+
+    <option value="">
+        Select Course
+    </option>
+
 </select>
 
 <label>Description</label>
@@ -434,12 +538,17 @@ video{
 
 
 <!-- LESSONS -->
+
 <div class="card">
 
 <h2>🎬 Lessons</h2>
 
 <div id="lessonsList">
-    <div class="empty">Loading lessons...</div>
+
+    <div class="empty">
+        Loading lessons...
+    </div>
+
 </div>
 
 </div>
@@ -462,46 +571,94 @@ const supabaseClient =
     );
 
 
-/* ALL COURSES */
+/* COURSE LIST */
 
-const ALL_COURSES = [
-    "Electronics",
-    "CCTV",
-    "Radio",
-    "Electrical Appliances"
-];
+let ALL_COURSES = [];
 
 
 /* PAGE START */
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
 
-    const {
-        data: { session }
-    } = await supabaseClient.auth.getSession();
+        const {
+            data: { session }
+        } =
+        await supabaseClient.auth.getSession();
 
-    if(!session){
-        window.location.href = "login.html";
-        return;
-    }
+        if(!session){
 
-    const { data: admin } =
+            window.location.href =
+                "login.html";
+
+            return;
+        }
+
+
+        const {
+            data: admin
+        } =
         await supabaseClient
         .from("admins")
         .select("id,username")
         .eq("id",session.user.id)
         .maybeSingle();
 
-    if(!admin){
-        await supabaseClient.auth.signOut();
-        window.location.href = "login.html";
+
+        if(!admin){
+
+            await supabaseClient.auth.signOut();
+
+            window.location.href =
+                "login.html";
+
+            return;
+        }
+
+
+        await loadCourseNames();
+
+        buildCourseInputs();
+
+        await loadDashboard();
+
+    }
+);
+
+
+/* LOAD COURSE NAMES FROM SUPABASE */
+
+async function loadCourseNames(){
+
+    const {
+        data,
+        error
+    } =
+    await supabaseClient
+    .from("courses")
+    .select("id,name")
+    .order("id",{ascending:true});
+
+
+    if(error){
+
+        console.error(error);
+
+        alert(
+            "Courses load failed:\n" +
+            error.message
+        );
+
         return;
+
     }
 
-    buildCourseInputs();
-    await loadDashboard();
 
-});
+    ALL_COURSES =
+        data.map(course => course.name);
+
+}
 
 
 /* COURSE INPUTS */
@@ -509,32 +666,47 @@ document.addEventListener("DOMContentLoaded", async () => {
 function buildCourseInputs(){
 
     const createList =
-        document.getElementById("createCourseList");
+        document.getElementById(
+            "createCourseList"
+        );
 
     const select =
-        document.getElementById("lessonCourse");
+        document.getElementById(
+            "lessonCourse"
+        );
+
 
     createList.innerHTML = "";
+
     select.innerHTML =
         '<option value="">Select Course</option>';
+
 
     ALL_COURSES.forEach(course => {
 
         createList.innerHTML += `
+
             <label class="course-check">
+
                 <input
                     type="checkbox"
                     class="create-course"
                     value="${escapeHtml(course)}"
                 >
+
                 ${escapeHtml(course)}
+
             </label>
+
         `;
 
+
         select.innerHTML += `
+
             <option value="${escapeHtml(course)}">
                 ${escapeHtml(course)}
             </option>
+
         `;
 
     });
@@ -547,7 +719,9 @@ function buildCourseInputs(){
 async function loadDashboard(){
 
     await loadStudents();
+
     await loadLessons();
+
     await loadCourses();
 
 }
@@ -560,43 +734,73 @@ async function loadStudents(){
     const {
         data,
         error
-    } = await supabaseClient
-        .from("student_accounts")
-        .select("id,username,course_access,created_at")
-        .order("created_at",{ascending:false});
+    } =
+    await supabaseClient
+    .from("student_accounts")
+    .select(
+        "id,username,course_access,created_at"
+    )
+    .order(
+        "created_at",
+        {ascending:false}
+    );
+
 
     if(error){
 
         console.error(error);
 
-        document.getElementById("studentsList").innerHTML =
-            `<div class="empty">Students load failed.</div>`;
+        document.getElementById(
+            "studentsList"
+        ).innerHTML =
+            `
+            <div class="empty">
+                Students load failed.
+            </div>
+            `;
 
         return;
+
     }
 
-    document.getElementById("studentCount").textContent =
+
+    document.getElementById(
+        "studentCount"
+    ).textContent =
         data.length;
 
+
     const box =
-        document.getElementById("studentsList");
+        document.getElementById(
+            "studentsList"
+        );
+
 
     if(data.length === 0){
 
         box.innerHTML =
-            `<div class="empty">No students yet.</div>`;
+            `
+            <div class="empty">
+                No students yet.
+            </div>
+            `;
 
         return;
+
     }
 
+
     box.innerHTML = "";
+
 
     data.forEach(student => {
 
         const access =
             student.course_access || [];
 
+
         let courseHTML = "";
+
 
         ALL_COURSES.forEach(course => {
 
@@ -605,8 +809,11 @@ async function loadStudents(){
                 ? "checked"
                 : "";
 
+
             courseHTML += `
+
                 <label class="access-item">
+
                     <input
                         type="checkbox"
                         class="student-course"
@@ -614,11 +821,15 @@ async function loadStudents(){
                         value="${escapeHtml(course)}"
                         ${checked}
                     >
+
                     ${escapeHtml(course)}
+
                 </label>
+
             `;
 
         });
+
 
         box.innerHTML += `
 
@@ -657,24 +868,33 @@ async function saveStudentAccess(studentId){
             `.student-course[data-student="${studentId}"]`
         );
 
+
     const selected = [];
+
 
     checkboxes.forEach(box => {
 
         if(box.checked){
-            selected.push(box.value);
+
+            selected.push(
+                box.value
+            );
+
         }
 
     });
 
+
     const {
         error
-    } = await supabaseClient
-        .from("student_accounts")
-        .update({
-            course_access:selected
-        })
-        .eq("id",studentId);
+    } =
+    await supabaseClient
+    .from("student_accounts")
+    .update({
+        course_access:selected
+    })
+    .eq("id",studentId);
+
 
     if(error){
 
@@ -684,9 +904,14 @@ async function saveStudentAccess(studentId){
         );
 
         return;
+
     }
 
-    alert("Course Access successfully updated.");
+
+    alert(
+        "Course Access successfully updated."
+    );
+
 
     await loadStudents();
 
@@ -695,117 +920,400 @@ async function saveStudentAccess(studentId){
 
 /* CREATE STUDENT */
 
-document.getElementById("studentForm")
-.addEventListener("submit", async function(e){
+document.getElementById(
+    "studentForm"
+)
+.addEventListener(
+    "submit",
+    async function(e){
 
-    e.preventDefault();
+        e.preventDefault();
 
-    const username =
-        document.getElementById("studentUsername")
-        .value.trim();
 
-    const password =
-        document.getElementById("studentPassword")
-        .value;
+        const username =
+            document.getElementById(
+                "studentUsername"
+            ).value.trim();
 
-    const checkboxes =
-        document.querySelectorAll(".create-course");
 
-    const selectedCourses = [];
+        const password =
+            document.getElementById(
+                "studentPassword"
+            ).value;
 
-    checkboxes.forEach(box => {
 
-        if(box.checked){
-            selectedCourses.push(box.value);
+        const checkboxes =
+            document.querySelectorAll(
+                ".create-course"
+            );
+
+
+        const selectedCourses = [];
+
+
+        checkboxes.forEach(box => {
+
+            if(box.checked){
+
+                selectedCourses.push(
+                    box.value
+                );
+
+            }
+
+        });
+
+
+        const msg =
+            document.getElementById(
+                "studentMessage"
+            );
+
+
+        msg.style.display =
+            "block";
+
+        msg.className =
+            "message";
+
+        msg.textContent =
+            "Creating student...";
+
+
+        try{
+
+            const {
+                data,
+                error
+            } =
+            await supabaseClient.functions.invoke(
+                "create-student-v2",
+                {
+                    body:{
+                        username:username,
+                        password:password
+                    }
+                }
+            );
+
+
+            if(error){
+
+                throw error;
+
+            }
+
+
+            if(
+                !data ||
+                data.ok !== true
+            ){
+
+                throw new Error(
+                    data?.error ||
+                    "Student creation failed."
+                );
+
+            }
+
+
+            const {
+                data: student,
+                error: findError
+            } =
+            await supabaseClient
+            .from("student_accounts")
+            .select("id,username")
+            .eq("username",username)
+            .maybeSingle();
+
+
+            if(findError){
+
+                throw findError;
+
+            }
+
+
+            if(!student){
+
+                throw new Error(
+                    "Student created, but account row was not found."
+                );
+
+            }
+
+
+            const {
+                error: accessError
+            } =
+            await supabaseClient
+            .from("student_accounts")
+            .update({
+                course_access:selectedCourses
+            })
+            .eq("id",student.id);
+
+
+            if(accessError){
+
+                throw accessError;
+
+            }
+
+
+            msg.className =
+                "message success-msg";
+
+            msg.textContent =
+                "Student created successfully!";
+
+
+            document.getElementById(
+                "studentForm"
+            ).reset();
+
+
+            await loadStudents();
+
         }
+        catch(err){
+
+            console.error(err);
+
+            msg.className =
+                "message error-msg";
+
+            msg.textContent =
+                err.message ||
+                "Error occurred.";
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   COURSE MANAGEMENT
+   ========================================== */
+
+
+/* LOAD COURSES */
+
+async function loadCourses(){
+
+    const {
+        data: courses,
+        error: courseError
+    } =
+    await supabaseClient
+    .from("courses")
+    .select("id,name")
+    .order("id",{ascending:true});
+
+
+    if(courseError){
+
+        console.error(courseError);
+
+        document.getElementById(
+            "coursesList"
+        ).innerHTML =
+            `
+            <div class="empty">
+                Courses load failed.
+            </div>
+            `;
+
+        return;
+
+    }
+
+
+    ALL_COURSES =
+        courses.map(
+            course => course.name
+        );
+
+
+    document.getElementById(
+        "courseCount"
+    ).textContent =
+        courses.length;
+
+
+    const {
+        data: lessons,
+        error: lessonError
+    } =
+    await supabaseClient
+    .from("lessons")
+    .select("course");
+
+
+    if(lessonError){
+
+        console.error(lessonError);
+
+    }
+
+
+    const box =
+        document.getElementById(
+            "coursesList"
+        );
+
+
+    box.innerHTML = "";
+
+
+    if(courses.length === 0){
+
+        box.innerHTML =
+            `
+            <div class="empty">
+                No courses available.
+            </div>
+            `;
+
+        buildCourseInputs();
+
+        return;
+
+    }
+
+
+    courses.forEach(course => {
+
+        const count =
+            (lessons || []).filter(
+                lesson =>
+                lesson.course === course.name
+            ).length;
+
+
+        box.innerHTML += `
+
+            <div class="course-management">
+
+                <div>
+
+                    <div class="course-management-name">
+                        📚 ${escapeHtml(course.name)}
+                    </div>
+
+                    <div class="course-label">
+                        ${count}
+                        Lesson${count === 1 ? "" : "s"}
+                    </div>
+
+                </div>
+
+
+                <div class="course-actions">
+
+                    <button
+                        class="edit-btn"
+                        onclick="editCourse(${course.id}, '${escapeJs(course.name)}')"
+                    >
+                        ✏️ Edit
+                    </button>
+
+
+                    <button
+                        class="danger"
+                        onclick="deleteCourse(${course.id}, '${escapeJs(course.name)}')"
+                    >
+                        🗑️ Delete
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
 
     });
 
+
+    buildCourseInputs();
+
+}
+
+
+/* ADD COURSE */
+
+async function addCourse(){
+
+    const input =
+        document.getElementById(
+            "newCourseName"
+        );
+
+
+    const name =
+        input.value.trim();
+
+
     const msg =
-        document.getElementById("studentMessage");
+        document.getElementById(
+            "courseMessage"
+        );
 
-    msg.style.display = "block";
 
-    msg.className = "message";
+    if(!name){
+
+        msg.style.display =
+            "block";
+
+        msg.className =
+            "message error-msg";
+
+        msg.textContent =
+            "Please enter a course name.";
+
+        return;
+
+    }
+
+
+    msg.style.display =
+        "block";
+
+    msg.className =
+        "message";
 
     msg.textContent =
-        "Creating student...";
+        "Adding course...";
 
 
     try{
 
         const {
-            data,
             error
         } =
-        await supabaseClient.functions.invoke(
-            "create-student-v2",
-            {
-                body:{
-                    username:username,
-                    password:password
-                }
-            }
-        );
+        await supabaseClient
+        .from("courses")
+        .insert({
+            name:name
+        });
 
 
         if(error){
+
+            if(
+                error.code === "23505"
+            ){
+
+                throw new Error(
+                    "මෙම Course එක දැනටමත් තිබෙනවා."
+                );
+
+            }
+
             throw error;
-        }
 
-        if(!data || data.ok !== true){
-
-            throw new Error(
-                data?.error ||
-                "Student creation failed."
-            );
-
-        }
-
-
-        /*
-        Find newly created student
-        */
-
-        const {
-            data: student,
-            error: findError
-        } =
-        await supabaseClient
-        .from("student_accounts")
-        .select("id,username")
-        .eq("username",username)
-        .maybeSingle();
-
-        if(findError){
-            throw findError;
-        }
-
-        if(!student){
-
-            throw new Error(
-                "Student created, but account row was not found."
-            );
-
-        }
-
-
-        /*
-        Save Course Access
-        */
-
-        const {
-            error: accessError
-        } =
-        await supabaseClient
-        .from("student_accounts")
-        .update({
-            course_access:selectedCourses
-        })
-        .eq("id",student.id);
-
-        if(accessError){
-            throw accessError;
         }
 
 
@@ -813,10 +1321,15 @@ document.getElementById("studentForm")
             "message success-msg";
 
         msg.textContent =
-            "Student created successfully!";
+            "Course added successfully!";
 
 
-        document.getElementById("studentForm").reset();
+        input.value = "";
+
+
+        await loadCourseNames();
+
+        await loadCourses();
 
         await loadStudents();
 
@@ -829,62 +1342,400 @@ document.getElementById("studentForm")
             "message error-msg";
 
         msg.textContent =
-            err.message || "Error occurred.";
+            err.message ||
+            "Course add failed.";
 
     }
 
-});
+}
 
 
-/* LOAD COURSES */
+/* EDIT COURSE */
 
-async function loadCourses(){
+async function editCourse(
+    courseId,
+    oldName
+){
 
-    const {
-        data: lessons,
-        error
-    } =
-    await supabaseClient
-    .from("lessons")
-    .select("course");
+    const newName =
+        prompt(
+            "Enter new course name:",
+            oldName
+        );
 
-    if(error){
 
-        console.error(error);
+    if(newName === null){
+
         return;
 
     }
 
-    const box =
-        document.getElementById("coursesList");
 
-    box.innerHTML = "";
+    const cleanName =
+        newName.trim();
 
-    ALL_COURSES.forEach(course => {
 
-        const count =
-            lessons.filter(
-                lesson =>
-                lesson.course === course
-            ).length;
+    if(!cleanName){
 
-        box.innerHTML += `
+        alert(
+            "Course name cannot be empty."
+        );
 
-            <div class="lesson">
+        return;
 
-                <strong>
-                    📚 ${escapeHtml(course)}
-                </strong>
+    }
 
-                <div class="course-label">
-                    ${count} Lesson${count === 1 ? "" : "s"}
-                </div>
 
-            </div>
+    if(cleanName === oldName){
 
-        `;
+        return;
 
-    });
+    }
+
+
+    try{
+
+        /*
+         * Check duplicate course name
+         */
+
+        const {
+            data: existing,
+            error: existingError
+        } =
+        await supabaseClient
+        .from("courses")
+        .select("id")
+        .eq("name",cleanName)
+        .maybeSingle();
+
+
+        if(existingError){
+
+            throw existingError;
+
+        }
+
+
+        if(existing){
+
+            alert(
+                "මෙම Course Name එක දැනටමත් තිබෙනවා."
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Update course table
+         */
+
+        const {
+            error: courseError
+        } =
+        await supabaseClient
+        .from("courses")
+        .update({
+            name:cleanName
+        })
+        .eq("id",courseId);
+
+
+        if(courseError){
+
+            throw courseError;
+
+        }
+
+
+        /*
+         * Update lessons using old course name
+         */
+
+        const {
+            error: lessonError
+        } =
+        await supabaseClient
+        .from("lessons")
+        .update({
+            course:cleanName
+        })
+        .eq("course",oldName);
+
+
+        if(lessonError){
+
+            throw lessonError;
+
+        }
+
+
+        /*
+         * Update student course access
+         */
+
+        const {
+            data: students,
+            error: studentError
+        } =
+        await supabaseClient
+        .from("student_accounts")
+        .select("id,course_access");
+
+
+        if(studentError){
+
+            throw studentError;
+
+        }
+
+
+        for(
+            const student of students || []
+        ){
+
+            const access =
+                student.course_access || [];
+
+
+            if(
+                access.includes(oldName)
+            ){
+
+                const newAccess =
+                    access.map(
+                        course =>
+                        course === oldName
+                        ? cleanName
+                        : course
+                    );
+
+
+                const {
+                    error: updateError
+                } =
+                await supabaseClient
+                .from("student_accounts")
+                .update({
+                    course_access:newAccess
+                })
+                .eq("id",student.id);
+
+
+                if(updateError){
+
+                    throw updateError;
+
+                }
+
+            }
+
+        }
+
+
+        alert(
+            "Course name updated successfully."
+        );
+
+
+        await loadCourseNames();
+
+        await loadCourses();
+
+        await loadStudents();
+
+        await loadLessons();
+
+    }
+    catch(err){
+
+        console.error(err);
+
+        alert(
+            "Course Edit failed:\n" +
+            err.message
+        );
+
+    }
+
+}
+
+
+/* DELETE COURSE */
+
+async function deleteCourse(
+    courseId,
+    courseName
+){
+
+    /*
+     * Check whether lessons exist
+     */
+
+    const {
+        data: lessons,
+        error: lessonCheckError
+    } =
+    await supabaseClient
+    .from("lessons")
+    .select("id")
+    .eq("course",courseName);
+
+
+    if(lessonCheckError){
+
+        alert(
+            "Course check failed:\n" +
+            lessonCheckError.message
+        );
+
+        return;
+
+    }
+
+
+    if(
+        lessons &&
+        lessons.length > 0
+    ){
+
+        alert(
+            "මෙම Course එක Delete කරන්න බැහැ.\n\n" +
+            "මෙයට Lessons " +
+            lessons.length +
+            " ක් තිබෙනවා.\n\n" +
+            "මුලින් එම Lessons Delete කරන්න."
+        );
+
+        return;
+
+    }
+
+
+    const yes =
+        confirm(
+            '"' +
+            courseName +
+            '" Course එක Delete කරන්නද?\n\n' +
+            "මෙය ආපසු ලබාගත නොහැක."
+        );
+
+
+    if(!yes){
+
+        return;
+
+    }
+
+
+    try{
+
+        /*
+         * Remove course from student access
+         */
+
+        const {
+            data: students,
+            error: studentError
+        } =
+        await supabaseClient
+        .from("student_accounts")
+        .select("id,course_access");
+
+
+        if(studentError){
+
+            throw studentError;
+
+        }
+
+
+        for(
+            const student of students || []
+        ){
+
+            const access =
+                student.course_access || [];
+
+
+            if(
+                access.includes(courseName)
+            ){
+
+                const newAccess =
+                    access.filter(
+                        course =>
+                        course !== courseName
+                    );
+
+
+                const {
+                    error: updateError
+                } =
+                await supabaseClient
+                .from("student_accounts")
+                .update({
+                    course_access:newAccess
+                })
+                .eq("id",student.id);
+
+
+                if(updateError){
+
+                    throw updateError;
+
+                }
+
+            }
+
+        }
+
+
+        /*
+         * Delete course
+         */
+
+        const {
+            error: deleteError
+        } =
+        await supabaseClient
+        .from("courses")
+        .delete()
+        .eq("id",courseId);
+
+
+        if(deleteError){
+
+            throw deleteError;
+
+        }
+
+
+        alert(
+            "Course deleted successfully."
+        );
+
+
+        await loadCourseNames();
+
+        await loadCourses();
+
+        await loadStudents();
+
+
+    }
+    catch(err){
+
+        console.error(err);
+
+        alert(
+            "Course Delete failed:\n" +
+            err.message
+        );
+
+    }
 
 }
 
@@ -900,33 +1751,50 @@ async function loadLessons(){
     await supabaseClient
     .from("lessons")
     .select("*")
-    .order("created_at",{ascending:false});
+    .order(
+        "created_at",
+        {ascending:false}
+    );
 
 
     if(error){
 
         console.error(error);
 
-        document.getElementById("lessonsList").innerHTML =
-            `<div class="empty">Lessons load failed.</div>`;
+        document.getElementById(
+            "lessonsList"
+        ).innerHTML =
+            `
+            <div class="empty">
+                Lessons load failed.
+            </div>
+            `;
 
         return;
 
     }
 
 
-    document.getElementById("lessonCount")
-    .textContent = data.length;
+    document.getElementById(
+        "lessonCount"
+    ).textContent =
+        data.length;
 
 
     const box =
-        document.getElementById("lessonsList");
+        document.getElementById(
+            "lessonsList"
+        );
 
 
     if(data.length === 0){
 
         box.innerHTML =
-            `<div class="empty">No lessons uploaded yet.</div>`;
+            `
+            <div class="empty">
+                No lessons uploaded yet.
+            </div>
+            `;
 
         return;
 
@@ -940,6 +1808,7 @@ async function loadLessons(){
 
         let videoHTML = "";
 
+
         if(lesson.video_path){
 
             const {
@@ -952,6 +1821,7 @@ async function loadLessons(){
                 lesson.video_path
             );
 
+
             if(publicData?.publicUrl){
 
                 videoHTML = `
@@ -960,11 +1830,14 @@ async function loadLessons(){
                         controls
                         preload="metadata"
                     >
+
                         <source
                             src="${publicData.publicUrl}"
                             type="video/mp4"
                         >
+
                         Your browser does not support video.
+
                     </video>
 
                 `;
@@ -975,6 +1848,7 @@ async function loadLessons(){
 
 
         let pdfHTML = "";
+
 
         if(lesson.pdf_path){
 
@@ -988,6 +1862,7 @@ async function loadLessons(){
                 lesson.pdf_path
             );
 
+
             if(pdfData?.publicUrl){
 
                 pdfHTML = `
@@ -995,6 +1870,7 @@ async function loadLessons(){
                     <div class="pdf-box">
 
                         📄
+
                         <a
                             href="${pdfData.publicUrl}"
                             target="_blank"
@@ -1054,223 +1930,242 @@ async function loadLessons(){
 
 /* ADD LESSON */
 
-document.getElementById("lessonForm")
-.addEventListener("submit", async function(e){
+document.getElementById(
+    "lessonForm"
+)
+.addEventListener(
+    "submit",
+    async function(e){
 
-    e.preventDefault();
-
-
-    const title =
-        document.getElementById("lessonTitle")
-        .value.trim();
-
-    const course =
-        document.getElementById("lessonCourse")
-        .value;
-
-    const description =
-        document.getElementById("lessonDescription")
-        .value.trim();
-
-    const videoFile =
-        document.getElementById("videoFile")
-        .files[0];
-
-    const pdfFile =
-        document.getElementById("pdfFile")
-        .files[0];
+        e.preventDefault();
 
 
-    const msg =
-        document.getElementById("lessonMessage");
-
-    msg.style.display = "block";
-
-    msg.className =
-        "message";
-
-    msg.textContent =
-        "Uploading lesson...";
+        const title =
+            document.getElementById(
+                "lessonTitle"
+            ).value.trim();
 
 
-    try{
+        const course =
+            document.getElementById(
+                "lessonCourse"
+            ).value;
 
-        if(!videoFile){
-            throw new Error(
-                "Please select a video file."
+
+        const description =
+            document.getElementById(
+                "lessonDescription"
+            ).value.trim();
+
+
+        const videoFile =
+            document.getElementById(
+                "videoFile"
+            ).files[0];
+
+
+        const pdfFile =
+            document.getElementById(
+                "pdfFile"
+            ).files[0];
+
+
+        const msg =
+            document.getElementById(
+                "lessonMessage"
             );
-        }
 
 
-        /*
-        VIDEO UPLOAD
-        */
+        msg.style.display =
+            "block";
 
-        const videoPath =
-            course +
-            "/" +
-            Date.now() +
-            "-" +
-            cleanFileName(videoFile.name);
+        msg.className =
+            "message";
+
+        msg.textContent =
+            "Uploading lesson...";
 
 
-        const {
-            error: videoError
-        } =
-        await supabaseClient
-        .storage
-        .from("Video")
-        .upload(
-            videoPath,
-            videoFile,
-            {
-                upsert:false,
-                contentType:
-                    videoFile.type
-            }
-        );
+        try{
 
-
-        if(videoError){
-            throw videoError;
-        }
-
-
-        /*
-        PDF UPLOAD
-        */
-
-        let pdfPath = null;
-
-
-        if(pdfFile){
-
-            if(
-                pdfFile.type !==
-                "application/pdf"
-            ){
+            if(!videoFile){
 
                 throw new Error(
-                    "PDF file එකක් පමණක් upload කරන්න."
+                    "Please select a video file."
                 );
 
             }
 
 
-            pdfPath =
+            const videoPath =
                 course +
-                "/PDF/" +
+                "/" +
                 Date.now() +
                 "-" +
-                cleanFileName(pdfFile.name);
+                cleanFileName(
+                    videoFile.name
+                );
 
 
             const {
-                error: pdfError
+                error: videoError
             } =
             await supabaseClient
             .storage
             .from("Video")
             .upload(
-                pdfPath,
-                pdfFile,
+                videoPath,
+                videoFile,
                 {
                     upsert:false,
                     contentType:
-                        "application/pdf"
+                        videoFile.type
                 }
             );
 
 
-            if(pdfError){
-                throw pdfError;
+            if(videoError){
+
+                throw videoError;
+
             }
 
-        }
+
+            let pdfPath = null;
 
 
-        /*
-        INSERT LESSON
-        */
+            if(pdfFile){
 
-        const {
-            error: lessonError
-        } =
-        await supabaseClient
-        .from("lessons")
-        .insert({
+                if(
+                    pdfFile.type !==
+                    "application/pdf"
+                ){
 
-            title:title,
+                    throw new Error(
+                        "PDF file එකක් පමණක් upload කරන්න."
+                    );
 
-            course:course,
-
-            description:
-                description || null,
-
-            video_path:
-                videoPath,
-
-            pdf_path:
-                pdfPath
-
-        });
+                }
 
 
-        if(lessonError){
+                pdfPath =
+                    course +
+                    "/PDF/" +
+                    Date.now() +
+                    "-" +
+                    cleanFileName(
+                        pdfFile.name
+                    );
 
-            /*
-            If database insert fails,
-            delete uploaded files
-            */
 
+                const {
+                    error: pdfError
+                } =
+                await supabaseClient
+                .storage
+                .from("Video")
+                .upload(
+                    pdfPath,
+                    pdfFile,
+                    {
+                        upsert:false,
+                        contentType:
+                            "application/pdf"
+                    }
+                );
+
+
+                if(pdfError){
+
+                    throw pdfError;
+
+                }
+
+            }
+
+
+            const {
+                error: lessonError
+            } =
             await supabaseClient
-            .storage
-            .from("Video")
-            .remove([videoPath]);
+            .from("lessons")
+            .insert({
 
-            if(pdfPath){
+                title:title,
+
+                course:course,
+
+                description:
+                    description || null,
+
+                video_path:
+                    videoPath,
+
+                pdf_path:
+                    pdfPath
+
+            });
+
+
+            if(lessonError){
 
                 await supabaseClient
                 .storage
                 .from("Video")
-                .remove([pdfPath]);
+                .remove([
+                    videoPath
+                ]);
+
+
+                if(pdfPath){
+
+                    await supabaseClient
+                    .storage
+                    .from("Video")
+                    .remove([
+                        pdfPath
+                    ]);
+
+                }
+
+
+                throw lessonError;
 
             }
 
-            throw lessonError;
+
+            msg.className =
+                "message success-msg";
+
+            msg.textContent =
+                "Lesson uploaded successfully!";
+
+
+            document.getElementById(
+                "lessonForm"
+            ).reset();
+
+
+            await loadLessons();
+
+            await loadCourses();
+
+        }
+        catch(err){
+
+            console.error(err);
+
+            msg.className =
+                "message error-msg";
+
+            msg.textContent =
+                err.message ||
+                "Lesson upload failed.";
 
         }
 
-
-        msg.className =
-            "message success-msg";
-
-        msg.textContent =
-            "Lesson uploaded successfully!";
-
-
-        document.getElementById("lessonForm")
-        .reset();
-
-
-        await loadLessons();
-        await loadCourses();
-
     }
-    catch(err){
-
-        console.error(err);
-
-        msg.className =
-            "message error-msg";
-
-        msg.textContent =
-            err.message ||
-            "Lesson upload failed.";
-
-    }
-
-});
+);
 
 
 /* DELETE LESSON */
@@ -1282,8 +2177,11 @@ async function deleteLesson(id){
             "මෙම Lesson එක Delete කරන්නද?"
         );
 
+
     if(!yes){
+
         return;
+
     }
 
 
@@ -1293,14 +2191,19 @@ async function deleteLesson(id){
     } =
     await supabaseClient
     .from("lessons")
-    .select("video_path,pdf_path")
+    .select(
+        "video_path,pdf_path"
+    )
     .eq("id",id)
     .maybeSingle();
 
 
     if(findError){
 
-        alert(findError.message);
+        alert(
+            findError.message
+        );
+
         return;
 
     }
@@ -1310,16 +2213,22 @@ async function deleteLesson(id){
 
         const files = [];
 
+
         if(lesson.video_path){
+
             files.push(
                 lesson.video_path
             );
+
         }
 
+
         if(lesson.pdf_path){
+
             files.push(
                 lesson.pdf_path
             );
+
         }
 
 
@@ -1357,6 +2266,7 @@ async function deleteLesson(id){
 
 
     await loadLessons();
+
     await loadCourses();
 
 }
@@ -1379,7 +2289,10 @@ async function logout(){
 function cleanFileName(name){
 
     return name
-        .replace(/[^\w.\-]/g,"_");
+        .replace(
+            /[^\w.\-]/g,
+            "_"
+        );
 
 }
 
@@ -1387,11 +2300,49 @@ function cleanFileName(name){
 function escapeHtml(value){
 
     return String(value ?? "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+function escapeJs(value){
+
+    return String(value ?? "")
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+        .replace(
+            /'/g,
+            "\\'"
+        )
+        .replace(
+            /\r/g,
+            ""
+        )
+        .replace(
+            /\n/g,
+            "\\n"
+        );
 
 }
 
