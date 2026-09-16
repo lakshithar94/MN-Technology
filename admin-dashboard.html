@@ -387,6 +387,24 @@ video{
 }
 
 
+/* ==========================================
+   WHATSAPP REPORT
+   ========================================== */
+
+.whatsapp-btn{
+    background:#25D366;
+    color:white;
+    margin-left:8px;
+}
+
+.monitor-actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:12px;
+}
+
+
 /* MOBILE */
 
 @media(max-width:700px){
@@ -650,13 +668,25 @@ video{
     Student lesson activity, watch time and completion status
 </p>
 
-<button
-    type="button"
-    class="primary monitor-refresh"
-    onclick="loadMonitoring()"
->
-    🔄 Refresh Monitoring
-</button>
+<div class="monitor-actions">
+
+    <button
+        type="button"
+        class="primary"
+        onclick="loadMonitoring()"
+    >
+        🔄 Refresh Monitoring
+    </button>
+
+    <button
+        type="button"
+        class="whatsapp-btn"
+        onclick="sendMonitoringWhatsApp()"
+    >
+        📱 Send Report WhatsApp
+    </button>
+
+</div>
 
 <div class="monitor-wrap">
 
@@ -713,6 +743,13 @@ const supabaseClient =
 
 
 let ALL_COURSES = [];
+
+
+/* ==========================================
+   MONITORING DATA
+   ========================================== */
+
+let MONITORING_ROWS = [];
 
 
 /* ==========================================
@@ -2878,6 +2915,9 @@ async function loadMonitoring(){
             progress.length === 0
         ){
 
+            MONITORING_ROWS = [];
+
+
             body.innerHTML = `
 
                 <tr>
@@ -2928,6 +2968,9 @@ async function loadMonitoring(){
         );
 
 
+        MONITORING_ROWS = [];
+
+
         body.innerHTML = "";
 
 
@@ -2970,14 +3013,32 @@ async function loadMonitoring(){
                 );
 
 
+            /*
+             * IMPORTANT
+             *
+             * Started = TIME ONLY
+             *
+             * Example:
+             * 7:05 PM
+             */
+
             const started =
-                formatDateTime(
+                formatTimeOnly(
                     row.first_opened_at
                 );
 
 
+            /*
+             * IMPORTANT
+             *
+             * Last Watched = TIME ONLY
+             *
+             * Example:
+             * 7:42 PM
+             */
+
             const lastWatched =
-                formatDateTime(
+                formatTimeOnly(
                     row.last_watched_at
                 );
 
@@ -2992,6 +3053,28 @@ async function loadMonitoring(){
                 getMonitoringStatus(
                     row
                 );
+
+
+            MONITORING_ROWS.push({
+
+                student:studentName,
+
+                lesson:lessonName,
+
+                course:courseName,
+
+                date:date,
+
+                started:started,
+
+                lastWatched:lastWatched,
+
+                watchTime:watchTime,
+
+                statusText:
+                    getMonitoringStatusText(row)
+
+            });
 
 
             body.innerHTML += `
@@ -3066,6 +3149,9 @@ async function loadMonitoring(){
             "Monitoring error:",
             err
         );
+
+
+        MONITORING_ROWS = [];
 
 
         body.innerHTML = `
@@ -3166,6 +3252,38 @@ function getMonitoringStatus(row){
 
 
 /* ==========================================
+   MONITORING STATUS TEXT
+   ========================================== */
+
+function getMonitoringStatusText(row){
+
+    if(row.completed_at){
+
+        return "✅ Completed";
+
+    }
+
+
+    if(row.last_watched_at){
+
+        return "👀 Watching";
+
+    }
+
+
+    if(row.first_opened_at){
+
+        return "▶️ Started";
+
+    }
+
+
+    return "🔒 Not Started";
+
+}
+
+
+/* ==========================================
    FORMAT DATE
    ========================================== */
 
@@ -3201,10 +3319,10 @@ function formatDate(value){
 
 
 /* ==========================================
-   FORMAT DATE + TIME
+   FORMAT TIME ONLY
    ========================================== */
 
-function formatDateTime(value){
+function formatTimeOnly(value){
 
     if(!value){
 
@@ -3228,14 +3346,12 @@ function formatDateTime(value){
     }
 
 
-    return date.toLocaleString(
-        "en-GB",
+    return date.toLocaleTimeString(
+        "en-US",
         {
-            day:"2-digit",
-            month:"2-digit",
-            year:"numeric",
-            hour:"2-digit",
-            minute:"2-digit"
+            hour:"numeric",
+            minute:"2-digit",
+            hour12:true
         }
     );
 
@@ -3300,6 +3416,102 @@ function formatWatchTime(seconds){
     return (
         secs +
         " sec"
+    );
+
+}
+
+
+/* ==========================================
+   WHATSAPP MONITORING REPORT
+   ========================================== */
+
+function sendMonitoringWhatsApp(){
+
+    if(
+        !MONITORING_ROWS ||
+        MONITORING_ROWS.length === 0
+    ){
+
+        alert(
+            "WhatsApp කරන්න Monitoring Report එකක් නැහැ."
+        );
+
+        return;
+
+    }
+
+
+    let message =
+        "📊 MN TECHNOLOGY - STUDENT MONITORING REPORT\n\n";
+
+
+    MONITORING_ROWS.forEach(
+        (row,index) => {
+
+            message +=
+                "👨‍🎓 Student: " +
+                row.student +
+                "\n";
+
+            message +=
+                "🎬 Lesson: " +
+                row.lesson +
+                "\n";
+
+            message +=
+                "📅 Date: " +
+                row.date +
+                "\n";
+
+            message +=
+                "▶️ Started: " +
+                row.started +
+                "\n";
+
+            message +=
+                "👀 Last Watched: " +
+                row.lastWatched +
+                "\n";
+
+            message +=
+                "⏱️ Watch Time: " +
+                row.watchTime +
+                "\n";
+
+            message +=
+                "📌 Status: " +
+                row.statusText +
+                "\n";
+
+
+            if(
+                index <
+                MONITORING_ROWS.length - 1
+            ){
+
+                message +=
+                    "\n--------------------\n\n";
+
+            }
+
+        }
+    );
+
+
+    message +=
+        "\n\nMN TECHNOLOGY";
+
+
+    const whatsappURL =
+        "https://wa.me/?text=" +
+        encodeURIComponent(
+            message
+        );
+
+
+    window.open(
+        whatsappURL,
+        "_blank"
     );
 
 }
