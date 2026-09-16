@@ -7,7 +7,7 @@
 <title>Admin Dashboard | MN Technology</title>
 
 <!-- SUPABASE CDN -->
-<script src="https://cdn.jsdelivr.net/npm/@Supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{
@@ -247,6 +247,24 @@ video{
     margin-top:10px;
 }
 
+.video-loading{
+    margin-top:10px;
+    padding:15px;
+    background:#f8fafc;
+    border-radius:8px;
+    color:#64748b;
+    text-align:center;
+}
+
+.video-loading.loading{
+    color:#0369a1;
+}
+
+.video-loading.error{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
 .pdf-box{
     margin-top:12px;
     padding:12px;
@@ -319,10 +337,7 @@ video{
     margin-bottom:10px;
 }
 
-
-/* ==========================================
-   ADMIN MONITORING
-   ========================================== */
+/* ADMIN MONITORING */
 
 .monitor-wrap{
     overflow-x:auto;
@@ -386,10 +401,7 @@ video{
     margin-bottom:12px;
 }
 
-
-/* ==========================================
-   WHATSAPP REPORT
-   ========================================== */
+/* WHATSAPP */
 
 .whatsapp-btn{
     background:#25D366;
@@ -403,7 +415,6 @@ video{
     flex-wrap:wrap;
     margin-bottom:12px;
 }
-
 
 /* MOBILE */
 
@@ -454,7 +465,6 @@ video{
 
 <h1>Admin Dashboard</h1>
 
-
 <!-- STATS -->
 
 <div class="stats">
@@ -475,7 +485,6 @@ video{
     </div>
 
 </div>
-
 
 <!-- CREATE STUDENT -->
 
@@ -517,7 +526,6 @@ video{
 
 </div>
 
-
 <!-- COURSES -->
 
 <div class="card">
@@ -556,7 +564,6 @@ video{
 
 </div>
 
-
 <!-- STUDENTS -->
 
 <div class="card">
@@ -572,7 +579,6 @@ video{
 </div>
 
 </div>
-
 
 <!-- ADD LESSON -->
 
@@ -635,7 +641,6 @@ video{
 
 </div>
 
-
 <!-- LESSONS -->
 
 <div class="card">
@@ -652,10 +657,7 @@ video{
 
 </div>
 
-
-<!-- ==========================================
-     ADMIN MONITORING
-     ========================================== -->
+<!-- ADMIN MONITORING -->
 
 <div class="card">
 
@@ -722,18 +724,20 @@ video{
 
 </div>
 
-
 </div>
 
 
 <script>
+
+/* ==========================================
+   SUPABASE
+   ========================================== */
 
 const SUPABASE_URL =
     "https://ekanfqwbqwfhjfgctouk.supabase.co";
 
 const SUPABASE_KEY =
     "sb_publishable_tpFTptBWglmisRRhQiptmg_VkKhJdDn";
-
 
 const supabaseClient =
     window.supabase.createClient(
@@ -742,14 +746,17 @@ const supabaseClient =
     );
 
 
-let ALL_COURSES = [];
-
-
 /* ==========================================
-   MONITORING DATA
+   GLOBAL DATA
    ========================================== */
 
+let ALL_COURSES = [];
+
 let MONITORING_ROWS = [];
+
+let VIDEO_LOADING = new Set();
+
+let videoObserver = null;
 
 
 /* ==========================================
@@ -760,51 +767,101 @@ document.addEventListener(
     "DOMContentLoaded",
     async () => {
 
-        const {
-            data: { session }
-        } =
-        await supabaseClient.auth.getSession();
+        try{
+
+            const {
+                data:{session}
+            } =
+            await supabaseClient.auth.getSession();
 
 
-        if(!session){
+            if(!session){
 
-            window.location.href =
-                "login.html";
+                window.location.href =
+                    "login.html";
 
-            return;
+                return;
+
+            }
+
+
+            const {
+                data:admin,
+                error:adminError
+            } =
+            await supabaseClient
+                .from("admins")
+                .select("id,username")
+                .eq(
+                    "id",
+                    session.user.id
+                )
+                .maybeSingle();
+
+
+            if(adminError){
+
+                console.error(
+                    "Admin check error:",
+                    adminError
+                );
+
+            }
+
+
+            if(!admin){
+
+                await supabaseClient.auth.signOut();
+
+                window.location.href =
+                    "login.html";
+
+                return;
+
+            }
+
+
+            /*
+             * FIRST:
+             * Load course names only.
+             *
+             * Other sections depend on
+             * ALL_COURSES.
+             */
+
+            await loadCourseNames();
+
+            buildCourseInputs();
+
+
+            /*
+             * IMPORTANT SPEED OPTIMIZATION
+             *
+             * These independent sections
+             * now load at the same time.
+             */
+
+            await Promise.all([
+
+                loadStudents(),
+
+                loadLessons(),
+
+                loadCourses(),
+
+                loadMonitoring()
+
+            ]);
 
         }
+        catch(err){
 
-
-        const {
-            data: admin
-        } =
-        await supabaseClient
-        .from("admins")
-        .select("id,username")
-        .eq("id",session.user.id)
-        .maybeSingle();
-
-
-        if(!admin){
-
-            await supabaseClient.auth.signOut();
-
-            window.location.href =
-                "login.html";
-
-            return;
+            console.error(
+                "Dashboard startup error:",
+                err
+            );
 
         }
-
-
-        await loadCourseNames();
-
-        buildCourseInputs();
-
-        await loadDashboard();
-
-        await loadMonitoring();
 
     }
 );
@@ -821,12 +878,12 @@ async function loadCourseNames(){
         error
     } =
     await supabaseClient
-    .from("courses")
-    .select("id,name")
-    .order(
-        "id",
-        {ascending:true}
-    );
+        .from("courses")
+        .select("id,name")
+        .order(
+            "id",
+            {ascending:true}
+        );
 
 
     if(error){
@@ -844,9 +901,9 @@ async function loadCourseNames(){
 
 
     ALL_COURSES =
-        data.map(
+        (data || []).map(
             course =>
-            course.name
+                course.name
         );
 
 }
@@ -863,7 +920,6 @@ function buildCourseInputs(){
             "createCourseList"
         );
 
-
     const select =
         document.getElementById(
             "lessonCourse"
@@ -871,7 +927,6 @@ function buildCourseInputs(){
 
 
     createList.innerHTML = "";
-
 
     select.innerHTML =
         '<option value="">Select Course</option>';
@@ -915,11 +970,22 @@ function buildCourseInputs(){
 
 async function loadDashboard(){
 
-    await loadStudents();
+    /*
+     * Kept for compatibility.
+     *
+     * Initial loading now uses Promise.all()
+     * directly in PAGE START.
+     */
 
-    await loadLessons();
+    await Promise.all([
 
-    await loadCourses();
+        loadStudents(),
+
+        loadLessons(),
+
+        loadCourses()
+
+    ]);
 
 }
 
@@ -935,14 +1001,14 @@ async function loadStudents(){
         error
     } =
     await supabaseClient
-    .from("student_accounts")
-    .select(
-        "id,username,course_access,created_at"
-    )
-    .order(
-        "created_at",
-        {ascending:false}
-    );
+        .from("student_accounts")
+        .select(
+            "id,username,course_access,created_at"
+        )
+        .order(
+            "created_at",
+            {ascending:false}
+        );
 
 
     if(error){
@@ -1090,11 +1156,14 @@ async function saveStudentAccess(studentId){
         error
     } =
     await supabaseClient
-    .from("student_accounts")
-    .update({
-        course_access:selected
-    })
-    .eq("id",studentId);
+        .from("student_accounts")
+        .update({
+            course_access:selected
+        })
+        .eq(
+            "id",
+            studentId
+        );
 
 
     if(error){
@@ -1223,19 +1292,19 @@ document.getElementById(
 
 
             const {
-                data: student,
-                error: findError
+                data:student,
+                error:findError
             } =
             await supabaseClient
-            .from("student_accounts")
-            .select(
-                "id,username"
-            )
-            .eq(
-                "username",
-                username
-            )
-            .maybeSingle();
+                .from("student_accounts")
+                .select(
+                    "id,username"
+                )
+                .eq(
+                    "username",
+                    username
+                )
+                .maybeSingle();
 
 
             if(findError){
@@ -1255,17 +1324,17 @@ document.getElementById(
 
 
             const {
-                error: accessError
+                error:accessError
             } =
             await supabaseClient
-            .from("student_accounts")
-            .update({
-                course_access:selectedCourses
-            })
-            .eq(
-                "id",
-                student.id
-            );
+                .from("student_accounts")
+                .update({
+                    course_access:selectedCourses
+                })
+                .eq(
+                    "id",
+                    student.id
+                );
 
 
             if(accessError){
@@ -1314,24 +1383,54 @@ document.getElementById(
    COURSE MANAGEMENT
    ========================================== */
 
-
 /* LOAD COURSES */
 
 async function loadCourses(){
 
-    const {
-        data: courses,
-        error: courseError
-    } =
-    await supabaseClient
-    .from("courses")
-    .select(
-        "id,name"
-    )
-    .order(
-        "id",
-        {ascending:true}
-    );
+    /*
+     * Courses query and lessons count query
+     * run together instead of sequentially.
+     */
+
+    const [
+        coursesResult,
+        lessonsResult
+    ] =
+    await Promise.all([
+
+        supabaseClient
+            .from("courses")
+            .select(
+                "id,name"
+            )
+            .order(
+                "id",
+                {ascending:true}
+            ),
+
+        supabaseClient
+            .from("lessons")
+            .select(
+                "course"
+            )
+
+    ]);
+
+
+    const courses =
+        coursesResult.data || [];
+
+
+    const courseError =
+        coursesResult.error;
+
+
+    const lessons =
+        lessonsResult.data || [];
+
+
+    const lessonError =
+        lessonsResult.error;
 
 
     if(courseError){
@@ -1353,10 +1452,20 @@ async function loadCourses(){
     }
 
 
+    if(lessonError){
+
+        console.error(
+            "Lesson count error:",
+            lessonError
+        );
+
+    }
+
+
     ALL_COURSES =
         courses.map(
             course =>
-            course.name
+                course.name
         );
 
 
@@ -1364,22 +1473,6 @@ async function loadCourses(){
         "courseCount"
     ).textContent =
         courses.length;
-
-
-    const {
-        data: lessons,
-        error: lessonError
-    } =
-    await supabaseClient
-    .from("lessons")
-    .select("course");
-
-
-    if(lessonError){
-
-        console.error(lessonError);
-
-    }
 
 
     const box =
@@ -1407,13 +1500,33 @@ async function loadCourses(){
     }
 
 
+    /*
+     * Faster lesson counting.
+     *
+     * Old code used filter() for every
+     * course. This creates repeated loops.
+     */
+
+    const lessonCounts = {};
+
+
+    lessons.forEach(lesson => {
+
+        if(!lessonCounts[lesson.course]){
+
+            lessonCounts[lesson.course] = 0;
+
+        }
+
+        lessonCounts[lesson.course]++;
+
+    });
+
+
     courses.forEach(course => {
 
         const count =
-            (lessons || []).filter(
-                lesson =>
-                lesson.course === course.name
-            ).length;
+            lessonCounts[course.name] || 0;
 
 
         box.innerHTML += `
@@ -1528,10 +1641,10 @@ async function addCourse(){
             error
         } =
         await supabaseClient
-        .from("courses")
-        .insert({
-            name:name
-        });
+            .from("courses")
+            .insert({
+                name:name
+            });
 
 
         if(error){
@@ -1563,11 +1676,23 @@ async function addCourse(){
         input.value = "";
 
 
+        /*
+         * Reload together.
+         */
+
         await loadCourseNames();
 
-        await loadCourses();
 
-        await loadStudents();
+        buildCourseInputs();
+
+
+        await Promise.all([
+
+            loadCourses(),
+
+            loadStudents()
+
+        ]);
 
     }
     catch(err){
@@ -1634,17 +1759,17 @@ async function editCourse(
     try{
 
         const {
-            data: existing,
-            error: existingError
+            data:existing,
+            error:existingError
         } =
         await supabaseClient
-        .from("courses")
-        .select("id")
-        .eq(
-            "name",
-            cleanName
-        )
-        .maybeSingle();
+            .from("courses")
+            .select("id")
+            .eq(
+                "name",
+                cleanName
+            )
+            .maybeSingle();
 
 
         if(existingError){
@@ -1666,17 +1791,17 @@ async function editCourse(
 
 
         const {
-            error: courseError
+            error:courseError
         } =
         await supabaseClient
-        .from("courses")
-        .update({
-            name:cleanName
-        })
-        .eq(
-            "id",
-            courseId
-        );
+            .from("courses")
+            .update({
+                name:cleanName
+            })
+            .eq(
+                "id",
+                courseId
+            );
 
 
         if(courseError){
@@ -1687,17 +1812,17 @@ async function editCourse(
 
 
         const {
-            error: lessonError
+            error:lessonError
         } =
         await supabaseClient
-        .from("lessons")
-        .update({
-            course:cleanName
-        })
-        .eq(
-            "course",
-            oldName
-        );
+            .from("lessons")
+            .update({
+                course:cleanName
+            })
+            .eq(
+                "course",
+                oldName
+            );
 
 
         if(lessonError){
@@ -1708,14 +1833,14 @@ async function editCourse(
 
 
         const {
-            data: students,
-            error: studentError
+            data:students,
+            error:studentError
         } =
         await supabaseClient
-        .from("student_accounts")
-        .select(
-            "id,course_access"
-        );
+            .from("student_accounts")
+            .select(
+                "id,course_access"
+            );
 
 
         if(studentError){
@@ -1724,6 +1849,10 @@ async function editCourse(
 
         }
 
+
+        /*
+         * Keep original behavior.
+         */
 
         for(
             const student of students || []
@@ -1747,17 +1876,17 @@ async function editCourse(
 
 
                 const {
-                    error: updateError
+                    error:updateError
                 } =
                 await supabaseClient
-                .from("student_accounts")
-                .update({
-                    course_access:newAccess
-                })
-                .eq(
-                    "id",
-                    student.id
-                );
+                    .from("student_accounts")
+                    .update({
+                        course_access:newAccess
+                    })
+                    .eq(
+                        "id",
+                        student.id
+                    );
 
 
                 if(updateError){
@@ -1778,13 +1907,25 @@ async function editCourse(
 
         await loadCourseNames();
 
-        await loadCourses();
+        buildCourseInputs();
 
-        await loadStudents();
 
-        await loadLessons();
+        /*
+         * Reload independent sections
+         * together.
+         */
 
-        await loadMonitoring();
+        await Promise.all([
+
+            loadCourses(),
+
+            loadStudents(),
+
+            loadLessons(),
+
+            loadMonitoring()
+
+        ]);
 
     }
     catch(err){
@@ -1810,16 +1951,16 @@ async function deleteCourse(
 ){
 
     const {
-        data: lessons,
-        error: lessonCheckError
+        data:lessons,
+        error:lessonCheckError
     } =
     await supabaseClient
-    .from("lessons")
-    .select("id")
-    .eq(
-        "course",
-        courseName
-    );
+        .from("lessons")
+        .select("id")
+        .eq(
+            "course",
+            courseName
+        );
 
 
     if(lessonCheckError){
@@ -1871,14 +2012,14 @@ async function deleteCourse(
     try{
 
         const {
-            data: students,
-            error: studentError
+            data:students,
+            error:studentError
         } =
         await supabaseClient
-        .from("student_accounts")
-        .select(
-            "id,course_access"
-        );
+            .from("student_accounts")
+            .select(
+                "id,course_access"
+            );
 
 
         if(studentError){
@@ -1908,17 +2049,17 @@ async function deleteCourse(
 
 
                 const {
-                    error: updateError
+                    error:updateError
                 } =
                 await supabaseClient
-                .from("student_accounts")
-                .update({
-                    course_access:newAccess
-                })
-                .eq(
-                    "id",
-                    student.id
-                );
+                    .from("student_accounts")
+                    .update({
+                        course_access:newAccess
+                    })
+                    .eq(
+                        "id",
+                        student.id
+                    );
 
 
                 if(updateError){
@@ -1933,15 +2074,15 @@ async function deleteCourse(
 
 
         const {
-            error: deleteError
+            error:deleteError
         } =
         await supabaseClient
-        .from("courses")
-        .delete()
-        .eq(
-            "id",
-            courseId
-        );
+            .from("courses")
+            .delete()
+            .eq(
+                "id",
+                courseId
+            );
 
 
         if(deleteError){
@@ -1958,9 +2099,16 @@ async function deleteCourse(
 
         await loadCourseNames();
 
-        await loadCourses();
+        buildCourseInputs();
 
-        await loadStudents();
+
+        await Promise.all([
+
+            loadCourses(),
+
+            loadStudents()
+
+        ]);
 
     }
     catch(err){
@@ -1984,30 +2132,17 @@ async function deleteCourse(
 
 async function loadLessons(){
 
-    /*
-     * IMPORTANT:
-     *
-     * Lesson order uses ID ASC.
-     *
-     * Oldest lesson = Lesson 01
-     * Next lesson = Lesson 02
-     * etc.
-     *
-     * This matches Student Dashboard
-     * lesson unlock order.
-     */
-
     const {
         data,
         error
     } =
     await supabaseClient
-    .from("lessons")
-    .select("*")
-    .order(
-        "id",
-        {ascending:true}
-    );
+        .from("lessons")
+        .select("*")
+        .order(
+            "id",
+            {ascending:true}
+        );
 
 
     if(error){
@@ -2097,6 +2232,69 @@ async function loadLessons(){
     });
 
 
+    /*
+     * Create one IntersectionObserver.
+     *
+     * Videos are no longer signed immediately.
+     */
+
+    if(videoObserver){
+
+        videoObserver.disconnect();
+
+    }
+
+
+    videoObserver =
+        new IntersectionObserver(
+            entries => {
+
+                entries.forEach(entry => {
+
+                    if(
+                        entry.isIntersecting
+                    ){
+
+                        const target =
+                            entry.target;
+
+
+                        const lessonId =
+                            target.dataset.lessonId;
+
+
+                        const videoPath =
+                            target.dataset.videoPath;
+
+
+                        if(
+                            lessonId &&
+                            videoPath
+                        ){
+
+                            loadAdminVideo(
+                                lessonId,
+                                videoPath
+                            );
+
+                        }
+
+
+                        videoObserver.unobserve(
+                            target
+                        );
+
+                    }
+
+                });
+
+            },
+            {
+                rootMargin:"250px"
+            }
+        );
+
+
     courseNames.forEach(courseName => {
 
         const courseLessons =
@@ -2139,15 +2337,10 @@ async function loadLessons(){
                         <div
                             class="video-loading"
                             id="video-${lesson.id}"
-                            style="
-                                margin-top:10px;
-                                padding:12px;
-                                background:#f8fafc;
-                                border-radius:8px;
-                                color:#64748b;
-                            "
+                            data-lesson-id="${lesson.id}"
+                            data-video-path="${escapeHtml(lesson.video_path)}"
                         >
-                            🎥 Loading secure video...
+                            🎥 Secure video will load when needed...
                         </div>
 
                     `;
@@ -2222,20 +2415,26 @@ async function loadLessons(){
 
                 `;
 
-
-                if(lesson.video_path){
-
-                    loadAdminVideo(
-                        lesson.id,
-                        lesson.video_path
-                    );
-
-                }
-
             }
         );
 
     });
+
+
+    /*
+     * Observe all video placeholders after
+     * rendering is complete.
+     */
+
+    document
+        .querySelectorAll(
+            ".video-loading[data-lesson-id]"
+        )
+        .forEach(target => {
+
+            videoObserver.observe(target);
+
+        });
 
 }
 
@@ -2249,6 +2448,22 @@ async function loadAdminVideo(
     videoPath
 ){
 
+    if(
+        VIDEO_LOADING.has(
+            String(lessonId)
+        )
+    ){
+
+        return;
+
+    }
+
+
+    VIDEO_LOADING.add(
+        String(lessonId)
+    );
+
+
     const target =
         document.getElementById(
             "video-" + lessonId
@@ -2257,66 +2472,102 @@ async function loadAdminVideo(
 
     if(!target){
 
+        VIDEO_LOADING.delete(
+            String(lessonId)
+        );
+
         return;
 
     }
 
 
-    const {
-        data,
-        error
-    } =
-    await supabaseClient
-    .storage
-    .from("Video")
-    .createSignedUrl(
-        videoPath,
-        7200
-    );
+    target.className =
+        "video-loading loading";
 
 
-    if(error){
+    target.innerHTML =
+        "🎥 Loading secure video...";
 
-        console.error(error);
+
+    try{
+
+        const {
+            data,
+            error
+        } =
+        await supabaseClient
+            .storage
+            .from("Video")
+            .createSignedUrl(
+                videoPath,
+                7200
+            );
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        if(!data?.signedUrl){
+
+            throw new Error(
+                "Video URL could not be created."
+            );
+
+        }
+
+
+        target.className =
+            "";
 
 
         target.innerHTML = `
-            ❌ Secure video loading failed.
-        `;
 
-        return;
-
-    }
-
-
-    if(!data?.signedUrl){
-
-        target.innerHTML = `
-            ❌ Video URL could not be created.
-        `;
-
-        return;
-
-    }
-
-
-    target.innerHTML = `
-
-        <video
-            controls
-            preload="metadata"
-        >
-
-            <source
-                src="${escapeHtml(data.signedUrl)}"
-                type="video/mp4"
+            <video
+                controls
+                preload="metadata"
             >
 
-            Your browser does not support video.
+                <source
+                    src="${escapeHtml(data.signedUrl)}"
+                    type="video/mp4"
+                >
 
-        </video>
+                Your browser does not support video.
 
-    `;
+            </video>
+
+        `;
+
+    }
+    catch(err){
+
+        console.error(
+            "Secure video error:",
+            err
+        );
+
+
+        target.className =
+            "video-loading error";
+
+
+        target.innerHTML =
+            `
+            ❌ Secure video loading failed.
+            `;
+
+    }
+    finally{
+
+        VIDEO_LOADING.delete(
+            String(lessonId)
+        );
+
+    }
 
 }
 
@@ -2336,15 +2587,15 @@ async function openLessonPdf(
             error
         } =
         await supabaseClient
-        .storage
-        .from("Video")
-        .createSignedUrl(
-            pdfPath,
-            3600,
-            {
-                download:true
-            }
-        );
+            .storage
+            .from("Video")
+            .createSignedUrl(
+                pdfPath,
+                3600,
+                {
+                    download:true
+                }
+            );
 
 
         if(error){
@@ -2490,20 +2741,20 @@ document.getElementById(
 
 
             const {
-                error: videoError
+                error:videoError
             } =
             await supabaseClient
-            .storage
-            .from("Video")
-            .upload(
-                videoPath,
-                videoFile,
-                {
-                    upsert:false,
-                    contentType:
-                        videoFile.type
-                }
-            );
+                .storage
+                .from("Video")
+                .upload(
+                    videoPath,
+                    videoFile,
+                    {
+                        upsert:false,
+                        contentType:
+                            videoFile.type
+                    }
+                );
 
 
             if(videoError){
@@ -2524,11 +2775,11 @@ document.getElementById(
                 ){
 
                     await supabaseClient
-                    .storage
-                    .from("Video")
-                    .remove([
-                        videoPath
-                    ]);
+                        .storage
+                        .from("Video")
+                        .remove([
+                            videoPath
+                        ]);
 
 
                     throw new Error(
@@ -2549,30 +2800,30 @@ document.getElementById(
 
 
                 const {
-                    error: pdfError
+                    error:pdfError
                 } =
                 await supabaseClient
-                .storage
-                .from("Video")
-                .upload(
-                    pdfPath,
-                    pdfFile,
-                    {
-                        upsert:false,
-                        contentType:
-                            "application/pdf"
-                    }
-                );
+                    .storage
+                    .from("Video")
+                    .upload(
+                        pdfPath,
+                        pdfFile,
+                        {
+                            upsert:false,
+                            contentType:
+                                "application/pdf"
+                        }
+                    );
 
 
                 if(pdfError){
 
                     await supabaseClient
-                    .storage
-                    .from("Video")
-                    .remove([
-                        videoPath
-                    ]);
+                        .storage
+                        .from("Video")
+                        .remove([
+                            videoPath
+                        ]);
 
 
                     throw pdfError;
@@ -2589,46 +2840,46 @@ document.getElementById(
              */
 
             const {
-                error: lessonError
+                error:lessonError
             } =
             await supabaseClient
-            .from("lessons")
-            .insert({
+                .from("lessons")
+                .insert({
 
-                title:title,
+                    title:title,
 
-                course:course,
+                    course:course,
 
-                description:
-                    description || null,
+                    description:
+                        description || null,
 
-                video_path:
-                    videoPath,
+                    video_path:
+                        videoPath,
 
-                pdf_path:
-                    pdfPath
+                    pdf_path:
+                        pdfPath
 
-            });
+                });
 
 
             if(lessonError){
 
                 await supabaseClient
-                .storage
-                .from("Video")
-                .remove([
-                    videoPath
-                ]);
+                    .storage
+                    .from("Video")
+                    .remove([
+                        videoPath
+                    ]);
 
 
                 if(pdfPath){
 
                     await supabaseClient
-                    .storage
-                    .from("Video")
-                    .remove([
-                        pdfPath
-                    ]);
+                        .storage
+                        .from("Video")
+                        .remove([
+                            pdfPath
+                        ]);
 
                 }
 
@@ -2651,11 +2902,19 @@ document.getElementById(
             ).reset();
 
 
-            await loadLessons();
+            /*
+             * Reload sections together.
+             */
 
-            await loadCourses();
+            await Promise.all([
 
-            await loadMonitoring();
+                loadLessons(),
+
+                loadCourses(),
+
+                loadMonitoring()
+
+            ]);
 
         }
         catch(err){
@@ -2697,19 +2956,19 @@ async function deleteLesson(id){
 
 
     const {
-        data: lesson,
-        error: findError
+        data:lesson,
+        error:findError
     } =
     await supabaseClient
-    .from("lessons")
-    .select(
-        "video_path,pdf_path"
-    )
-    .eq(
-        "id",
-        id
-    )
-    .maybeSingle();
+        .from("lessons")
+        .select(
+            "video_path,pdf_path"
+        )
+        .eq(
+            "id",
+            id
+        )
+        .maybeSingle();
 
 
     if(findError){
@@ -2749,9 +3008,9 @@ async function deleteLesson(id){
         if(files.length > 0){
 
             await supabaseClient
-            .storage
-            .from("Video")
-            .remove(files);
+                .storage
+                .from("Video")
+                .remove(files);
 
         }
 
@@ -2762,12 +3021,12 @@ async function deleteLesson(id){
         error
     } =
     await supabaseClient
-    .from("lessons")
-    .delete()
-    .eq(
-        "id",
-        id
-    );
+        .from("lessons")
+        .delete()
+        .eq(
+            "id",
+            id
+        );
 
 
     if(error){
@@ -2782,11 +3041,15 @@ async function deleteLesson(id){
     }
 
 
-    await loadLessons();
+    await Promise.all([
 
-    await loadCourses();
+        loadLessons(),
 
-    await loadMonitoring();
+        loadCourses(),
+
+        loadMonitoring()
+
+    ]);
 
 }
 
@@ -2824,94 +3087,95 @@ async function loadMonitoring(){
     try{
 
         /*
-         * Load progress
+         * IMPORTANT SPEED OPTIMIZATION
+         *
+         * All 3 queries are independent.
+         * They now run together.
          */
 
-        const {
-            data: progress,
-            error: progressError
-        } =
-        await supabaseClient
-        .from("lesson_progress")
-        .select(`
-            id,
-            student_id,
-            lesson_id,
-            first_opened_at,
-            last_watched_at,
-            watch_seconds,
-            video_duration_seconds,
-            completed_at,
-            created_at,
-            updated_at
-        `)
-        .order(
-            "updated_at",
-            {
-                ascending:false
-            }
-        );
+        const [
+            progressResult,
+            studentsResult,
+            lessonsResult
+        ] =
+        await Promise.all([
+
+            supabaseClient
+                .from("lesson_progress")
+                .select(`
+                    id,
+                    student_id,
+                    lesson_id,
+                    first_opened_at,
+                    last_watched_at,
+                    watch_seconds,
+                    video_duration_seconds,
+                    completed_at,
+                    created_at,
+                    updated_at
+                `)
+                .order(
+                    "updated_at",
+                    {
+                        ascending:false
+                    }
+                ),
+
+            supabaseClient
+                .from("student_accounts")
+                .select(
+                    "id,username"
+                ),
+
+            supabaseClient
+                .from("lessons")
+                .select(
+                    "id,title,course"
+                )
+                .order(
+                    "id",
+                    {
+                        ascending:true
+                    }
+                )
+
+        ]);
 
 
-        if(progressError){
+        if(progressResult.error){
 
-            throw progressError;
+            throw progressResult.error;
 
         }
 
 
-        /*
-         * Load students
-         */
+        if(studentsResult.error){
 
-        const {
-            data: students,
-            error: studentError
-        } =
-        await supabaseClient
-        .from("student_accounts")
-        .select(
-            "id,username"
-        );
-
-
-        if(studentError){
-
-            throw studentError;
+            throw studentsResult.error;
 
         }
 
 
-        /*
-         * Load lessons
-         */
+        if(lessonsResult.error){
 
-        const {
-            data: lessons,
-            error: lessonError
-        } =
-        await supabaseClient
-        .from("lessons")
-        .select(
-            "id,title,course"
-        )
-        .order(
-            "id",
-            {
-                ascending:true
-            }
-        );
-
-
-        if(lessonError){
-
-            throw lessonError;
+            throw lessonsResult.error;
 
         }
+
+
+        const progress =
+            progressResult.data || [];
+
+
+        const students =
+            studentsResult.data || [];
+
+
+        const lessons =
+            lessonsResult.data || [];
 
 
         if(
-            !progress ||
             progress.length === 0
         ){
 
@@ -2941,7 +3205,7 @@ async function loadMonitoring(){
         const studentMap = {};
 
 
-        (students || []).forEach(
+        students.forEach(
             student => {
 
                 studentMap[
@@ -2956,7 +3220,7 @@ async function loadMonitoring(){
         const lessonMap = {};
 
 
-        (lessons || []).forEach(
+        lessons.forEach(
             lesson => {
 
                 lessonMap[
@@ -3013,29 +3277,11 @@ async function loadMonitoring(){
                 );
 
 
-            /*
-             * IMPORTANT
-             *
-             * Started = TIME ONLY
-             *
-             * Example:
-             * 7:05 PM
-             */
-
             const started =
                 formatTimeOnly(
                     row.first_opened_at
                 );
 
-
-            /*
-             * IMPORTANT
-             *
-             * Last Watched = TIME ONLY
-             *
-             * Example:
-             * 7:42 PM
-             */
 
             const lastWatched =
                 formatTimeOnly(
@@ -3072,7 +3318,9 @@ async function loadMonitoring(){
                 watchTime:watchTime,
 
                 statusText:
-                    getMonitoringStatusText(row)
+                    getMonitoringStatusText(
+                        row
+                    )
 
             });
 
