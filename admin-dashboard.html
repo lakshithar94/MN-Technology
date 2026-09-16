@@ -6,6 +6,7 @@
 
 <title>Admin Dashboard | MN Technology</title>
 
+<!-- FIXED SUPABASE CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -217,6 +218,17 @@ button{
     font-weight:bold;
 }
 
+.lesson-number{
+    display:inline-block;
+    margin-bottom:8px;
+    padding:5px 10px;
+    background:#dcfce7;
+    color:#166534;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:bold;
+}
+
 .course-label{
     display:inline-block;
     margin:7px 0 12px;
@@ -271,6 +283,7 @@ video{
 }
 
 /* COURSE MANAGEMENT */
+
 .course-management{
     border:1px solid #e2e8f0;
     border-radius:10px;
@@ -421,8 +434,6 @@ video{
 
 <h2>📚 Courses</h2>
 
-<!-- ADD COURSE -->
-
 <div class="add-course-box">
 
     <label>Add New Course</label>
@@ -444,8 +455,6 @@ video{
     <div id="courseMessage" class="message"></div>
 
 </div>
-
-<!-- COURSE LIST -->
 
 <div id="coursesList">
 
@@ -571,8 +580,6 @@ const supabaseClient =
     );
 
 
-/* COURSE LIST */
-
 let ALL_COURSES = [];
 
 
@@ -627,7 +634,7 @@ document.addEventListener(
 );
 
 
-/* LOAD COURSE NAMES FROM SUPABASE */
+/* LOAD COURSE NAMES */
 
 async function loadCourseNames(){
 
@@ -1395,10 +1402,6 @@ async function editCourse(
 
     try{
 
-        /*
-         * Check duplicate course name
-         */
-
         const {
             data: existing,
             error: existingError
@@ -1428,10 +1431,6 @@ async function editCourse(
         }
 
 
-        /*
-         * Update course table
-         */
-
         const {
             error: courseError
         } =
@@ -1450,10 +1449,6 @@ async function editCourse(
         }
 
 
-        /*
-         * Update lessons using old course name
-         */
-
         const {
             error: lessonError
         } =
@@ -1471,10 +1466,6 @@ async function editCourse(
 
         }
 
-
-        /*
-         * Update student course access
-         */
 
         const {
             data: students,
@@ -1570,10 +1561,6 @@ async function deleteCourse(
     courseName
 ){
 
-    /*
-     * Check whether lessons exist
-     */
-
     const {
         data: lessons,
         error: lessonCheckError
@@ -1632,10 +1619,6 @@ async function deleteCourse(
 
     try{
 
-        /*
-         * Remove course from student access
-         */
-
         const {
             data: students,
             error: studentError
@@ -1693,10 +1676,6 @@ async function deleteCourse(
         }
 
 
-        /*
-         * Delete course
-         */
-
         const {
             error: deleteError
         } =
@@ -1724,7 +1703,6 @@ async function deleteCourse(
 
         await loadStudents();
 
-
     }
     catch(err){
 
@@ -1740,9 +1718,20 @@ async function deleteCourse(
 }
 
 
-/* LOAD LESSONS */
+/* ==========================================
+   LOAD LESSONS
+   ========================================== */
 
 async function loadLessons(){
+
+    /*
+     * IMPORTANT:
+     * ASCENDING created_at
+     *
+     * Oldest lesson = Lesson 01
+     * Next lesson = Lesson 02
+     * etc.
+     */
 
     const {
         data,
@@ -1753,7 +1742,7 @@ async function loadLessons(){
     .select("*")
     .order(
         "created_at",
-        {ascending:false}
+        {ascending:true}
     );
 
 
@@ -1804,131 +1793,361 @@ async function loadLessons(){
     box.innerHTML = "";
 
 
+    /*
+     * GROUP LESSONS BY COURSE
+     */
+
+    const grouped = {};
+
+
     data.forEach(lesson => {
 
-        let videoHTML = "";
+        if(!grouped[lesson.course]){
 
-
-        if(lesson.video_path){
-
-            const {
-                data: publicData
-            } =
-            supabaseClient
-            .storage
-            .from("Video")
-            .getPublicUrl(
-                lesson.video_path
-            );
-
-
-            if(publicData?.publicUrl){
-
-                videoHTML = `
-
-                    <video
-                        controls
-                        preload="metadata"
-                    >
-
-                        <source
-                            src="${publicData.publicUrl}"
-                            type="video/mp4"
-                        >
-
-                        Your browser does not support video.
-
-                    </video>
-
-                `;
-
-            }
+            grouped[lesson.course] = [];
 
         }
 
+        grouped[lesson.course].push(lesson);
 
-        let pdfHTML = "";
-
-
-        if(lesson.pdf_path){
-
-            const {
-                data: pdfData
-            } =
-            supabaseClient
-            .storage
-            .from("Video")
-            .getPublicUrl(
-                lesson.pdf_path
-            );
+    });
 
 
-            if(pdfData?.publicUrl){
+    /*
+     * SHOW COURSES IN COURSE ORDER
+     */
 
-                pdfHTML = `
+    const courseNames =
+        ALL_COURSES.filter(
+            course =>
+            grouped[course]
+        );
 
-                    <div class="pdf-box">
 
-                        📄
+    /*
+     * ADD ANY COURSE NOT FOUND IN ALL_COURSES
+     */
 
-                        <a
-                            href="${pdfData.publicUrl}"
-                            target="_blank"
-                            download
+    Object.keys(grouped).forEach(course => {
+
+        if(!courseNames.includes(course)){
+
+            courseNames.push(course);
+
+        }
+
+    });
+
+
+    courseNames.forEach(courseName => {
+
+        const courseLessons =
+            grouped[courseName];
+
+
+        /*
+         * COURSE HEADING
+         */
+
+        box.innerHTML += `
+
+            <div style="
+                margin-top:20px;
+                margin-bottom:12px;
+                padding:12px;
+                background:#051223;
+                color:white;
+                border-radius:8px;
+                font-size:18px;
+                font-weight:bold;
+            ">
+                📚 ${escapeHtml(courseName)}
+            </div>
+
+        `;
+
+
+        /*
+         * LESSONS
+         */
+
+        courseLessons.forEach(
+            (lesson,index) => {
+
+                const lessonNumber =
+                    String(index + 1)
+                    .padStart(2,"0");
+
+
+                let videoHTML = "";
+
+
+                if(lesson.video_path){
+
+                    videoHTML = `
+
+                        <div class="video-loading"
+                             id="video-${lesson.id}"
+                             style="
+                                margin-top:10px;
+                                padding:12px;
+                                background:#f8fafc;
+                                border-radius:8px;
+                                color:#64748b;
+                             ">
+                            🎥 Loading secure video...
+                        </div>
+
+                    `;
+
+                }
+
+
+                let pdfHTML = "";
+
+
+                if(lesson.pdf_path){
+
+                    pdfHTML = `
+
+                        <div class="pdf-box">
+
+                            📄
+
+                            <button
+                                type="button"
+                                class="primary"
+                                onclick="openLessonPdf('${escapeJs(lesson.pdf_path)}')"
+                            >
+                                Open / Download Lesson PDF
+                            </button>
+
+                        </div>
+
+                    `;
+
+                }
+
+
+                box.innerHTML += `
+
+                    <div class="lesson">
+
+                        <div class="lesson-number">
+                            Lesson ${lessonNumber}
+                        </div>
+
+                        <div class="lesson-title">
+                            ${escapeHtml(lesson.title)}
+                        </div>
+
+                        <div class="course-label">
+                            ${escapeHtml(lesson.course)}
+                        </div>
+
+                        <p>
+                            ${escapeHtml(
+                                lesson.description || ""
+                            )}
+                        </p>
+
+                        ${videoHTML}
+
+                        ${pdfHTML}
+
+                        <br>
+
+                        <button
+                            class="danger"
+                            onclick="deleteLesson(${lesson.id})"
                         >
-                            Open / Download Lesson PDF
-                        </a>
+                            Delete Lesson
+                        </button>
 
                     </div>
 
                 `;
 
+
+                /*
+                 * LOAD PRIVATE VIDEO AFTER CARD CREATION
+                 */
+
+                if(lesson.video_path){
+
+                    loadAdminVideo(
+                        lesson.id,
+                        lesson.video_path
+                    );
+
+                }
+
             }
-
-        }
-
-
-        box.innerHTML += `
-
-            <div class="lesson">
-
-                <div class="lesson-title">
-                    ${escapeHtml(lesson.title)}
-                </div>
-
-                <div class="course-label">
-                    ${escapeHtml(lesson.course)}
-                </div>
-
-                <p>
-                    ${escapeHtml(
-                        lesson.description || ""
-                    )}
-                </p>
-
-                ${videoHTML}
-
-                ${pdfHTML}
-
-                <br>
-
-                <button
-                    class="danger"
-                    onclick="deleteLesson(${lesson.id})"
-                >
-                    Delete Lesson
-                </button>
-
-            </div>
-
-        `;
+        );
 
     });
 
 }
 
 
-/* ADD LESSON */
+/* ==========================================
+   ADMIN SECURE VIDEO
+   ========================================== */
+
+async function loadAdminVideo(
+    lessonId,
+    videoPath
+){
+
+    const target =
+        document.getElementById(
+            "video-" + lessonId
+        );
+
+
+    if(!target){
+
+        return;
+
+    }
+
+
+    const {
+        data,
+        error
+    } =
+    await supabaseClient
+    .storage
+    .from("Video")
+    .createSignedUrl(
+        videoPath,
+        7200
+    );
+
+
+    if(error){
+
+        console.error(error);
+
+        target.innerHTML = `
+
+            ❌ Secure video loading failed.
+
+        `;
+
+        return;
+
+    }
+
+
+    if(!data?.signedUrl){
+
+        target.innerHTML = `
+
+            ❌ Video URL could not be created.
+
+        `;
+
+        return;
+
+    }
+
+
+    target.innerHTML = `
+
+        <video
+            controls
+            preload="metadata"
+        >
+
+            <source
+                src="${escapeHtml(data.signedUrl)}"
+                type="video/mp4"
+            >
+
+            Your browser does not support video.
+
+        </video>
+
+    `;
+
+}
+
+
+/* ==========================================
+   OPEN PRIVATE PDF
+   ========================================== */
+
+async function openLessonPdf(
+    pdfPath
+){
+
+    try{
+
+        const {
+            data,
+            error
+        } =
+        await supabaseClient
+        .storage
+        .from("Video")
+        .createSignedUrl(
+            pdfPath,
+            3600,
+            {
+                download:true
+            }
+        );
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        if(!data?.signedUrl){
+
+            throw new Error(
+                "PDF URL could not be created."
+            );
+
+        }
+
+
+        const link =
+            document.createElement("a");
+
+        link.href =
+            data.signedUrl;
+
+        link.target =
+            "_blank";
+
+        link.rel =
+            "noopener";
+
+        link.click();
+
+    }
+    catch(err){
+
+        console.error(err);
+
+        alert(
+            "PDF download failed:\n" +
+            err.message
+        );
+
+    }
+
+}
+
+
+/* ==========================================
+   ADD LESSON
+   ========================================== */
 
 document.getElementById(
     "lessonForm"
@@ -1992,6 +2211,15 @@ document.getElementById(
 
                 throw new Error(
                     "Please select a video file."
+                );
+
+            }
+
+
+            if(!course){
+
+                throw new Error(
+                    "Please select a course."
                 );
 
             }
@@ -2077,12 +2305,25 @@ document.getElementById(
 
                 if(pdfError){
 
+                    await supabaseClient
+                    .storage
+                    .from("Video")
+                    .remove([
+                        videoPath
+                    ]);
+
                     throw pdfError;
 
                 }
 
             }
 
+
+            /*
+             * Lesson row
+             *
+             * created_at determines order.
+             */
 
             const {
                 error: lessonError
@@ -2168,7 +2409,9 @@ document.getElementById(
 );
 
 
-/* DELETE LESSON */
+/* ==========================================
+   DELETE LESSON
+   ========================================== */
 
 async function deleteLesson(id){
 
