@@ -1,11 +1,13 @@
-```html
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Login | MN Technology</title>
+
+  <!-- Supabase JavaScript Library -->
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -166,6 +168,7 @@
       pointer-events: none;
     }
   </style>
+
 </head>
 
 <body>
@@ -180,74 +183,78 @@
 
   <div class="user-type">
 
-    <button
-      id="studentBtn"
-      class="active"
-      type="button"
-      onclick="selectType('student')">
-      Student
-    </button>
+```
+<button
+  id="studentBtn"
+  class="active"
+  type="button"
+  onclick="selectType('student')">
+  Student
+</button>
 
-    <button
-      id="adminBtn"
-      type="button"
-      onclick="selectType('admin')">
-      Admin
-    </button>
+<button
+  id="adminBtn"
+  type="button"
+  onclick="selectType('admin')">
+  Admin
+</button>
+```
 
   </div>
 
   <form id="loginForm">
 
-    <div class="input-group">
+```
+<div class="input-group">
 
-      <label for="username">Username</label>
+  <label for="username">Username</label>
 
-      <input
-        type="text"
-        id="username"
-        placeholder="Enter username"
-        required
-        autocomplete="username">
+  <input
+    type="text"
+    id="username"
+    placeholder="Enter username"
+    required
+    autocomplete="username">
 
-    </div>
+</div>
 
-    <div class="input-group">
+<div class="input-group">
 
-      <label for="password">Password</label>
+  <label for="password">Password</label>
 
-      <div class="password-wrapper">
+  <div class="password-wrapper">
 
-        <input
-          type="password"
-          id="password"
-          placeholder="Enter password"
-          required
-          autocomplete="current-password">
-
-        <button
-          type="button"
-          id="showPasswordBtn"
-          class="show-password-btn">
-          👁️
-        </button>
-
-      </div>
-
-    </div>
+    <input
+      type="password"
+      id="password"
+      placeholder="Enter password"
+      required
+      autocomplete="current-password">
 
     <button
-      type="submit"
-      class="login-btn"
-      id="loginBtn">
-      Login
+      type="button"
+      id="showPasswordBtn"
+      class="show-password-btn">
+      👁️
     </button>
 
-    <div class="forgot-password">
-      <a href="forgot-password.html">
-        Forgot Password?
-      </a>
-    </div>
+  </div>
+
+</div>
+
+<button
+  type="submit"
+  class="login-btn"
+  id="loginBtn">
+  Login
+</button>
+
+<div class="forgot-password">
+  <a href="forgot-password.html">
+    Forgot Password?
+  </a>
+</div>
+```
 
   </form>
 
@@ -260,7 +267,6 @@
   </div>
 
 </div>
-
 
 <script>
 
@@ -520,8 +526,6 @@ document
           message.style.color =
             "red";
 
-          /* SHOW ACTUAL ERROR */
-
           message.textContent =
             error.message ||
             "Unknown login error.";
@@ -593,4 +597,3 @@ document
 
 </body>
 </html>
-```
