@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -96,6 +97,33 @@
       border-color: #0b4f8a;
     }
 
+    /* Password field */
+    .password-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .password-wrapper input {
+      padding-right: 50px;
+    }
+
+    .show-password-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: transparent;
+      font-size: 21px;
+      cursor: pointer;
+      padding: 5px;
+      line-height: 1;
+    }
+
+    .show-password-btn:hover {
+      opacity: 0.7;
+    }
+
     .login-btn {
       width: 100%;
       padding: 14px;
@@ -183,7 +211,6 @@
 
     </div>
 
-
     <!-- Login Form -->
     <form id="loginForm">
 
@@ -201,21 +228,33 @@
 
       </div>
 
-
       <div class="input-group">
 
         <label>Password</label>
 
-        <input
-          type="password"
-          id="password"
-          placeholder="Enter password"
-          required
-          autocomplete="current-password"
-        >
+        <div class="password-wrapper">
+
+          <input
+            type="password"
+            id="password"
+            placeholder="Enter password"
+            required
+            autocomplete="current-password"
+          >
+
+          <button
+            type="button"
+            class="show-password-btn"
+            id="showPasswordBtn"
+            aria-label="Show password"
+            title="Show Password"
+          >
+            👁️
+          </button>
+
+        </div>
 
       </div>
-
 
       <button
         type="submit"
@@ -224,7 +263,6 @@
       >
         Login
       </button>
-
 
       <!-- Forgot Password -->
       <div class="forgot-password">
@@ -237,12 +275,10 @@
 
     </form>
 
-
     <div
       class="message"
       id="message"
     ></div>
-
 
     <div class="info">
 
@@ -256,7 +292,6 @@
 
   </div>
 
-
   <script>
 
     // ==============================
@@ -267,8 +302,7 @@
       "https://ekanfqwbqwfhjfgctouk.supabase.co";
 
     const SUPABASE_KEY =
-      "sb_publishable_tpFTptBWglmisRRhQiptmg_VkKhJdDn";
-
+      "sb_publishable_tpFTptBWglmisRRHqiptmg_VkKhJdDn";
 
     const supabaseClient =
       window.supabase.createClient(
@@ -290,6 +324,55 @@
     // ==============================
 
     let loginType = "student";
+
+
+    // ==============================
+    // SHOW / HIDE PASSWORD
+    // ==============================
+
+    const passwordInput =
+      document.getElementById("password");
+
+    const showPasswordBtn =
+      document.getElementById("showPasswordBtn");
+
+    showPasswordBtn.addEventListener("click", function() {
+
+      if (passwordInput.type === "password") {
+
+        passwordInput.type = "text";
+
+        showPasswordBtn.textContent = "🙈";
+
+        showPasswordBtn.setAttribute(
+          "aria-label",
+          "Hide password"
+        );
+
+        showPasswordBtn.setAttribute(
+          "title",
+          "Hide Password"
+        );
+
+      } else {
+
+        passwordInput.type = "password";
+
+        showPasswordBtn.textContent = "👁️";
+
+        showPasswordBtn.setAttribute(
+          "aria-label",
+          "Show password"
+        );
+
+        showPasswordBtn.setAttribute(
+          "title",
+          "Show Password"
+        );
+
+      }
+
+    });
 
 
     // ==============================
@@ -536,3 +619,4 @@
 
 </body>
 </html>
+```
