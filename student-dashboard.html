@@ -1,1640 +1,1105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Student Dashboard | MN Technology</title>
 
-  <style>
+  <!-- IMPORTANT: lowercase @supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
     }
 
     body {
+      font-family: Arial, sans-serif;
       background: #f4f7fb;
       color: #172033;
+      min-height: 100vh;
     }
 
-    nav {
+    .navbar {
       background: #051223;
       color: white;
-      padding: 15px 25px;
+      padding: 14px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
 
-    .logo {
+    .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       font-size: 20px;
       font-weight: bold;
     }
 
-    .logo-box {
+    .logo {
       width: 42px;
       height: 42px;
+      border-radius: 10px;
       background: #22d3ee;
       color: #051223;
-      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
+      font-size: 16px;
     }
 
-    .nav-right {
+    .user-area {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 12px;
     }
 
     .username-display {
-      color: #cbd5e1;
+      font-size: 14px;
+      color: #d9faff;
     }
 
     .logout-btn {
       background: #ef4444;
-      border: none;
       color: white;
-      padding: 9px 15px;
+      border: none;
+      padding: 9px 14px;
       border-radius: 7px;
       cursor: pointer;
+      font-weight: bold;
+    }
+
+    .logout-btn:hover {
+      background: #dc2626;
     }
 
     .container {
       max-width: 1100px;
-      margin: 30px auto;
-      padding: 0 20px;
+      margin: auto;
+      padding: 25px 16px 50px;
     }
 
     .welcome {
-      background: white;
+      background: linear-gradient(135deg, #051223, #0a1f3d);
+      color: white;
+      border-radius: 15px;
       padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
       margin-bottom: 25px;
+      box-shadow: 0 5px 18px rgba(0,0,0,.08);
     }
 
     .welcome h1 {
       margin-bottom: 8px;
+      font-size: 26px;
     }
 
     .welcome p {
-      color: #64748b;
+      color: #c9d8e8;
     }
 
-    .section {
+    .section-title {
+      margin: 25px 0 15px;
+      font-size: 22px;
+    }
+
+    .course-card {
       background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+      border-radius: 14px;
+      padding: 20px;
       margin-bottom: 25px;
-    }
-
-    .section h2 {
-      margin-bottom: 20px;
-    }
-
-    .course-section {
-      margin-bottom: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.07);
     }
 
     .course-title {
-      background: #051223;
-      color: white;
-      padding: 14px 18px;
-      border-radius: 9px;
-      margin-bottom: 15px;
-      font-size: 19px;
-    }
-
-    .course-locked {
-      background: #f8fafc;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 30px;
-      text-align: center;
-      margin-bottom: 15px;
-    }
-
-    .lock-icon {
-      font-size: 42px;
-      margin-bottom: 10px;
-    }
-
-    .course-locked h3 {
-      margin-bottom: 8px;
-      color: #334155;
-    }
-
-    .course-locked p {
-      color: #64748b;
-    }
-
-    .lesson {
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 20px;
+      color: #0a1f3d;
+      font-size: 21px;
       margin-bottom: 18px;
-      position: relative;
+      border-bottom: 2px solid #e8eef5;
+      padding-bottom: 10px;
     }
 
-    .lesson:last-child {
-      margin-bottom: 0;
+    .lesson-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 16px;
+      background: #fbfdff;
     }
 
-    .lesson h3 {
-      margin-bottom: 8px;
-      font-size: 20px;
+    .lesson-card.locked {
+      opacity: .65;
+      background: #f1f5f9;
     }
 
-    .course {
-      color: #0284c7;
-      font-weight: bold;
+    .lesson-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      align-items: flex-start;
       margin-bottom: 10px;
     }
 
-    .description {
-      color: #64748b;
-      margin-bottom: 15px;
-      line-height: 1.5;
+    .lesson-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #172033;
     }
 
-    /* =====================================
-       LESSON STATUS
-    ===================================== */
-
-    .lesson-status {
-      display: inline-block;
-      padding: 7px 12px;
-      border-radius: 20px;
-      font-size: 13px;
+    .lesson-number {
+      background: #0a1f3d;
+      color: white;
+      min-width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       font-weight: bold;
+    }
+
+    .lesson-description {
+      color: #64748b;
       margin-bottom: 15px;
+      line-height: 1.6;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
     }
 
     .status-locked {
-      background: #f1f5f9;
-      color: #64748b;
+      background: #e2e8f0;
+      color: #475569;
     }
 
-    .status-unlocked {
-      background: #dbeafe;
-      color: #1d4ed8;
-    }
-
-    .status-watching {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .status-completed {
+    .status-open {
       background: #dcfce7;
       color: #166534;
     }
 
-    .lesson-locked {
-      background: #f8fafc;
-      border-color: #e2e8f0;
+    .status-completed {
+      background: #dbeafe;
+      color: #1d4ed8;
     }
-
-    .locked-message {
-      background: #f8fafc;
-      border: 1px dashed #cbd5e1;
-      padding: 18px;
-      border-radius: 8px;
-      color: #64748b;
-      text-align: center;
-    }
-
-    .completed-message {
-      background: #f0fdf4;
-      border: 1px solid #bbf7d0;
-      padding: 12px;
-      border-radius: 8px;
-      color: #166534;
-      margin-top: 12px;
-      font-weight: bold;
-    }
-
-    /* =====================================
-       VIDEO WRAPPER
-    ===================================== */
 
     .video-wrapper {
       position: relative;
-      width: 100%;
-      max-width: 800px;
-      background: black;
+      background: #000;
       border-radius: 10px;
       overflow: hidden;
+      margin-top: 15px;
+      display: none;
     }
 
-    /* =====================================
-       VIDEO
-    ===================================== */
-
-    video {
+    .video-wrapper video {
       width: 100%;
+      max-height: 520px;
       display: block;
       background: black;
-      border-radius: 10px;
     }
 
-    /* =====================================
-       WATERMARK
-    ===================================== */
-
-    .video-watermark {
-
+    .watermark {
       position: absolute;
-
-      color: rgba(255,255,255,0.30);
-
-      font-size: 15px;
-
-      font-weight: bold;
-
-      padding: 6px 10px;
-
-      background: rgba(0,0,0,0.12);
-
+      left: 15px;
+      top: 15px;
+      color: rgba(255,255,255,.75);
+      background: rgba(0,0,0,.35);
+      padding: 5px 9px;
       border-radius: 5px;
-
+      font-size: 12px;
       pointer-events: none;
-
+      z-index: 5;
       user-select: none;
-
-      z-index: 99999;
-
-      transition:
-        top 1s ease,
-        left 1s ease,
-        right 1s ease,
-        bottom 1s ease;
-
-      white-space: nowrap;
     }
 
-    /* =====================================
-       FULLSCREEN
-    ===================================== */
-
-    .video-wrapper:fullscreen {
-
-      width: 100vw;
-
-      height: 100vh;
-
-      max-width: none;
-
-      border-radius: 0;
-
-      background: black;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-    }
-
-    .video-wrapper:-webkit-full-screen {
-
-      width: 100vw;
-
-      height: 100vh;
-
-      max-width: none;
-
-      border-radius: 0;
-
-      background: black;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-    }
-
-    .video-wrapper:fullscreen video {
-
-      width: 100%;
-
-      height: 100%;
-
-      object-fit: contain;
-
-      border-radius: 0;
-    }
-
-    .video-wrapper:-webkit-full-screen video {
-
-      width: 100%;
-
-      height: 100%;
-
-      object-fit: contain;
-
-      border-radius: 0;
-    }
-
-    /* =====================================
-       FULLSCREEN BUTTON
-    ===================================== */
-
-    .fullscreen-btn {
-
-      position: absolute;
-
-      right: 12px;
-
-      bottom: 12px;
-
-      z-index: 100000;
-
-      background: rgba(0,0,0,0.65);
-
-      color: white;
-
-      border: 1px solid rgba(255,255,255,0.35);
-
-      padding: 8px 12px;
-
-      border-radius: 6px;
-
-      cursor: pointer;
-
-      font-size: 14px;
-
-      opacity: 0.85;
-
-      transition: opacity 0.2s ease;
-    }
-
-    .fullscreen-btn:hover {
-      opacity: 1;
-    }
-
-    .video-wrapper:fullscreen .fullscreen-btn {
-      right: 18px;
-      bottom: 18px;
-    }
-
-    .video-wrapper:-webkit-full-screen .fullscreen-btn {
-      right: 18px;
-      bottom: 18px;
-    }
-
-    /* =====================================
-       REPORT
-    ===================================== */
-
-    .report-info {
-      color: #64748b;
-      margin-bottom: 15px;
-      line-height: 1.5;
-    }
-
-    .report-table-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      border: 1px solid #e5e7eb;
-      border-radius: 9px;
-    }
-
-    .report-table {
-      width: 100%;
-      min-width: 850px;
-      border-collapse: collapse;
-      background: white;
-    }
-
-    .report-table th {
-      background: #051223;
-      color: white;
-      padding: 12px;
-      text-align: left;
-      font-size: 14px;
-    }
-
-    .report-table td {
-      padding: 12px;
-      border-bottom: 1px solid #e5e7eb;
-      font-size: 14px;
-    }
-
-    .report-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    .report-buttons {
+    .lesson-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       margin-top: 15px;
     }
 
-    .report-btn {
+    button,
+    .pdf-btn {
       border: none;
-      color: white;
+      border-radius: 7px;
       padding: 10px 15px;
-      border-radius: 7px;
       cursor: pointer;
       font-weight: bold;
+      text-decoration: none;
+      display: inline-block;
     }
 
-    .copy-report-btn {
-      background: #0ea5e9;
-    }
-
-    .whatsapp-report-btn {
-      background: #16a34a;
-    }
-
-    .report-message {
-      display: none;
-      margin-top: 12px;
-      padding: 10px 12px;
-      border-radius: 7px;
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    /* =====================================
-       NO LESSONS
-    ===================================== */
-
-    .no-lessons {
-      color: #64748b;
-      text-align: center;
-      padding: 30px;
-    }
-
-    /* =====================================
-       PASSWORD
-    ===================================== */
-
-    .password-form {
-      max-width: 500px;
-    }
-
-    label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 7px;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #d1d5db;
-      border-radius: 7px;
-      margin-bottom: 15px;
-      font-size: 15px;
-    }
-
-    .change-btn {
-      background: #0ea5e9;
+    .watch-btn {
+      background: #0a1f3d;
       color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 7px;
-      font-weight: bold;
-      cursor: pointer;
     }
 
-    .change-btn:disabled {
-      opacity: 0.6;
+    .watch-btn:hover {
+      background: #12325e;
+    }
+
+    .complete-btn {
+      background: #16a34a;
+      color: white;
+    }
+
+    .complete-btn:hover {
+      background: #15803d;
+    }
+
+    .complete-btn:disabled {
+      background: #94a3b8;
       cursor: not-allowed;
     }
 
-    /* =====================================
-       MESSAGE
-    ===================================== */
+    .pdf-btn {
+      background: #7c3aed;
+      color: white;
+    }
+
+    .pdf-btn:hover {
+      background: #6d28d9;
+    }
+
+    .locked-btn {
+      background: #cbd5e1;
+      color: #475569;
+      cursor: not-allowed;
+    }
 
     .message {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
       display: none;
-      padding: 12px;
-      border-radius: 7px;
+    }
+
+    .message.success {
+      background: #dcfce7;
+      color: #166534;
+      display: block;
+    }
+
+    .message.error {
+      background: #fee2e2;
+      color: #991b1b;
+      display: block;
+    }
+
+    .empty {
+      background: white;
+      padding: 25px;
+      text-align: center;
+      border-radius: 12px;
+      color: #64748b;
+    }
+
+    .password-card {
+      background: white;
+      padding: 22px;
+      border-radius: 14px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.07);
+      margin-top: 30px;
+    }
+
+    .password-card h2 {
       margin-bottom: 15px;
     }
 
-    .success {
-      background: #dcfce7;
-      color: #166534;
+    .password-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
-    .error {
-      background: #fee2e2;
-      color: #991b1b;
+    .password-form input {
+      flex: 1;
+      min-width: 220px;
+      padding: 11px;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      outline: none;
     }
 
-    /* =====================================
-       MOBILE
-    ===================================== */
+    .password-form button {
+      background: #0a1f3d;
+      color: white;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 30px;
+      color: #64748b;
+    }
 
     @media (max-width: 700px) {
-
-      nav {
-        padding: 12px 15px;
-      }
-
-      .logo span {
-        display: none;
-      }
-
-      .nav-right {
-        gap: 8px;
+      .navbar {
+        padding: 12px;
       }
 
       .username-display {
-        font-size: 13px;
+        display: none;
       }
 
-      .container {
-        padding: 0 12px;
+      .lesson-header {
+        flex-direction: column;
       }
 
-      .video-watermark {
-        font-size: 11px;
-        padding: 4px 7px;
+      .lesson-actions {
+        flex-direction: column;
       }
 
-      .fullscreen-btn {
-        font-size: 12px;
-        padding: 7px 9px;
+      .lesson-actions button,
+      .lesson-actions a {
+        width: 100%;
+        text-align: center;
       }
-
-      .section {
-        padding: 18px;
-      }
-
-      .lesson {
-        padding: 15px;
-      }
-
     }
-
   </style>
-
 </head>
 
 <body>
 
-<!-- =====================================
-     NAVBAR
-===================================== -->
-
-<nav>
-
-  <div class="logo">
-
-    <div class="logo-box">
-      MN
+  <nav class="navbar">
+    <div class="brand">
+      <div class="logo">MN</div>
+      <span>MN Technology</span>
     </div>
 
-    <span>
-      MN Technology
-    </span>
+    <div class="user-area">
+      <span class="username-display" id="usernameDisplay"></span>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </nav>
 
-  </div>
+  <main class="container">
 
-  <div class="nav-right">
+    <div id="message" class="message"></div>
 
-    <span
-      class="username-display"
-      id="navUsername"
-    >
-      Student
-    </span>
+    <section class="welcome">
+      <h1>Welcome to MN Technology 👋</h1>
+      <p id="welcomeText">Loading your account...</p>
+    </section>
 
-    <button
-      class="logout-btn"
-      id="logoutBtn"
-    >
-      Logout
-    </button>
+    <h2 class="section-title">📚 Available Lessons</h2>
 
-  </div>
-
-</nav>
-
-
-<div class="container">
-
-  <!-- =====================================
-       WELCOME
-  ===================================== -->
-
-  <div class="welcome">
-
-    <h1>
-
-      Welcome,
-
-      <span id="welcomeUsername">
-        Student
-      </span>!
-
-    </h1>
-
-    <p>
-      Select a lesson below and start learning.
-    </p>
-
-  </div>
-
-
-  <!-- =====================================
-       LESSONS
-  ===================================== -->
-
-  <div class="section">
-
-    <h2>
-      📚 Available Lessons
-    </h2>
-
-    <div id="lessonsList">
-
-      <p class="no-lessons">
-        Loading lessons...
-      </p>
-
+    <div id="lessonsContainer">
+      <div class="loading">Loading lessons...</div>
     </div>
 
-  </div>
+    <section class="password-card">
+      <h2>🔐 Change Password</h2>
 
+      <form class="password-form" onsubmit="changePassword(event)">
+        <input
+          type="password"
+          id="newPassword"
+          placeholder="Enter new password"
+          minlength="6"
+          required
+        >
 
-  <!-- =====================================
-       STUDENT REPORT
-  ===================================== -->
+        <input
+          type="password"
+          id="confirmPassword"
+          placeholder="Confirm new password"
+          minlength="6"
+          required
+        >
 
-  <div class="section">
+        <button type="submit">
+          Change Password
+        </button>
+      </form>
+    </section>
 
-    <h2>
-      📊 My Learning Report
-    </h2>
-
-    <p class="report-info">
-      මෙහි ඔබගේ lesson progress, started time, last watched time,
-      watch time සහ completed status පෙන්වයි.
-    </p>
-
-    <div class="report-table-wrapper">
-
-      <table class="report-table">
-
-        <thead>
-
-          <tr>
-            <th>Student</th>
-            <th>Lesson</th>
-            <th>Date</th>
-            <th>Started</th>
-            <th>Last Watched</th>
-            <th>Watch Time</th>
-            <th>Status</th>
-          </tr>
-
-        </thead>
-
-        <tbody id="reportBody">
-
-          <tr>
-            <td colspan="7" style="text-align:center;">
-              Loading report...
-            </td>
-          </tr>
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-    <div class="report-buttons">
-
-      <button
-        class="report-btn copy-report-btn"
-        id="copyReportBtn"
-      >
-        📋 Copy Report
-      </button>
-
-      <button
-        class="report-btn whatsapp-report-btn"
-        id="whatsappReportBtn"
-      >
-        📱 WhatsApp Report
-      </button>
-
-    </div>
-
-    <div
-      id="reportMessage"
-      class="report-message"
-    ></div>
-
-  </div>
-
-
-  <!-- =====================================
-       PASSWORD
-  ===================================== -->
-
-  <div class="section">
-
-    <h2>
-      🔐 Change Password
-    </h2>
-
-    <div
-      id="passwordMessage"
-      class="message">
-    </div>
-
-    <form
-      id="passwordForm"
-      class="password-form"
-    >
-
-      <label for="newPassword">
-        New Password
-      </label>
-
-      <input
-        type="password"
-        id="newPassword"
-        placeholder="Enter new password"
-        minlength="6"
-        required
-        autocomplete="new-password"
-      >
-
-      <label for="confirmPassword">
-        Confirm New Password
-      </label>
-
-      <input
-        type="password"
-        id="confirmPassword"
-        placeholder="Confirm new password"
-        minlength="6"
-        required
-        autocomplete="new-password"
-      >
-
-      <button
-        type="submit"
-        class="change-btn"
-        id="changePasswordBtn"
-      >
-        Change Password
-      </button>
-
-    </form>
-
-  </div>
-
-</div>
-
-
-<!-- =====================================
-     SUPABASE
-===================================== -->
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+  </main>
 
 <script>
+  /* =========================================================
+     SUPABASE CONFIGURATION
+     ========================================================= */
 
-/* =====================================
-   SUPABASE
-===================================== */
+  const SUPABASE_URL =
+    "https://ekanfqwbqwfhjfgctouk.supabase.co";
 
-const SUPABASE_URL =
-  "https://ekanfqwbqwfhjfgctouk.supabase.co";
+  const SUPABASE_KEY =
+    "sb_publishable_tpFTptBWglmisRRhQiptmg_VkKhJdDn";
 
-const SUPABASE_KEY =
-  "sb_publishable_tpFTptBWglmisRRhQiptmg_VkKhJdDn";
-
-const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-
-
-/* =====================================
-   ELEMENTS
-===================================== */
-
-const lessonsList =
-  document.getElementById("lessonsList");
-
-const navUsername =
-  document.getElementById("navUsername");
-
-const welcomeUsername =
-  document.getElementById("welcomeUsername");
-
-const passwordForm =
-  document.getElementById("passwordForm");
-
-const passwordMessage =
-  document.getElementById("passwordMessage");
-
-const reportBody =
-  document.getElementById("reportBody");
-
-const copyReportBtn =
-  document.getElementById("copyReportBtn");
-
-const whatsappReportBtn =
-  document.getElementById("whatsappReportBtn");
-
-const reportMessage =
-  document.getElementById("reportMessage");
-
-
-/* =====================================
-   CURRENT STUDENT
-===================================== */
-
-let CURRENT_STUDENT = null;
-
-
-/* =====================================
-   ALL DATA
-===================================== */
-
-let ALL_COURSES = [];
-
-let ALL_LESSONS = [];
-
-let ALL_PROGRESS = [];
-
-
-/* =====================================
-   ACTIVE VIDEO TRACKERS
-===================================== */
-
-const activeTrackers = new Map();
-
-
-/* =====================================
-   PASSWORD MESSAGE
-===================================== */
-
-function showPasswordMessage(
-  text,
-  type
-) {
-
-  passwordMessage.textContent =
-    text;
-
-  passwordMessage.className =
-    "message " + type;
-
-  passwordMessage.style.display =
-    "block";
-}
-
-
-/* =====================================
-   REPORT MESSAGE
-===================================== */
-
-function showReportMessage(text) {
-
-  reportMessage.textContent =
-    text;
-
-  reportMessage.style.display =
-    "block";
-
-  setTimeout(
-    function() {
-      reportMessage.style.display =
-        "none";
-    },
-    3000
-  );
-}
-
-
-/* =====================================
-   LOAD STUDENT
-===================================== */
-
-async function loadStudent() {
-
-  const {
-    data: sessionData,
-    error: sessionError
-  } =
-    await supabaseClient.auth.getSession();
-
-  if (
-    sessionError ||
-    !sessionData.session
-  ) {
-
-    window.location.href =
-      "login.html";
-
-    return null;
-  }
-
-  const user =
-    sessionData.session.user;
-
-  const {
-    data: student,
-    error
-  } =
-    await supabaseClient
-      .from("student_accounts")
-      .select(
-        "id, username, course_access"
-      )
-      .eq(
-        "id",
-        user.id
-      )
-      .maybeSingle();
-
-  if (
-    error ||
-    !student
-  ) {
-
-    console.error(error);
-
-    await supabaseClient.auth.signOut();
-
-    window.location.href =
-      "login.html";
-
-    return null;
-  }
-
-  CURRENT_STUDENT =
-    student;
-
-  navUsername.textContent =
-    student.username;
-
-  welcomeUsername.textContent =
-    student.username;
-
-  return student;
-}
-
-
-/* =====================================
-   LOAD PROGRESS
-===================================== */
-
-async function loadProgress() {
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("lesson_progress")
-      .select("*")
-      .eq(
-        "student_id",
-        CURRENT_STUDENT.id
-      );
-
-  if (error) {
-
-    console.error(
-      "Progress loading error:",
-      error
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
     );
 
-    ALL_PROGRESS = [];
+  const VIDEO_BUCKET = "Video";
 
-    return [];
+  let CURRENT_USER = null;
+  let CURRENT_STUDENT = null;
+
+  let ALL_LESSONS = [];
+  let ALL_PROGRESS = [];
+
+  let activeTrackers = new Map();
+
+
+  /* =========================================================
+     MESSAGE
+     ========================================================= */
+
+  function showMessage(text, type = "success") {
+    const box = document.getElementById("message");
+
+    box.textContent = text;
+    box.className = "message " + type;
+
+    setTimeout(() => {
+      box.className = "message";
+    }, 5000);
   }
 
-  ALL_PROGRESS =
-    data || [];
 
-  return ALL_PROGRESS;
-}
+  /* =========================================================
+     AUTH / STUDENT
+     ========================================================= */
+
+  async function loadStudent() {
+
+    const {
+      data: { user },
+      error: userError
+    } = await supabaseClient.auth.getUser();
+
+    if (userError || !user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    CURRENT_USER = user;
+
+    const { data: student, error } =
+      await supabaseClient
+        .from("student_accounts")
+        .select("id, username, course_access")
+        .eq("id", user.id)
+        .maybeSingle();
+
+    if (error) {
+      console.error(error);
+      showMessage(
+        "Student account එක ලබාගැනීමට නොහැකි විය.",
+        "error"
+      );
+      return;
+    }
+
+    if (!student) {
+      await supabaseClient.auth.signOut();
+      window.location.href = "login.html";
+      return;
+    }
+
+    CURRENT_STUDENT = student;
+
+    document.getElementById("usernameDisplay").textContent =
+      student.username;
+
+    document.getElementById("welcomeText").textContent =
+      `Welcome ${student.username}. ඔබට ලබාදී ඇති පාඨමාලා වල පාඩම් මෙහිදී අධ්‍යයනය කළ හැක.`;
 
 
-/* =====================================
-   GET PROGRESS
-===================================== */
-
-function getProgress(
-  lessonId
-) {
-
-  return ALL_PROGRESS.find(
-    progress =>
-      Number(progress.lesson_id) ===
-      Number(lessonId)
-  ) || null;
-}
-
-
-/* =====================================
-   CHECK LESSON COMPLETED
-===================================== */
-
-function isLessonCompleted(
-  lessonId
-) {
-
-  const progress =
-    getProgress(lessonId);
-
-  return !!(
-    progress &&
-    progress.completed_at
-  );
-}
-
-
-/* =====================================
-   CHECK LESSON UNLOCKED
-===================================== */
-
-function isLessonUnlocked(
-  lesson,
-  courseLessons
-) {
-
-  if (
-    !courseLessons ||
-    courseLessons.length === 0
-  ) {
-    return false;
+    await loadProgress();
+    await loadLessons();
   }
 
-  const lessonIndex =
-    courseLessons.findIndex(
-      item =>
-        Number(item.id) ===
-        Number(lesson.id)
-    );
 
-  if (lessonIndex === -1) {
-    return false;
+  /* =========================================================
+     LOAD PROGRESS
+     ========================================================= */
+
+  async function loadProgress() {
+
+    if (!CURRENT_STUDENT) return;
+
+    const { data, error } =
+      await supabaseClient
+        .from("lesson_progress")
+        .select("*")
+        .eq("student_id", CURRENT_STUDENT.id);
+
+    if (error) {
+      console.error("Progress error:", error);
+      ALL_PROGRESS = [];
+      return;
+    }
+
+    ALL_PROGRESS = data || [];
   }
 
-  /*
-    First lesson is always unlocked
-    for a student who has access to
-    the course.
-  */
 
-  if (lessonIndex === 0) {
-    return true;
+  /* =========================================================
+     LOAD LESSONS
+     ========================================================= */
+
+  async function loadLessons() {
+
+    if (!CURRENT_STUDENT) return;
+
+    const courseAccess =
+      Array.isArray(CURRENT_STUDENT.course_access)
+        ? CURRENT_STUDENT.course_access
+        : [];
+
+    if (courseAccess.length === 0) {
+
+      document.getElementById("lessonsContainer").innerHTML =
+        `<div class="empty">
+          ඔබට තවමත් කිසිදු පාඨමාලාවකට access ලබාදී නැත.
+        </div>`;
+
+      return;
+    }
+
+
+    const { data, error } =
+      await supabaseClient
+        .from("lessons")
+        .select(
+          "id,title,course,description,video_path,pdf_path,created_at"
+        )
+        .in("course", courseAccess)
+        .order("id", { ascending: true });
+
+
+    if (error) {
+
+      console.error("Lessons error:", error);
+
+      document.getElementById("lessonsContainer").innerHTML =
+        `<div class="empty">
+          Lessons ලබාගැනීමේදී දෝෂයක් ඇතිවිය.
+        </div>`;
+
+      return;
+    }
+
+
+    ALL_LESSONS = data || [];
+
+    renderCourses();
   }
 
-  /*
-    Previous lesson must be completed.
-  */
 
-  const previousLesson =
-    courseLessons[
-      lessonIndex - 1
-    ];
+  /* =========================================================
+     GROUP COURSES
+     ========================================================= */
 
-  return isLessonCompleted(
-    previousLesson.id
-  );
-}
+  function renderCourses() {
+
+    const container =
+      document.getElementById("lessonsContainer");
+
+    if (!ALL_LESSONS.length) {
+
+      container.innerHTML =
+        `<div class="empty">
+          ඔබට ලබාදී ඇති පාඨමාලා සඳහා තවමත් lessons නැත.
+        </div>`;
+
+      return;
+    }
 
 
-/* =====================================
-   LOAD COURSES
-===================================== */
+    const grouped = {};
 
-async function loadCourses() {
+    ALL_LESSONS.forEach(lesson => {
 
-  const {
-    data: courses,
-    error: courseError
-  } =
-    await supabaseClient
-      .from("courses")
-      .select(
-        "id, name"
-      )
-      .order(
-        "id",
-        {
-          ascending: true
-        }
+      if (!grouped[lesson.course]) {
+        grouped[lesson.course] = [];
+      }
+
+      grouped[lesson.course].push(lesson);
+    });
+
+
+    container.innerHTML = "";
+
+
+    Object.keys(grouped).forEach(courseName => {
+
+      const courseLessons = grouped[courseName];
+
+      courseLessons.sort(
+        (a, b) => Number(a.id) - Number(b.id)
       );
 
-  if (courseError) {
 
-    console.error(courseError);
+      const courseCard =
+        document.createElement("section");
 
-    lessonsList.innerHTML =
-      '<p class="no-lessons">Could not load courses.</p>';
+      courseCard.className = "course-card";
 
-    return;
-  }
-
-  ALL_COURSES =
-    courses || [];
-
-  if (
-    ALL_COURSES.length === 0
-  ) {
-
-    lessonsList.innerHTML =
-      '<p class="no-lessons">No courses available yet.</p>';
-
-    return;
-  }
-
-
-  const {
-    data: lessons,
-    error: lessonError
-  } =
-    await supabaseClient
-      .from("lessons")
-      .select("*")
-      .order(
-        "id",
-        {
-          ascending: true
-        }
-      );
-
-
-  if (lessonError) {
-
-    console.error(lessonError);
-
-    lessonsList.innerHTML =
-      '<p class="no-lessons">Could not load lessons.</p>';
-
-    return;
-  }
-
-
-  ALL_LESSONS =
-    lessons || [];
-
-
-  await loadProgress();
-
-
-  renderCourses();
-
-
-  renderReport();
-
-}
-
-
-/* =====================================
-   RENDER COURSES
-===================================== */
-
-function renderCourses() {
-
-  const access =
-    Array.isArray(
-      CURRENT_STUDENT.course_access
-    )
-      ? CURRENT_STUDENT.course_access
-      : [];
-
-
-  lessonsList.innerHTML =
-    "";
-
-
-  ALL_COURSES.forEach(
-    course => {
-
-      const courseName =
-        course.name;
-
-
-      const hasAccess =
-        access.includes(
-          courseName
-        );
-
-
-      const courseBox =
-        document.createElement(
-          "div"
-        );
-
-
-      courseBox.className =
-        "course-section";
-
-
-      /* COURSE TITLE */
 
       const title =
-        document.createElement(
-          "div"
-        );
+        document.createElement("h3");
 
-
-      title.className =
-        "course-title";
-
+      title.className = "course-title";
 
       title.textContent =
-        hasAccess
-          ? "📚 " + courseName
-          : "🔒 " + courseName;
+        `📘 ${courseName}`;
 
 
-      courseBox.appendChild(
-        title
-      );
+      courseCard.appendChild(title);
 
 
-      /* LOCKED COURSE */
+      courseLessons.forEach(
+        (lesson, index) => {
 
-      if (!hasAccess) {
-
-        const locked =
-          document.createElement(
-            "div"
-          );
-
-
-        locked.className =
-          "course-locked";
-
-
-        locked.innerHTML = `
-
-          <div class="lock-icon">
-            🔒
-          </div>
-
-          <h3>
-            Course Locked
-          </h3>
-
-          <p>
-            You don't have access to this course yet.
-          </p>
-
-          <p style="margin-top:8px;">
-            Please contact the administrator to get access.
-          </p>
-
-        `;
-
-
-        courseBox.appendChild(
-          locked
-        );
-
-
-        lessonsList.appendChild(
-          courseBox
-        );
-
-
-        return;
-      }
-
-
-      /* OPEN COURSE */
-
-      const courseLessons =
-        ALL_LESSONS
-          .filter(
-            lesson =>
-              lesson.course ===
-              courseName
-          )
-          .sort(
-            (a,b) =>
-              Number(a.id) -
-              Number(b.id)
-          );
-
-
-      if (
-        courseLessons.length === 0
-      ) {
-
-        const noLesson =
-          document.createElement(
-            "div"
-          );
-
-        noLesson.className =
-          "no-lessons";
-
-        noLesson.textContent =
-          "No lessons available in this course yet.";
-
-        courseBox.appendChild(
-          noLesson
-        );
-
-      }
-      else {
-
-        courseLessons.forEach(
-          lesson => {
-
-            courseBox.appendChild(
-              createLessonElement(
-                lesson,
-                courseLessons
-              )
+          const lessonElement =
+            createLessonElement(
+              lesson,
+              index,
+              courseLessons
             );
 
-          }
-        );
+          courseCard.appendChild(
+            lessonElement
+          );
+        }
+      );
 
+
+      container.appendChild(courseCard);
+    });
+  }
+
+
+  /* =========================================================
+     PROGRESS HELPERS
+     ========================================================= */
+
+  function getProgress(lessonId) {
+
+    return ALL_PROGRESS.find(
+      item =>
+        Number(item.lesson_id) === Number(lessonId)
+    );
+  }
+
+
+  function isLessonCompleted(lessonId) {
+
+    const progress =
+      getProgress(lessonId);
+
+    return !!(
+      progress &&
+      progress.completed_at
+    );
+  }
+
+
+  function isLessonUnlocked(
+    lesson,
+    courseLessons
+  ) {
+
+    const lessonIndex =
+      courseLessons.findIndex(
+        item =>
+          Number(item.id) === Number(lesson.id)
+      );
+
+
+    if (lessonIndex === -1) {
+      return false;
+    }
+
+
+    // First lesson is always unlocked.
+    if (lessonIndex === 0) {
+      return true;
+    }
+
+
+    const previousLesson =
+      courseLessons[lessonIndex - 1];
+
+
+    return isLessonCompleted(
+      previousLesson.id
+    );
+  }
+
+
+  /* =========================================================
+     CREATE LESSON CARD
+     ========================================================= */
+
+  function createLessonElement(
+    lesson,
+    index,
+    courseLessons
+  ) {
+
+    const card =
+      document.createElement("div");
+
+    card.className = "lesson-card";
+
+
+    const completed =
+      isLessonCompleted(lesson.id);
+
+
+    const unlocked =
+      isLessonUnlocked(
+        lesson,
+        courseLessons
+      );
+
+
+    if (!unlocked) {
+      card.classList.add("locked");
+    }
+
+
+    const progress =
+      getProgress(lesson.id);
+
+
+    let statusHTML = "";
+
+
+    if (completed) {
+
+      statusHTML =
+        `<span class="status status-completed">
+          ✅ Completed
+        </span>`;
+
+    } else if (unlocked) {
+
+      statusHTML =
+        `<span class="status status-open">
+          🔓 Available
+        </span>`;
+
+    } else {
+
+      statusHTML =
+        `<span class="status status-locked">
+          🔒 Locked
+        </span>`;
+    }
+
+
+    const safeTitle =
+      escapeHtml(lesson.title || "Untitled Lesson");
+
+    const safeDescription =
+      escapeHtml(
+        lesson.description || ""
+      );
+
+
+    card.innerHTML = `
+
+      <div class="lesson-header">
+
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+
+          <span class="lesson-number">
+            ${index + 1}
+          </span>
+
+          <div>
+
+            <div class="lesson-title">
+              ${safeTitle}
+            </div>
+
+            <div style="margin-top:7px;">
+              ${statusHTML}
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      ${
+        safeDescription
+          ? `<div class="lesson-description">
+              ${safeDescription}
+            </div>`
+          : ""
       }
 
 
-      lessonsList.appendChild(
-        courseBox
-      );
-
-    }
-  );
-
-}
-
-
-/* =====================================
-   CREATE LESSON
-===================================== */
-
-function createLessonElement(
-  lesson,
-  courseLessons
-) {
-
-  const item =
-    document.createElement(
-      "div"
-    );
-
-
-  item.className =
-    "lesson";
-
-
-  item.id =
-    "lesson-" + lesson.id;
-
-
-  const unlocked =
-    isLessonUnlocked(
-      lesson,
-      courseLessons
-    );
-
-
-  const completed =
-    isLessonCompleted(
-      lesson.id
-    );
-
-
-  const progress =
-    getProgress(
-      lesson.id
-    );
-
-
-  if (!unlocked) {
-
-    item.classList.add(
-      "lesson-locked"
-    );
-
-  }
-
-
-  /* TITLE */
-
-  const title =
-    document.createElement(
-      "h3"
-    );
-
-
-  title.textContent =
-    lesson.title || "";
-
-
-  item.appendChild(
-    title
-  );
-
-
-  /* COURSE */
-
-  const course =
-    document.createElement(
-      "div"
-    );
-
-
-  course.className =
-    "course";
-
-
-  course.textContent =
-    "Course: " +
-    (lesson.course || "");
-
-
-  item.appendChild(
-    course
-  );
-
-
-  /* DESCRIPTION */
-
-  const description =
-    document.createElement(
-      "div"
-    );
-
-
-  description.className =
-    "description";
-
-
-  description.textContent =
-    lesson.description || "";
-
-
-  item.appendChild(
-    description
-  );
-
-
-  /* STATUS */
-
-  const status =
-    document.createElement(
-      "div"
-    );
-
-
-  status.className =
-    "lesson-status";
-
-
-  if (completed) {
-
-    status.classList.add(
-      "status-completed"
-    );
-
-    status.textContent =
-      "✅ Completed";
-
-  }
-  else if (progress && progress.first_opened_at) {
-
-    status.classList.add(
-      "status-watching"
-    );
-
-    status.textContent =
-      "👀 Watching";
-
-  }
-  else if (unlocked) {
-
-    status.classList.add(
-      "status-unlocked"
-    );
-
-    status.textContent =
-      "▶️ Ready to Watch";
-
-  }
-  else {
-
-    status.classList.add(
-      "status-locked"
-    );
-
-    status.textContent =
-      "🔒 Locked";
-
-  }
-
-
-  item.appendChild(
-    status
-  );
-
-
-  /* LOCKED LESSON */
-
-  if (!unlocked) {
-
-    const lockedMessage =
-      document.createElement(
-        "div"
-      );
-
-
-    lockedMessage.className =
-      "locked-message";
-
-
-    lockedMessage.innerHTML = `
-
-      🔒 <strong>Lesson Locked</strong>
-
-      <br><br>
-
-      Complete the previous lesson
-      to unlock this lesson.
+      <div
+        id="video-area-${lesson.id}"
+        class="video-wrapper"
+      >
+
+        <video
+          id="video-${lesson.id}"
+          preload="metadata"
+          playsinline
+        ></video>
+
+        <div
+          id="watermark-${lesson.id}"
+          class="watermark"
+        >
+          MN TECHNOLOGY
+        </div>
+
+      </div>
+
+
+      <div class="lesson-actions">
+
+        ${
+          unlocked
+          ?
+          `<button
+              class="watch-btn"
+              onclick="openLessonVideo(${lesson.id})"
+            >
+              ▶ Watch Lesson
+            </button>`
+          :
+          `<button
+              class="locked-btn"
+              disabled
+            >
+              🔒 Complete previous lesson
+            </button>`
+        }
+
+
+        ${
+          lesson.pdf_path
+          ?
+          `<button
+              class="pdf-btn"
+              onclick="downloadPDF('${encodeURIComponent(lesson.pdf_path)}')"
+            >
+              📄 Download PDF
+            </button>`
+          :
+          ""
+        }
+
+
+        ${
+          completed
+          ?
+          `<button
+              class="complete-btn"
+              disabled
+            >
+              ✅ Completed
+            </button>`
+          :
+          unlocked
+          ?
+          `<button
+              id="complete-btn-${lesson.id}"
+              class="complete-btn"
+              onclick="completeLessonManually(${lesson.id})"
+            >
+              ☑ Lesson Complete
+            </button>`
+          :
+          ""
+        }
+
+      </div>
+
+
+      ${
+        progress
+        ?
+        `<div
+          style="
+            margin-top:12px;
+            font-size:13px;
+            color:#64748b;
+          "
+        >
+          ${
+            progress.watch_seconds
+              ? "Watched: " +
+                formatTime(progress.watch_seconds)
+              : "Not watched yet"
+          }
+        </div>`
+        :
+        ""
+      }
 
     `;
 
 
-    item.appendChild(
-      lockedMessage
-    );
-
-
-    return item;
+    return card;
   }
 
 
-  /* =====================================
-     VIDEO
-  ===================================== */
+  /* =========================================================
+     OPEN VIDEO
+     ========================================================= */
 
-  if (lesson.video_path) {
+  async function openLessonVideo(lessonId) {
 
-    const videoWrapper =
-      document.createElement(
-        "div"
+    const lesson =
+      ALL_LESSONS.find(
+        item =>
+          Number(item.id) === Number(lessonId)
       );
 
+    if (!lesson) return;
 
-    videoWrapper.className =
-      "video-wrapper";
 
+    const courseLessons =
+      ALL_LESSONS
+        .filter(
+          item =>
+            item.course === lesson.course
+        )
+        .sort(
+          (a, b) =>
+            Number(a.id) - Number(b.id)
+        );
+
+
+    if (
+      !isLessonUnlocked(
+        lesson,
+        courseLessons
+      )
+    ) {
+
+      showMessage(
+        "මෙම lesson එක unlock වී නැත.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    const area =
+      document.getElementById(
+        `video-area-${lesson.id}`
+      );
 
     const video =
-      document.createElement(
-        "video"
+      document.getElementById(
+        `video-${lesson.id}`
       );
 
 
-    video.controls =
-      true;
+    area.style.display = "block";
 
 
-    video.preload =
-      "metadata";
+    if (!video.src) {
+
+      await loadSecureVideo(
+        lesson,
+        video
+      );
+    }
+
+
+    if (
+      video.requestFullscreen &&
+      window.innerWidth < 700
+    ) {
+      // Do not automatically fullscreen on mobile.
+    }
+
+
+    area.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+  }
+
+
+  /* =========================================================
+     PRIVATE VIDEO SIGNED URL
+     ========================================================= */
+
+  async function loadSecureVideo(
+    lesson,
+    video
+  ) {
+
+    if (!lesson.video_path) {
+
+      showMessage(
+        "මෙම lesson එකට video එකක් නැත.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .storage
+        .from(VIDEO_BUCKET)
+        .createSignedUrl(
+          lesson.video_path,
+          7200
+        );
+
+
+    if (error || !data?.signedUrl) {
+
+      console.error(
+        "Signed URL error:",
+        error
+      );
+
+      showMessage(
+        "Video එක load කිරීමට නොහැකි විය.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    video.src =
+      data.signedUrl;
 
 
     video.setAttribute(
       "controlsList",
       "nodownload noremoteplayback nofullscreen"
     );
-
 
     video.setAttribute(
       "disablePictureInPicture",
@@ -1644,936 +1109,421 @@ function createLessonElement(
 
     video.addEventListener(
       "contextmenu",
-      function(event) {
-
+      event => {
         event.preventDefault();
-
       }
     );
 
-
-    /* =====================================
-       WATERMARK
-    ===================================== */
-
-    const watermark =
-      document.createElement(
-        "div"
-      );
-
-
-    watermark.className =
-      "video-watermark";
-
-
-    watermark.textContent =
-      "MN TECHNOLOGY • " +
-      CURRENT_STUDENT.username;
-
-
-    /* =====================================
-       FULLSCREEN BUTTON
-    ===================================== */
-
-    const fullscreenButton =
-      document.createElement(
-        "button"
-      );
-
-
-    fullscreenButton.className =
-      "fullscreen-btn";
-
-
-    fullscreenButton.type =
-      "button";
-
-
-    fullscreenButton.textContent =
-      "⛶ Full Screen";
-
-
-    fullscreenButton.addEventListener(
-      "click",
-      async function(event) {
-
-        event.preventDefault();
-
-        event.stopPropagation();
-
-
-        try {
-
-          if (
-            !document.fullscreenElement
-          ) {
-
-            if (
-              videoWrapper.requestFullscreen
-            ) {
-
-              await videoWrapper.requestFullscreen();
-
-            }
-            else if (
-              videoWrapper.webkitRequestFullscreen
-            ) {
-
-              videoWrapper.webkitRequestFullscreen();
-
-            }
-
-          }
-          else {
-
-            if (
-              document.exitFullscreen
-            ) {
-
-              await document.exitFullscreen();
-
-            }
-            else if (
-              document.webkitExitFullscreen
-            ) {
-
-              document.webkitExitFullscreen();
-
-            }
-
-          }
-
-        }
-        catch (error) {
-
-          console.error(
-            "Fullscreen error:",
-            error
-          );
-
-        }
-
-      }
-    );
-
-
-    /* =====================================
-       DOUBLE CLICK FULLSCREEN
-    ===================================== */
-
-    video.addEventListener(
-      "dblclick",
-      async function(event) {
-
-        event.preventDefault();
-
-        try {
-
-          if (
-            !document.fullscreenElement
-          ) {
-
-            if (
-              videoWrapper.requestFullscreen
-            ) {
-
-              await videoWrapper.requestFullscreen();
-
-            }
-            else if (
-              videoWrapper.webkitRequestFullscreen
-            ) {
-
-              videoWrapper.webkitRequestFullscreen();
-
-            }
-
-          }
-          else {
-
-            if (
-              document.exitFullscreen
-            ) {
-
-              await document.exitFullscreen();
-
-            }
-            else if (
-              document.webkitExitFullscreen
-            ) {
-
-              document.webkitExitFullscreen();
-
-            }
-
-          }
-
-        }
-        catch (error) {
-
-          console.error(
-            "Fullscreen error:",
-            error
-          );
-
-        }
-
-      }
-    );
-
-
-    /* =====================================
-       ADD ELEMENTS
-    ===================================== */
-
-    videoWrapper.appendChild(
-      video
-    );
-
-    videoWrapper.appendChild(
-      watermark
-    );
-
-    videoWrapper.appendChild(
-      fullscreenButton
-    );
-
-    item.appendChild(
-      videoWrapper
-    );
-
-
-    /* =====================================
-       LOAD SECURE VIDEO
-    ===================================== */
-
-    loadSecureVideo(
-      lesson.video_path,
-      video
-    );
-
-
-    /* =====================================
-       WATERMARK MOVEMENT
-    ===================================== */
-
-    startWatermarkMovement(
-      watermark,
-      videoWrapper
-    );
-
-
-    /* =====================================
-       WATCH TRACKING
-    ===================================== */
 
     setupVideoTracking(
-      video,
-      lesson
+      lesson,
+      video
     );
-
-  }
-  else {
-
-    const noVideo =
-      document.createElement(
-        "div"
-      );
-
-
-    noVideo.className =
-      "locked-message";
-
-
-    noVideo.textContent =
-      "No video available for this lesson yet.";
-
-
-    item.appendChild(
-      noVideo
-    );
-
   }
 
 
-  /* COMPLETED MESSAGE */
+  /* =========================================================
+     VIDEO TRACKING
+     ========================================================= */
 
-  if (completed) {
-
-    const completedMessage =
-      document.createElement(
-        "div"
-      );
-
-
-    completedMessage.className =
-      "completed-message";
-
-
-    completedMessage.textContent =
-      "✅ You have completed this lesson. You can watch it again anytime.";
-
-
-    item.appendChild(
-      completedMessage
-    );
-
-  }
-
-
-  return item;
-}
-
-
-/* =====================================
-   SECURE VIDEO
-===================================== */
-
-async function loadSecureVideo(
-  videoPath,
-  videoElement
-) {
-
-  try {
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient.storage
-        .from("Video")
-        .createSignedUrl(
-          videoPath,
-          7200
-        );
-
-
-    if (error) {
-
-      console.error(
-        "Video signed URL error:",
-        error
-      );
-
-
-      videoElement.outerHTML =
-        '<p style="color:#991b1b;padding:15px;">Unable to load this video.</p>';
-
-      return;
-    }
-
+  function setupVideoTracking(
+    lesson,
+    video
+  ) {
 
     if (
-      !data ||
-      !data.signedUrl
+      video.dataset.trackingReady === "true"
     ) {
-
-      videoElement.outerHTML =
-        '<p style="color:#991b1b;padding:15px;">Video URL could not be created.</p>';
-
       return;
     }
 
 
-    videoElement.src =
-      data.signedUrl;
-
-    videoElement.load();
-
-  }
-  catch (error) {
-
-    console.error(error);
-
-    videoElement.outerHTML =
-      '<p style="color:#991b1b;padding:15px;">Unable to load this video.</p>';
-
-  }
-
-}
+    video.dataset.trackingReady = "true";
 
 
-/* =====================================
-   MOVING WATERMARK
-===================================== */
-
-function startWatermarkMovement(
-  watermark,
-  wrapper
-) {
-
-  const positions = [
-
-    {
-      top: "8%",
-      left: "8%"
-    },
-
-    {
-      top: "8%",
-      left: "auto",
-      right: "8%"
-    },
-
-    {
-      top: "auto",
-      bottom: "18%",
-      left: "8%"
-    },
-
-    {
-      top: "auto",
-      bottom: "18%",
-      left: "auto",
-      right: "8%"
-    },
-
-    {
-      top: "42%",
-      left: "40%"
-    },
-
-    {
-      top: "25%",
-      left: "20%"
-    },
-
-    {
-      top: "60%",
-      left: "55%"
-    }
-
-  ];
-
-
-  let index =
-    Math.floor(
-      Math.random() *
-      positions.length
-    );
-
-
-  function moveWatermark() {
-
-    const position =
-      positions[index];
-
-
-    watermark.style.top =
-      position.top ||
-      "auto";
-
-    watermark.style.bottom =
-      position.bottom ||
-      "auto";
-
-    watermark.style.left =
-      position.left ||
-      "auto";
-
-    watermark.style.right =
-      position.right ||
-      "auto";
-
-
-    index =
-      (index + 1) %
-      positions.length;
-  }
-
-
-  moveWatermark();
-
-
-  setInterval(
-    moveWatermark,
-    15000
-  );
-
-}
-
-
-/* =====================================
-   VIDEO TRACKING SETUP
-===================================== */
-
-function setupVideoTracking(
-  video,
-  lesson
-) {
-
-  const tracker = {
-
-    lessonId:
-      Number(lesson.id),
-
-    videoDuration:
-      null,
-
-    firstOpened:
-      false,
-
-    lastTick:
-      null,
-
-    watchSeconds:
-      Number(
-        getProgress(lesson.id)?.watch_seconds || 0
-      ),
-
-    saving:
-      false,
-
-    completed:
-      isLessonCompleted(
-        lesson.id
-      )
-
-  };
-
-
-  activeTrackers.set(
-    Number(lesson.id),
-    tracker
-  );
-
-
-  /* =====================================
-     VIDEO METADATA
-  ===================================== */
-
-  video.addEventListener(
-    "loadedmetadata",
-    function() {
-
-      if (
-        Number.isFinite(
-          video.duration
-        )
-      ) {
-
-        tracker.videoDuration =
-          Math.round(
-            video.duration
-          );
-
-      }
-
-    }
-  );
-
-
-  /* =====================================
-     PLAY
-  ===================================== */
-
-  video.addEventListener(
-    "play",
-    async function() {
-
-      tracker.lastTick =
-        Date.now();
-
-
-      if (
-        !tracker.firstOpened
-      ) {
-
-        tracker.firstOpened =
-          true;
+    video.addEventListener(
+      "loadedmetadata",
+      async () => {
 
         await startLessonProgress(
           lesson.id,
-          tracker.videoDuration
+          video.duration
+        );
+      }
+    );
+
+
+    video.addEventListener(
+      "play",
+      async () => {
+
+        await startLessonProgress(
+          lesson.id,
+          video.duration
         );
 
+
+        const existing =
+          activeTrackers.get(
+            Number(lesson.id)
+          );
+
+
+        activeTrackers.set(
+          Number(lesson.id),
+          {
+            lastTick: Date.now(),
+            lastSave: Date.now(),
+            video: video
+          }
+        );
       }
-
-    }
-  );
+    );
 
 
-  /* =====================================
-     TIME UPDATE
-  ===================================== */
+    video.addEventListener(
+      "timeupdate",
+      async () => {
 
-  video.addEventListener(
-    "timeupdate",
-    async function() {
+        const tracker =
+          activeTrackers.get(
+            Number(lesson.id)
+          );
 
-      if (
-        video.paused ||
-        video.ended
-      ) {
-        return;
+
+        if (!tracker) return;
+
+
+        const now = Date.now();
+
+        const diff =
+          (now - tracker.lastTick) / 1000;
+
+
+        tracker.lastTick = now;
+
+
+        // Ignore abnormal jumps.
+        if (
+          diff > 0 &&
+          diff <= 5
+        ) {
+
+          const progress =
+            getProgress(lesson.id);
+
+
+          if (progress) {
+
+            progress.watch_seconds =
+              Number(
+                progress.watch_seconds || 0
+              ) + diff;
+
+            progress.last_watched_at =
+              new Date().toISOString();
+
+
+            const elapsedSinceSave =
+              now - tracker.lastSave;
+
+
+            if (
+              elapsedSinceSave >= 10000
+            ) {
+
+              tracker.lastSave = now;
+
+              await saveLessonProgress(
+                lesson.id,
+                {
+                  watch_seconds:
+                    Math.floor(
+                      progress.watch_seconds
+                    ),
+
+                  last_watched_at:
+                    progress.last_watched_at,
+
+                  video_duration_seconds:
+                    Number.isFinite(
+                      video.duration
+                    )
+                    ?
+                    Math.floor(
+                      video.duration
+                    )
+                    :
+                    null
+                }
+              );
+            }
+          }
+        }
       }
+    );
 
 
-      const now =
-        Date.now();
+    video.addEventListener(
+      "pause",
+      async () => {
+
+        await saveCurrentVideoProgress(
+          lesson.id,
+          video
+        );
+      }
+    );
 
 
-      if (
-        tracker.lastTick
-      ) {
+    video.addEventListener(
+      "ended",
+      async () => {
 
-        const difference =
-          (
-            now -
-            tracker.lastTick
-          ) / 1000;
+        await saveCurrentVideoProgress(
+          lesson.id,
+          video
+        );
 
 
         /*
-          Only count real elapsed playback time.
-          Seeking forward will not add huge watch time.
+          Video ending automatically marks
+          the lesson completed.
         */
-
-        if (
-          difference > 0 &&
-          difference <= 5
-        ) {
-
-          tracker.watchSeconds +=
-            difference;
-
-        }
-
-      }
-
-
-      tracker.lastTick =
-        now;
-
-
-      /*
-        Save approximately every
-        10 seconds.
-      */
-
-      if (
-        Math.floor(
-          tracker.watchSeconds
-        ) % 10 === 0
-      ) {
-
-        await saveLessonProgress(
+        await completeLessonManually(
           lesson.id,
-          tracker
+          true
         );
-
       }
-
-    }
-  );
-
-
-  /* =====================================
-     PAUSE
-  ===================================== */
-
-  video.addEventListener(
-    "pause",
-    async function() {
-
-      tracker.lastTick =
-        null;
-
-      await saveLessonProgress(
-        lesson.id,
-        tracker
-      );
-
-    }
-  );
-
-
-  /* =====================================
-     ENDED = COMPLETED
-  ===================================== */
-
-  video.addEventListener(
-    "ended",
-    async function() {
-
-      tracker.lastTick =
-        null;
-
-
-      if (
-        Number.isFinite(
-          video.duration
-        )
-      ) {
-
-        tracker.videoDuration =
-          Math.round(
-            video.duration
-          );
-
-      }
-
-
-      /*
-        Video reached the end,
-        therefore lesson is completed.
-      */
-
-      tracker.completed =
-        true;
-
-
-      await completeLesson(
-        lesson.id,
-        tracker
-      );
-
-    }
-  );
-
-
-  /* =====================================
-     PAGE HIDDEN
-  ===================================== */
-
-  document.addEventListener(
-    "visibilitychange",
-    async function() {
-
-      if (
-        document.hidden
-      ) {
-
-        await saveLessonProgress(
-          lesson.id,
-          tracker
-        );
-
-      }
-
-    }
-  );
-
-}
-
-
-/* =====================================
-   START LESSON PROGRESS
-===================================== */
-
-async function startLessonProgress(
-  lessonId,
-  duration
-) {
-
-  const existing =
-    getProgress(
-      lessonId
     );
+  }
 
 
-  if (
-    existing &&
-    existing.first_opened_at
+  /* =========================================================
+     START PROGRESS
+     ========================================================= */
+
+  async function startLessonProgress(
+    lessonId,
+    duration
   ) {
 
-    return;
-  }
+    if (!CURRENT_STUDENT) return;
 
 
-  const now =
-    new Date().toISOString();
-
-
-  const row = {
-
-    student_id:
-      CURRENT_STUDENT.id,
-
-    lesson_id:
-      Number(lessonId),
-
-    first_opened_at:
-      now,
-
-    last_watched_at:
-      now,
-
-    watch_seconds:
-      Number(
-        existing?.watch_seconds || 0
-      ),
-
-    video_duration_seconds:
-      duration
-        ? Number(duration)
-        : null,
-
-    completed_at:
-      existing?.completed_at || null,
-
-    updated_at:
-      now
-
-  };
-
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("lesson_progress")
-      .upsert(
-        row,
-        {
-          onConflict:
-            "student_id,lesson_id"
-        }
-      )
-      .select()
-      .maybeSingle();
-
-
-  if (error) {
-
-    console.error(
-      "Start progress error:",
-      error
-    );
-
-    return;
-  }
-
-
-  if (data) {
-
-    const index =
-      ALL_PROGRESS.findIndex(
-        item =>
-          Number(item.lesson_id) ===
-          Number(lessonId)
-      );
-
-
-    if (index >= 0) {
-
-      ALL_PROGRESS[index] =
-        data;
-
-    }
-    else {
-
-      ALL_PROGRESS.push(
-        data
-      );
-
-    }
-
-  }
-
-
-  renderReport();
-
-}
-
-
-/* =====================================
-   SAVE LESSON PROGRESS
-===================================== */
-
-async function saveLessonProgress(
-  lessonId,
-  tracker
-) {
-
-  if (
-    !CURRENT_STUDENT ||
-    tracker.saving
-  ) {
-
-    return;
-  }
-
-
-  tracker.saving =
-    true;
-
-
-  try {
-
-    const existing =
-      getProgress(
-        lessonId
-      );
+    let progress =
+      getProgress(lessonId);
 
 
     const now =
       new Date().toISOString();
 
 
-    const firstOpened =
-      existing?.first_opened_at ||
-      now;
+    if (!progress) {
+
+      const payload = {
+
+        student_id:
+          CURRENT_STUDENT.id,
+
+        lesson_id:
+          Number(lessonId),
+
+        first_opened_at:
+          now,
+
+        last_watched_at:
+          now,
+
+        watch_seconds:
+          0,
+
+        video_duration_seconds:
+          Number.isFinite(duration)
+          ?
+          Math.floor(duration)
+          :
+          null
+
+      };
 
 
-    const duration =
-      tracker.videoDuration ||
-      existing?.video_duration_seconds ||
-      null;
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("lesson_progress")
+          .insert(payload)
+          .select()
+          .maybeSingle();
 
 
-    const row = {
+      if (error) {
 
-      student_id:
-        CURRENT_STUDENT.id,
+        console.error(
+          "Start progress error:",
+          error
+        );
 
-      lesson_id:
-        Number(lessonId),
+        return;
+      }
 
-      first_opened_at:
-        firstOpened,
 
-      last_watched_at:
-        now,
+      if (data) {
+
+        ALL_PROGRESS.push(data);
+      }
+
+    } else {
+
+      const updates = {
+
+        last_watched_at:
+          now,
+
+        video_duration_seconds:
+          Number.isFinite(duration)
+          ?
+          Math.floor(duration)
+          :
+          progress.video_duration_seconds
+
+      };
+
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("lesson_progress")
+          .update(updates)
+          .eq("id", progress.id);
+
+
+      if (error) {
+        console.error(error);
+      }
+
+
+      Object.assign(
+        progress,
+        updates
+      );
+    }
+  }
+
+
+  /* =========================================================
+     SAVE VIDEO PROGRESS
+     ========================================================= */
+
+  async function saveCurrentVideoProgress(
+    lessonId,
+    video
+  ) {
+
+    const tracker =
+      activeTrackers.get(
+        Number(lessonId)
+      );
+
+
+    if (tracker) {
+
+      tracker.lastTick =
+        Date.now();
+    }
+
+
+    const progress =
+      getProgress(lessonId);
+
+
+    if (!progress) {
+
+      await startLessonProgress(
+        lessonId,
+        video.duration
+      );
+
+      return;
+    }
+
+
+    const updates = {
 
       watch_seconds:
-        Math.max(
-          0,
-          Math.round(
-            tracker.watchSeconds
+        Math.floor(
+          Number(
+            progress.watch_seconds || 0
           )
         ),
 
+      last_watched_at:
+        new Date().toISOString(),
+
       video_duration_seconds:
-        duration
-          ? Number(duration)
-          : null,
-
-      completed_at:
-        existing?.completed_at || null,
-
-      updated_at:
-        now
-
+        Number.isFinite(
+          video.duration
+        )
+        ?
+        Math.floor(
+          video.duration
+        )
+        :
+        progress.video_duration_seconds
     };
 
 
+    await saveLessonProgress(
+      lessonId,
+      updates
+    );
+  }
+
+
+  /* =========================================================
+     SAVE PROGRESS
+     ========================================================= */
+
+  async function saveLessonProgress(
+    lessonId,
+    updates
+  ) {
+
+    if (!CURRENT_STUDENT) return;
+
+
+    let progress =
+      getProgress(lessonId);
+
+
+    if (!progress) {
+
+      await startLessonProgress(
+        lessonId,
+        updates.video_duration_seconds
+      );
+
+      progress =
+        getProgress(lessonId);
+
+      if (!progress) return;
+    }
+
+
     const {
-      data,
       error
     } =
       await supabaseClient
         .from("lesson_progress")
-        .upsert(
-          row,
-          {
-            onConflict:
-              "student_id,lesson_id"
-          }
-        )
-        .select()
-        .maybeSingle();
+        .update(updates)
+        .eq("id", progress.id)
+        .eq(
+          "student_id",
+          CURRENT_STUDENT.id
+        );
 
 
     if (error) {
@@ -2587,931 +1537,463 @@ async function saveLessonProgress(
     }
 
 
-    if (data) {
-
-      const index =
-        ALL_PROGRESS.findIndex(
-          item =>
-            Number(item.lesson_id) ===
-            Number(lessonId)
-        );
-
-
-      if (index >= 0) {
-
-        ALL_PROGRESS[index] =
-          data;
-
-      }
-      else {
-
-        ALL_PROGRESS.push(
-          data
-        );
-
-      }
-
-    }
-
-
-    renderReport();
-
-
-  }
-  finally {
-
-    tracker.saving =
-      false;
-
-  }
-
-}
-
-
-/* =====================================
-   COMPLETE LESSON
-===================================== */
-
-async function completeLesson(
-  lessonId,
-  tracker
-) {
-
-  const existing =
-    getProgress(
-      lessonId
+    Object.assign(
+      progress,
+      updates
     );
-
-
-  const now =
-    new Date().toISOString();
-
-
-  const duration =
-    tracker.videoDuration ||
-    existing?.video_duration_seconds ||
-    null;
-
-
-  /*
-    Make sure final watch time is saved.
-  */
-
-  const row = {
-
-    student_id:
-      CURRENT_STUDENT.id,
-
-    lesson_id:
-      Number(lessonId),
-
-    first_opened_at:
-      existing?.first_opened_at ||
-      now,
-
-    last_watched_at:
-      now,
-
-    watch_seconds:
-      Math.max(
-        0,
-        Math.round(
-          tracker.watchSeconds
-        )
-      ),
-
-    video_duration_seconds:
-      duration
-        ? Number(duration)
-        : null,
-
-    completed_at:
-      now,
-
-    updated_at:
-      now
-
-  };
-
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("lesson_progress")
-      .upsert(
-        row,
-        {
-          onConflict:
-            "student_id,lesson_id"
-        }
-      )
-      .select()
-      .maybeSingle();
-
-
-  if (error) {
-
-    console.error(
-      "Complete lesson error:",
-      error
-    );
-
-    return;
   }
 
 
-  if (data) {
+  /* =========================================================
+     LESSON COMPLETE
+     ========================================================= */
 
-    const index =
-      ALL_PROGRESS.findIndex(
+  async function completeLessonManually(
+    lessonId,
+    automatic = false
+  ) {
+
+    if (!CURRENT_STUDENT) return;
+
+
+    const lesson =
+      ALL_LESSONS.find(
         item =>
-          Number(item.lesson_id) ===
-          Number(lessonId)
+          Number(item.id) === Number(lessonId)
       );
 
 
-    if (index >= 0) {
+    if (!lesson) return;
 
-      ALL_PROGRESS[index] =
-        data;
 
-    }
-    else {
-
-      ALL_PROGRESS.push(
-        data
-      );
-
-    }
-
-  }
-
-
-  renderReport();
-
-
-  /*
-    Find next lesson in the same course.
-  */
-
-  const currentLesson =
-    ALL_LESSONS.find(
-      lesson =>
-        Number(lesson.id) ===
-        Number(lessonId)
-    );
-
-
-  if (!currentLesson) {
-
-    await loadCourses();
-
-    return;
-  }
-
-
-  const courseLessons =
-    ALL_LESSONS
-      .filter(
-        lesson =>
-          lesson.course ===
-          currentLesson.course
-      )
-      .sort(
-        (a,b) =>
-          Number(a.id) -
-          Number(b.id)
-      );
-
-
-  const currentIndex =
-    courseLessons.findIndex(
-      lesson =>
-        Number(lesson.id) ===
-        Number(lessonId)
-    );
-
-
-  const nextLesson =
-    courseLessons[
-      currentIndex + 1
-    ];
-
-
-  /*
-    Re-render so next lesson becomes unlocked.
-  */
-
-  renderCourses();
-
-
-  if (nextLesson) {
-
-    setTimeout(
-      function() {
-
-        const nextElement =
-          document.getElementById(
-            "lesson-" +
-            nextLesson.id
-          );
-
-
-        if (nextElement) {
-
-          nextElement.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
-
-          /*
-            Small visual indication.
-          */
-
-          nextElement.style.border =
-            "2px solid #22c55e";
-
-          setTimeout(
-            function() {
-
-              nextElement.style.border =
-                "1px solid #e5e7eb";
-
-            },
-            3000
-          );
-
-        }
-
-      },
-      700
-    );
-
-  }
-
-}
-
-
-/* =====================================
-   FORMAT DATE
-===================================== */
-
-function formatDate(
-  value
-) {
-
-  if (!value) {
-    return "—";
-  }
-
-
-  const date =
-    new Date(value);
-
-
-  if (
-    Number.isNaN(
-      date.getTime()
-    )
-  ) {
-
-    return "—";
-  }
-
-
-  return date.toLocaleDateString(
-    "en-GB",
-    {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric"
-    }
-  );
-
-}
-
-
-/* =====================================
-   FORMAT TIME
-===================================== */
-
-function formatTime(
-  value
-) {
-
-  if (!value) {
-    return "—";
-  }
-
-
-  const date =
-    new Date(value);
-
-
-  if (
-    Number.isNaN(
-      date.getTime()
-    )
-  ) {
-
-    return "—";
-  }
-
-
-  return date.toLocaleTimeString(
-    "en-US",
-    {
-      hour: "numeric",
-      minute: "2-digit"
-    }
-  );
-
-}
-
-
-/* =====================================
-   FORMAT WATCH TIME
-===================================== */
-
-function formatWatchTime(
-  seconds
-) {
-
-  const total =
-    Math.max(
-      0,
-      Math.floor(
-        Number(seconds) || 0
-      )
-    );
-
-
-  const hours =
-    Math.floor(
-      total / 3600
-    );
-
-
-  const minutes =
-    Math.floor(
-      (total % 3600) / 60
-    );
-
-
-  const secs =
-    total % 60;
-
-
-  if (hours > 0) {
-
-    return (
-      hours +
-      " hr " +
-      minutes +
-      " min"
-    );
-
-  }
-
-
-  if (minutes > 0) {
-
-    return (
-      minutes +
-      " min " +
-      secs +
-      " sec"
-    );
-
-  }
-
-
-  return secs + " sec";
-
-}
-
-
-/* =====================================
-   REPORT STATUS
-===================================== */
-
-function getReportStatus(
-  lesson,
-  courseLessons
-) {
-
-  const progress =
-    getProgress(
-      lesson.id
-    );
-
-
-  if (
-    progress &&
-    progress.completed_at
-  ) {
-
-    return "✅ Completed";
-
-  }
-
-
-  if (
-    progress &&
-    progress.first_opened_at
-  ) {
-
-    return "👀 Watching";
-
-  }
-
-
-  if (
-    isLessonUnlocked(
-      lesson,
-      courseLessons
-    )
-  ) {
-
-    return "▶️ Ready";
-
-  }
-
-
-  return "🔒 Locked";
-
-}
-
-
-/* =====================================
-   RENDER REPORT
-===================================== */
-
-function renderReport() {
-
-  if (
-    !CURRENT_STUDENT
-  ) {
-
-    return;
-  }
-
-
-  reportBody.innerHTML =
-    "";
-
-
-  const access =
-    Array.isArray(
-      CURRENT_STUDENT.course_access
-    )
-      ? CURRENT_STUDENT.course_access
-      : [];
-
-
-  const accessibleCourses =
-    ALL_COURSES.filter(
-      course =>
-        access.includes(
-          course.name
+    const courseLessons =
+      ALL_LESSONS
+        .filter(
+          item =>
+            item.course === lesson.course
         )
-    );
-
-
-  const reportLessons = [];
-
-
-  accessibleCourses.forEach(
-    course => {
-
-      const courseLessons =
-        ALL_LESSONS
-          .filter(
-            lesson =>
-              lesson.course ===
-              course.name
-          )
-          .sort(
-            (a,b) =>
-              Number(a.id) -
-              Number(b.id)
-          );
-
-
-      courseLessons.forEach(
-        lesson => {
-
-          reportLessons.push({
-
-            lesson,
-            courseLessons
-
-          });
-
-        }
-      );
-
-    }
-  );
-
-
-  if (
-    reportLessons.length === 0
-  ) {
-
-    reportBody.innerHTML = `
-
-      <tr>
-
-        <td
-          colspan="7"
-          style="text-align:center;"
-        >
-          No lessons available yet.
-        </td>
-
-      </tr>
-
-    `;
-
-    return;
-  }
-
-
-  reportLessons.forEach(
-    entry => {
-
-      const lesson =
-        entry.lesson;
-
-
-      const courseLessons =
-        entry.courseLessons;
-
-
-      const progress =
-        getProgress(
-          lesson.id
+        .sort(
+          (a, b) =>
+            Number(a.id) - Number(b.id)
         );
 
 
-      const row =
-        document.createElement(
-          "tr"
+    if (
+      !isLessonUnlocked(
+        lesson,
+        courseLessons
+      )
+    ) {
+
+      if (!automatic) {
+
+        showMessage(
+          "මෙම lesson එක තවම unlock වී නැත.",
+          "error"
         );
-
-
-      const studentCell =
-        document.createElement(
-          "td"
-        );
-
-
-      studentCell.textContent =
-        CURRENT_STUDENT.username;
-
-
-      const lessonCell =
-        document.createElement(
-          "td"
-        );
-
-
-      lessonCell.textContent =
-        lesson.title ||
-        "Lesson";
-
-
-      const dateCell =
-        document.createElement(
-          "td"
-        );
-
-
-      dateCell.textContent =
-        progress
-          ? formatDate(
-              progress.first_opened_at
-            )
-          : "—";
-
-
-      const startedCell =
-        document.createElement(
-          "td"
-        );
-
-
-      startedCell.textContent =
-        progress
-          ? formatTime(
-              progress.first_opened_at
-            )
-          : "—";
-
-
-      const lastWatchedCell =
-        document.createElement(
-          "td"
-        );
-
-
-      lastWatchedCell.textContent =
-        progress
-          ? formatTime(
-              progress.last_watched_at
-            )
-          : "—";
-
-
-      const watchCell =
-        document.createElement(
-          "td"
-        );
-
-
-      watchCell.textContent =
-        progress
-          ? formatWatchTime(
-              progress.watch_seconds
-            )
-          : "—";
-
-
-      const statusCell =
-        document.createElement(
-          "td"
-        );
-
-
-      statusCell.textContent =
-        getReportStatus(
-          lesson,
-          courseLessons
-        );
-
-
-      row.appendChild(
-        studentCell
-      );
-
-      row.appendChild(
-        lessonCell
-      );
-
-      row.appendChild(
-        dateCell
-      );
-
-      row.appendChild(
-        startedCell
-      );
-
-      row.appendChild(
-        lastWatchedCell
-      );
-
-      row.appendChild(
-        watchCell
-      );
-
-      row.appendChild(
-        statusCell
-      );
-
-
-      reportBody.appendChild(
-        row
-      );
-
-    }
-  );
-
-}
-
-
-/* =====================================
-   BUILD REPORT TEXT
-===================================== */
-
-function buildReportText() {
-
-  const access =
-    Array.isArray(
-      CURRENT_STUDENT.course_access
-    )
-      ? CURRENT_STUDENT.course_access
-      : [];
-
-
-  const lines = [];
-
-
-  lines.push(
-    "MN TECHNOLOGY - STUDENT LEARNING REPORT"
-  );
-
-
-  lines.push(
-    "Student: " +
-    CURRENT_STUDENT.username
-  );
-
-
-  lines.push(
-    ""
-  );
-
-
-  lines.push(
-    "Student | Lesson | Date | Started | Last Watched | Watch Time | Status"
-  );
-
-
-  ALL_COURSES
-    .filter(
-      course =>
-        access.includes(
-          course.name
-        )
-    )
-    .forEach(
-      course => {
-
-        const courseLessons =
-          ALL_LESSONS
-            .filter(
-              lesson =>
-                lesson.course ===
-                course.name
-            )
-            .sort(
-              (a,b) =>
-                Number(a.id) -
-                Number(b.id)
-            );
-
-
-        courseLessons.forEach(
-          lesson => {
-
-            const progress =
-              getProgress(
-                lesson.id
-              );
-
-
-            const date =
-              progress
-                ? formatDate(
-                    progress.first_opened_at
-                  )
-                : "—";
-
-
-            const started =
-              progress
-                ? formatTime(
-                    progress.first_opened_at
-                  )
-                : "—";
-
-
-            const lastWatched =
-              progress
-                ? formatTime(
-                    progress.last_watched_at
-                  )
-                : "—";
-
-
-            const watchTime =
-              progress
-                ? formatWatchTime(
-                    progress.watch_seconds
-                  )
-                : "—";
-
-
-            const status =
-              getReportStatus(
-                lesson,
-                courseLessons
-              );
-
-
-            lines.push(
-              CURRENT_STUDENT.username +
-              " | " +
-              (lesson.title || "Lesson") +
-              " | " +
-              date +
-              " | " +
-              started +
-              " | " +
-              lastWatched +
-              " | " +
-              watchTime +
-              " | " +
-              status
-            );
-
-          }
-        );
-
       }
-    );
+
+      return;
+    }
 
 
-  lines.push("");
+    /*
+      If video is currently playing,
+      pause it and save progress first.
+    */
 
-  lines.push(
-    "Generated by MN Technology"
-  );
-
-
-  return lines.join(
-    "\n"
-  );
-
-}
+    const video =
+      document.getElementById(
+        `video-${lesson.id}`
+      );
 
 
-/* =====================================
-   COPY REPORT
-===================================== */
+    if (
+      video &&
+      !video.paused &&
+      !video.ended
+    ) {
 
-copyReportBtn.addEventListener(
-  "click",
-  async function() {
+      video.pause();
 
-    const report =
-      buildReportText();
+      await saveCurrentVideoProgress(
+        lesson.id,
+        video
+      );
+    }
 
+
+    let progress =
+      getProgress(lesson.id);
+
+
+    const now =
+      new Date().toISOString();
+
+
+    /*
+      IMPORTANT:
+      Student may click Complete even
+      without watching the video.
+
+      Therefore watch_seconds remains 0
+      if there is no previous progress.
+    */
+
+    if (!progress) {
+
+      const payload = {
+
+        student_id:
+          CURRENT_STUDENT.id,
+
+        lesson_id:
+          Number(lesson.id),
+
+        first_opened_at:
+          now,
+
+        last_watched_at:
+          now,
+
+        watch_seconds:
+          0,
+
+        video_duration_seconds:
+          video &&
+          Number.isFinite(video.duration)
+          ?
+          Math.floor(video.duration)
+          :
+          null,
+
+        completed_at:
+          now
+      };
+
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("lesson_progress")
+          .insert(payload)
+          .select()
+          .maybeSingle();
+
+
+      if (error) {
+
+        console.error(
+          "Complete insert error:",
+          error
+        );
+
+        showMessage(
+          "Lesson complete කිරීමේදී දෝෂයක් ඇතිවිය.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      if (data) {
+
+        ALL_PROGRESS.push(data);
+      }
+
+    } else {
+
+      const updates = {
+
+        completed_at:
+          now,
+
+        last_watched_at:
+          now
+
+      };
+
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("lesson_progress")
+          .update(updates)
+          .eq("id", progress.id)
+          .eq(
+            "student_id",
+            CURRENT_STUDENT.id
+          );
+
+
+      if (error) {
+
+        console.error(
+          "Complete update error:",
+          error
+        );
+
+        showMessage(
+          "Lesson complete කිරීමේදී දෝෂයක් ඇතිවිය.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      Object.assign(
+        progress,
+        updates
+      );
+    }
+
+
+    /*
+      Re-render.
+      This automatically unlocks the
+      next lesson.
+    */
+
+    renderCourses();
+
+
+    if (!automatic) {
+
+      showMessage(
+        "✅ Lesson එක සාර්ථකව Complete කළා! ඊළඟ lesson එක දැන් unlock වී ඇත."
+      );
+    }
+
+
+    /*
+      Find next lesson and scroll to it.
+    */
+
+    const currentIndex =
+      courseLessons.findIndex(
+        item =>
+          Number(item.id) === Number(lesson.id)
+      );
+
+
+    const nextLesson =
+      courseLessons[currentIndex + 1];
+
+
+    if (nextLesson) {
+
+      setTimeout(() => {
+
+        const nextCard =
+          document.getElementById(
+            `video-area-${nextLesson.id}`
+          );
+
+        if (nextCard) {
+
+          nextCard
+            .closest(".lesson-card")
+            ?.scrollIntoView({
+              behavior: "smooth",
+              block: "center"
+            });
+        }
+
+      }, 500);
+    }
+  }
+
+
+  /* =========================================================
+     PDF DOWNLOAD
+     ========================================================= */
+
+  async function downloadPDF(
+    encodedPath
+  ) {
 
     try {
 
-      await navigator.clipboard.writeText(
-        report
-      );
+      const path =
+        decodeURIComponent(
+          encodedPath
+        );
 
 
-      showReportMessage(
-        "✅ Report copied successfully."
-      );
+      if (!path) return;
 
-    }
-    catch (error) {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .storage
+          .from(VIDEO_BUCKET)
+          .createSignedUrl(
+            path,
+            300,
+            {
+              download: true
+            }
+          );
+
+
+      if (
+        error ||
+        !data?.signedUrl
+      ) {
+
+        console.error(
+          "PDF signed URL error:",
+          error
+        );
+
+        showMessage(
+          "PDF එක download කිරීමට නොහැකි විය.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      const link =
+        document.createElement("a");
+
+      link.href =
+        data.signedUrl;
+
+      link.target = "_blank";
+
+      link.rel =
+        "noopener noreferrer";
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      link.remove();
+
+    } catch (error) {
 
       console.error(error);
 
-      showReportMessage(
-        "Could not copy the report."
+      showMessage(
+        "PDF download error.",
+        "error"
+      );
+    }
+  }
+
+
+  /* =========================================================
+     WATERMARK MOVEMENT
+     ========================================================= */
+
+  setInterval(() => {
+
+    document
+      .querySelectorAll(".watermark")
+      .forEach(watermark => {
+
+        const x =
+          Math.floor(
+            Math.random() * 70
+          );
+
+        const y =
+          Math.floor(
+            Math.random() * 70
+          );
+
+        watermark.style.left =
+          x + "%";
+
+        watermark.style.top =
+          y + "%";
+      });
+
+  }, 15000);
+
+
+  /* =========================================================
+     FORMAT TIME
+     ========================================================= */
+
+  function formatTime(seconds) {
+
+    seconds =
+      Math.max(
+        0,
+        Math.floor(
+          Number(seconds) || 0
+        )
+      );
+
+
+    const hours =
+      Math.floor(
+        seconds / 3600
+      );
+
+
+    const minutes =
+      Math.floor(
+        (seconds % 3600) / 60
+      );
+
+
+    const secs =
+      seconds % 60;
+
+
+    if (hours > 0) {
+
+      return (
+        String(hours).padStart(2, "0") +
+        ":" +
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(secs).padStart(2, "0")
       );
 
     }
 
-  }
-);
 
-
-/* =====================================
-   WHATSAPP REPORT
-===================================== */
-
-whatsappReportBtn.addEventListener(
-  "click",
-  function() {
-
-    const report =
-      buildReportText();
-
-
-    const whatsappUrl =
-      "https://wa.me/?text=" +
-      encodeURIComponent(
-        report
-      );
-
-
-    window.open(
-      whatsappUrl,
-      "_blank"
+    return (
+      String(minutes).padStart(2, "0") +
+      ":" +
+      String(secs).padStart(2, "0")
     );
-
   }
-);
 
 
-/* =====================================
-   CHANGE PASSWORD
-===================================== */
+  /* =========================================================
+     ESCAPE HTML
+     ========================================================= */
 
-passwordForm.addEventListener(
-  "submit",
-  async function(event) {
+  function escapeHtml(value) {
+
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+
+  /* =========================================================
+     CHANGE PASSWORD
+     ========================================================= */
+
+  async function changePassword(event) {
 
     event.preventDefault();
 
@@ -3519,21 +2001,21 @@ passwordForm.addEventListener(
     const newPassword =
       document.getElementById(
         "newPassword"
-      ).value;
+      ).value.trim();
 
 
     const confirmPassword =
       document.getElementById(
         "confirmPassword"
-      ).value;
+      ).value.trim();
 
 
     if (
       newPassword.length < 6
     ) {
 
-      showPasswordMessage(
-        "Password must contain at least 6 characters.",
+      showMessage(
+        "Password එක අවම වශයෙන් characters 6ක් විය යුතුයි.",
         "error"
       );
 
@@ -3546,8 +2028,8 @@ passwordForm.addEventListener(
       confirmPassword
     ) {
 
-      showPasswordMessage(
-        "Passwords do not match.",
+      showMessage(
+        "Passwords දෙක සමාන නැත.",
         "error"
       );
 
@@ -3555,155 +2037,136 @@ passwordForm.addEventListener(
     }
 
 
-    const button =
-      document.getElementById(
-        "changePasswordBtn"
-      );
+    const {
+      error
+    } =
+      await supabaseClient.auth
+        .updateUser({
+          password:
+            newPassword
+        });
 
 
-    button.disabled =
-      true;
-
-
-    button.textContent =
-      "Changing...";
-
-
-    try {
-
-      const {
-        error
-      } =
-        await supabaseClient.auth
-          .updateUser({
-            password:
-              newPassword
-          });
-
-
-      if (error) {
-        throw error;
-      }
-
-
-      showPasswordMessage(
-        "Password changed successfully!",
-        "success"
-      );
-
-
-      passwordForm.reset();
-
-    }
-    catch (error) {
+    if (error) {
 
       console.error(error);
 
-
-      showPasswordMessage(
-        error.message ||
-        "Could not change password.",
+      showMessage(
+        "Password වෙනස් කිරීමට නොහැකි විය: " +
+        error.message,
         "error"
       );
 
-    }
-    finally {
-
-      button.disabled =
-        false;
-
-
-      button.textContent =
-        "Change Password";
-
+      return;
     }
 
+
+    document.getElementById(
+      "newPassword"
+    ).value = "";
+
+    document.getElementById(
+      "confirmPassword"
+    ).value = "";
+
+
+    showMessage(
+      "✅ Password එක සාර්ථකව වෙනස් කළා."
+    );
   }
-);
 
 
-/* =====================================
-   LOGOUT
-===================================== */
+  /* =========================================================
+     SAVE BEFORE LEAVING
+     ========================================================= */
 
-document.getElementById(
-  "logoutBtn"
-).addEventListener(
-  "click",
-  async function() {
+  document.addEventListener(
+    "visibilitychange",
+    async () => {
+
+      if (
+        document.visibilityState ===
+        "hidden"
+      ) {
+
+        for (
+          const [
+            lessonId,
+            tracker
+          ]
+          of activeTrackers
+        ) {
+
+          if (tracker.video) {
+
+            await saveCurrentVideoProgress(
+              lessonId,
+              tracker.video
+            );
+          }
+        }
+      }
+    }
+  );
+
+
+  /* =========================================================
+     LOGOUT
+     ========================================================= */
+
+  async function logout() {
 
     /*
-      Save any active video progress
-      before logout.
+      Save active video progress first.
     */
 
     for (
-      const tracker of activeTrackers.values()
+      const [
+        lessonId,
+        tracker
+      ]
+      of activeTrackers
     ) {
 
-      await saveLessonProgress(
-        tracker.lessonId,
-        tracker
-      );
+      if (tracker.video) {
 
+        await saveCurrentVideoProgress(
+          lessonId,
+          tracker.video
+        );
+      }
     }
 
 
-    await supabaseClient.auth.signOut();
+    const {
+      error
+    } =
+      await supabaseClient.auth.signOut();
+
+
+    if (error) {
+
+      console.error(error);
+
+      showMessage(
+        "Logout කිරීමේදී දෝෂයක් ඇතිවිය.",
+        "error"
+      );
+
+      return;
+    }
 
 
     window.location.href =
       "login.html";
-
-  }
-);
-
-
-/* =====================================
-   SAVE BEFORE PAGE CLOSE
-===================================== */
-
-window.addEventListener(
-  "beforeunload",
-  function() {
-
-    /*
-      Browser may not wait for async Supabase
-      requests here. Normal pause/visibility
-      saving handles the main progress updates.
-    */
-
-    activeTrackers.forEach(
-      tracker => {
-
-        tracker.lastTick =
-          null;
-
-      }
-    );
-
-  }
-);
-
-
-/* =====================================
-   START
-===================================== */
-
-(async function() {
-
-  const student =
-    await loadStudent();
-
-
-  if (!student) {
-    return;
   }
 
 
-  await loadCourses();
+  /* =========================================================
+     INITIAL LOAD
+     ========================================================= */
 
-})();
+  loadStudent();
 
 </script>
 
