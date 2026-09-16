@@ -6,9 +6,6 @@
 
   <title>Admin Dashboard | MN Technology</title>
 
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
     * {
       box-sizing: border-box;
@@ -22,33 +19,29 @@
       color: #172033;
     }
 
-    /* NAVBAR */
-    .navbar {
+    nav {
       background: #051223;
       color: white;
-      padding: 14px 25px;
+      padding: 15px 25px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .brand {
-      display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 21px;
-      font-weight: bold;
     }
 
     .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .logo-box {
       width: 42px;
       height: 42px;
-      border-radius: 10px;
       background: #22d3ee;
       color: #051223;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -59,258 +52,176 @@
       background: #ef4444;
       border: none;
       color: white;
-      padding: 10px 17px;
-      border-radius: 8px;
+      padding: 10px 16px;
+      border-radius: 7px;
       cursor: pointer;
-      font-weight: bold;
     }
 
-    .logout-btn:hover {
-      background: #dc2626;
-    }
-
-    /* CONTAINER */
     .container {
       max-width: 1200px;
-      margin: auto;
-      padding: 25px;
+      margin: 30px auto;
+      padding: 0 20px;
     }
 
-    .welcome {
-      background: white;
-      padding: 25px;
-      border-radius: 14px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    h1 {
       margin-bottom: 25px;
     }
 
-    .welcome h1 {
-      margin-bottom: 8px;
-      color: #051223;
+    h2 {
+      margin-bottom: 18px;
     }
 
-    .welcome p {
-      color: #667085;
-    }
-
-    /* STATS */
     .stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 18px;
-      margin-bottom: 25px;
+      margin-bottom: 30px;
     }
 
     .stat-card {
       background: white;
-      padding: 22px;
-      border-radius: 14px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+      text-align: center;
     }
 
     .stat-card h3 {
-      color: #667085;
-      font-size: 15px;
-      margin-bottom: 10px;
+      font-size: 32px;
+      color: #0ea5e9;
+      margin-bottom: 8px;
     }
 
-    .stat-card .number {
-      font-size: 30px;
-      font-weight: bold;
-      color: #051223;
-    }
-
-    /* GRID */
-    .main-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 25px;
-      margin-bottom: 25px;
-    }
-
-    .card {
+    .section {
       background: white;
-      border-radius: 14px;
       padding: 25px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+      border-radius: 12px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
     }
 
-    .card h2 {
-      margin-bottom: 20px;
-      color: #051223;
-      font-size: 21px;
-    }
-
-    /* FORM */
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-group label {
+    label {
       display: block;
       margin-bottom: 7px;
       font-weight: bold;
-      font-size: 14px;
     }
 
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
+    input,
+    textarea,
+    select {
       width: 100%;
       padding: 12px;
-      border: 1px solid #d0d5dd;
-      border-radius: 8px;
-      outline: none;
+      border: 1px solid #d1d5db;
+      border-radius: 7px;
+      margin-bottom: 15px;
       font-size: 15px;
-      background: white;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      border-color: #22d3ee;
     }
 
     textarea {
+      min-height: 100px;
       resize: vertical;
-      min-height: 90px;
+    }
+
+    button {
+      cursor: pointer;
     }
 
     .primary-btn {
-      width: 100%;
-      background: #051223;
+      background: #0ea5e9;
       color: white;
       border: none;
-      padding: 13px;
-      border-radius: 8px;
-      cursor: pointer;
+      padding: 12px 20px;
+      border-radius: 7px;
       font-weight: bold;
-      font-size: 15px;
     }
 
     .primary-btn:hover {
-      background: #0b294d;
+      background: #0284c7;
     }
 
-    .primary-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
+    .danger-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 8px 13px;
+      border-radius: 6px;
     }
 
-    /* MESSAGE */
+    .student-item,
+    .lesson-item {
+      border: 1px solid #e5e7eb;
+      padding: 18px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+
+    .student-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .lesson-item h3 {
+      margin-bottom: 7px;
+    }
+
+    .lesson-item p {
+      color: #64748b;
+      margin-bottom: 12px;
+    }
+
+    video {
+      width: 100%;
+      max-width: 700px;
+      border-radius: 10px;
+      background: black;
+      margin-top: 10px;
+    }
+
     .message {
-      margin-top: 15px;
-      padding: 12px;
-      border-radius: 8px;
       display: none;
-      font-size: 14px;
+      padding: 12px;
+      border-radius: 7px;
+      margin-bottom: 15px;
     }
 
     .success {
-      display: block;
       background: #dcfce7;
       color: #166534;
     }
 
     .error {
-      display: block;
       background: #fee2e2;
       color: #991b1b;
     }
 
-    /* UPLOAD STATUS */
-    .upload-status {
-      display: none;
-      margin-top: 12px;
-      padding: 12px;
-      background: #eff6ff;
-      color: #1d4ed8;
-      border-radius: 8px;
-      font-size: 14px;
-    }
-
-    /* LIST */
-    .list-card {
-      margin-top: 25px;
-    }
-
-    .item {
-      border: 1px solid #e4e7ec;
-      border-radius: 10px;
-      padding: 16px;
-      margin-bottom: 12px;
-      background: #fafafa;
-    }
-
-    .item-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 15px;
-      align-items: flex-start;
-    }
-
-    .item h3 {
-      color: #051223;
-      margin-bottom: 5px;
-    }
-
-    .item small {
-      color: #667085;
-    }
-
-    .delete-btn {
-      background: #ef4444;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 7px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .delete-btn:hover {
-      background: #dc2626;
-    }
-
-    .video-preview {
-      margin-top: 12px;
-      width: 100%;
-      max-width: 550px;
-      border-radius: 10px;
-      background: black;
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
     }
 
     .empty {
-      color: #667085;
-      text-align: center;
-      padding: 20px;
+      color: #64748b;
+      padding: 10px 0;
     }
 
-    /* RESPONSIVE */
-    @media (max-width: 800px) {
+    @media (max-width: 700px) {
       .stats {
         grid-template-columns: 1fr;
       }
 
-      .main-grid {
-        grid-template-columns: 1fr;
+      .student-item {
+        flex-direction: column;
+        align-items: flex-start;
       }
 
-      .navbar {
+      nav {
         padding: 12px 15px;
       }
 
       .container {
-        padding: 15px;
-      }
-
-      .brand {
-        font-size: 17px;
-      }
-
-      .logo {
-        width: 36px;
-        height: 36px;
+        padding: 0 12px;
       }
     }
   </style>
@@ -318,200 +229,192 @@
 
 <body>
 
-  <!-- NAVBAR -->
-  <nav class="navbar">
-    <div class="brand">
-      <div class="logo">MN</div>
-      <span>MN Technology - Admin</span>
+<nav>
+  <div class="logo">
+    <div class="logo-box">MN</div>
+    <span>MN Technology - Admin</span>
+  </div>
+
+  <button class="logout-btn" id="logoutBtn">
+    Logout
+  </button>
+</nav>
+
+
+<div class="container">
+
+  <h1>Admin Dashboard</h1>
+
+
+  <!-- STATS -->
+  <div class="stats">
+
+    <div class="stat-card">
+      <h3 id="studentCount">0</h3>
+      <p>Students</p>
     </div>
 
-    <button class="logout-btn" onclick="logout()">Logout</button>
-  </nav>
+    <div class="stat-card">
+      <h3 id="lessonCount">0</h3>
+      <p>Lessons</p>
+    </div>
+
+    <div class="stat-card">
+      <h3 id="videoCount">0</h3>
+      <p>Videos</p>
+    </div>
+
+  </div>
 
 
-  <main class="container">
-
-    <!-- WELCOME -->
-    <section class="welcome">
-      <h1>Admin Dashboard</h1>
-      <p>Welcome to MN Technology Administration Panel.</p>
-    </section>
+  <!-- MESSAGE -->
+  <div id="message" class="message"></div>
 
 
-    <!-- STATS -->
-    <section class="stats">
+  <!-- CREATE STUDENT -->
+  <div class="section">
 
-      <div class="stat-card">
-        <h3>Total Students</h3>
-        <div class="number" id="studentCount">0</div>
-      </div>
+    <h2>Create Student Account</h2>
 
-      <div class="stat-card">
-        <h3>Total Lessons</h3>
-        <div class="number" id="lessonCount">0</div>
-      </div>
+    <form id="studentForm">
 
-      <div class="stat-card">
-        <h3>Uploaded Videos</h3>
-        <div class="number" id="videoCount">0</div>
-      </div>
+      <label for="studentUsername">
+        Student Username
+      </label>
 
-    </section>
+      <input
+        type="text"
+        id="studentUsername"
+        placeholder="Example: student01"
+        required
+        autocomplete="off"
+      >
 
+      <label for="studentPassword">
+        Student Password
+      </label>
 
-    <!-- ADD SECTION -->
-    <section class="main-grid">
+      <input
+        type="password"
+        id="studentPassword"
+        placeholder="Minimum 6 characters"
+        required
+        autocomplete="new-password"
+      >
 
-      <!-- CREATE STUDENT -->
-      <div class="card">
+      <button
+        type="submit"
+        class="primary-btn"
+        id="createStudentBtn"
+      >
+        Create Student
+      </button>
 
-        <h2>👨‍🎓 Create Student</h2>
+    </form>
 
-        <form id="studentForm">
-
-          <div class="form-group">
-            <label>Student Username</label>
-            <input
-              type="text"
-              id="studentUsername"
-              placeholder="Example: student01"
-              required
-            >
-          </div>
-
-          <div class="form-group">
-            <label>Student Password</label>
-            <input
-              type="password"
-              id="studentPassword"
-              placeholder="Enter password"
-              required
-              minlength="6"
-            >
-          </div>
-
-          <button
-            type="submit"
-            class="primary-btn"
-            id="studentButton"
-          >
-            Create Student
-          </button>
-
-        </form>
-
-        <div id="studentMessage" class="message"></div>
-
-      </div>
+  </div>
 
 
-      <!-- ADD LESSON -->
-      <div class="card">
+  <!-- ADD LESSON -->
+  <div class="section">
 
-        <h2>🎥 Add New Lesson</h2>
+    <h2>Add New Lesson</h2>
 
-        <form id="lessonForm">
+    <form id="lessonForm">
 
-          <div class="form-group">
-            <label>Course</label>
+      <label for="lessonTitle">
+        Lesson Title
+      </label>
 
-            <select id="course" required>
-              <option value="">Select Course</option>
-              <option value="Electronics">Electronics</option>
-              <option value="Electrical">Electrical</option>
-              <option value="Radio">Radio</option>
-              <option value="TV">TV</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
+      <input
+        type="text"
+        id="lessonTitle"
+        placeholder="Example: Resistor"
+        required
+      >
 
 
-          <div class="form-group">
-            <label>Lesson Title</label>
+      <label for="lessonCourse">
+        Course
+      </label>
 
-            <input
-              type="text"
-              id="lessonTitle"
-              placeholder="Example: Capacitor"
-              required
-            >
-          </div>
-
-
-          <div class="form-group">
-            <label>Description</label>
-
-            <textarea
-              id="lessonDescription"
-              placeholder="Enter lesson description"
-            ></textarea>
-          </div>
+      <input
+        type="text"
+        id="lessonCourse"
+        placeholder="Example: Electronics"
+        required
+      >
 
 
-          <div class="form-group">
-            <label>Video File</label>
+      <label for="lessonDescription">
+        Description
+      </label>
 
-            <input
-              type="file"
-              id="videoFile"
-              accept="video/*"
-              required
-            >
-          </div>
+      <textarea
+        id="lessonDescription"
+        placeholder="Lesson description"
+      ></textarea>
 
 
-          <div id="uploadStatus" class="upload-status">
-            Uploading video... Please wait.
-          </div>
+      <label for="videoFile">
+        Video File
+      </label>
+
+      <input
+        type="file"
+        id="videoFile"
+        accept="video/*"
+        required
+      >
 
 
-          <button
-            type="submit"
-            class="primary-btn"
-            id="lessonButton"
-          >
-            Upload Video & Save Lesson
-          </button>
+      <button
+        type="submit"
+        class="primary-btn"
+        id="uploadVideoBtn"
+      >
+        Upload Lesson & Video
+      </button>
 
-        </form>
+    </form>
 
-        <div id="lessonMessage" class="message"></div>
-
-      </div>
-
-    </section>
+  </div>
 
 
-    <!-- STUDENTS -->
-    <section class="card list-card">
+  <!-- STUDENTS -->
+  <div class="section">
 
-      <h2>👨‍🎓 Students</h2>
+    <h2>Student Accounts</h2>
 
-      <div id="studentsList">
-        <div class="empty">Loading students...</div>
-      </div>
+    <div id="studentsList">
+      <p class="empty">Loading students...</p>
+    </div>
 
-    </section>
+  </div>
 
 
-    <!-- LESSONS -->
-    <section class="card list-card">
+  <!-- LESSONS -->
+  <div class="section">
 
-      <h2>📚 Lessons & Videos</h2>
+    <h2>Lessons & Videos</h2>
 
-      <div id="lessonsList">
-        <div class="empty">Loading lessons...</div>
-      </div>
+    <div id="lessonsList">
+      <p class="empty">Loading lessons...</p>
+    </div>
 
-    </section>
+  </div>
 
-  </main>
+</div>
+
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
 <script>
 
   /* =========================================
-     SUPABASE CONFIG
+     SUPABASE CONFIGURATION
   ========================================= */
 
   const SUPABASE_URL =
@@ -528,18 +431,42 @@
 
 
   /* =========================================
-     PAGE START
+     ELEMENTS
   ========================================= */
 
-  document.addEventListener("DOMContentLoaded", async () => {
+  const messageBox =
+    document.getElementById("message");
 
-    await checkAdmin();
+  const studentForm =
+    document.getElementById("studentForm");
 
-    await loadStudents();
+  const lessonForm =
+    document.getElementById("lessonForm");
 
-    await loadLessons();
+  const studentsList =
+    document.getElementById("studentsList");
 
-  });
+  const lessonsList =
+    document.getElementById("lessonsList");
+
+
+  /* =========================================
+     MESSAGE
+  ========================================= */
+
+  function showMessage(text, type = "success") {
+
+    messageBox.textContent = text;
+
+    messageBox.className =
+      "message " + type;
+
+    messageBox.style.display = "block";
+
+    setTimeout(() => {
+      messageBox.style.display = "none";
+    }, 5000);
+  }
 
 
   /* =========================================
@@ -549,193 +476,60 @@
   async function checkAdmin() {
 
     const {
-      data: { session },
-      error
+      data: sessionData,
+      error: sessionError
     } = await supabaseClient.auth.getSession();
 
-    if (error || !session) {
-
+    if (
+      sessionError ||
+      !sessionData ||
+      !sessionData.session
+    ) {
       window.location.href = "login.html";
-
-      return;
+      return null;
     }
 
-
-    /*
-      Check whether logged-in user
-      is actually an admin.
-    */
-
-    const { data: adminRow, error: adminError } =
-      await supabaseClient
-        .from("admins")
-        .select("username")
-        .eq("id", session.user.id)
-        .maybeSingle();
+    const user =
+      sessionData.session.user;
 
 
-    if (adminError || !adminRow) {
+    const {
+      data: adminRow,
+      error: adminError
+    } = await supabaseClient
+      .from("admins")
+      .select("id, username")
+      .eq("id", user.id)
+      .maybeSingle();
+
+
+    if (
+      adminError ||
+      !adminRow
+    ) {
 
       await supabaseClient.auth.signOut();
 
-      alert("Admin access required.");
-
       window.location.href = "login.html";
 
-      return;
+      return null;
     }
 
+    return user;
   }
 
 
   /* =========================================
-     LOGOUT
+     LOAD DASHBOARD
   ========================================= */
 
-  async function logout() {
+  async function loadDashboard() {
 
-    await supabaseClient.auth.signOut();
+    await loadStudents();
 
-    localStorage.removeItem("studentLoggedIn");
-
-    window.location.href = "login.html";
+    await loadLessons();
 
   }
-
-
-  /* =========================================
-     CREATE STUDENT
-  ========================================= */
-
-  document
-    .getElementById("studentForm")
-    .addEventListener("submit", async function(event) {
-
-      event.preventDefault();
-
-
-      const username =
-        document
-          .getElementById("studentUsername")
-          .value
-          .trim();
-
-      const password =
-        document
-          .getElementById("studentPassword")
-          .value;
-
-
-      const button =
-        document.getElementById("studentButton");
-
-      const message =
-        document.getElementById("studentMessage");
-
-
-      message.className = "message";
-      message.textContent = "";
-
-
-      if (!username || !password) {
-
-        showMessage(
-          message,
-          "Please enter username and password.",
-          "error"
-        );
-
-        return;
-      }
-
-
-      button.disabled = true;
-      button.textContent = "Creating...";
-
-
-      try {
-
-        /*
-          Edge Function creates the
-          Supabase Auth student account.
-        */
-
-        const {
-          data: { session }
-        } = await supabaseClient.auth.getSession();
-
-
-        if (!session) {
-
-          throw new Error("Admin session expired.");
-
-        }
-
-
-        const response =
-          await supabaseClient.functions.invoke(
-            "create-student",
-            {
-              body: {
-                username: username,
-                password: password
-              }
-            }
-          );
-
-
-        if (response.error) {
-
-          throw response.error;
-
-        }
-
-
-        if (
-          response.data &&
-          response.data.error
-        ) {
-
-          throw new Error(
-            response.data.error
-          );
-
-        }
-
-
-        showMessage(
-          message,
-          "Student account created successfully.",
-          "success"
-        );
-
-
-        document
-          .getElementById("studentForm")
-          .reset();
-
-
-        await loadStudents();
-
-
-      } catch (error) {
-
-        console.error(error);
-
-        showMessage(
-          message,
-          error.message ||
-          "Unable to create student.",
-          "error"
-        );
-
-      }
-
-
-      button.disabled = false;
-      button.textContent = "Create Student";
-
-    });
 
 
   /* =========================================
@@ -744,9 +538,8 @@
 
   async function loadStudents() {
 
-    const list =
-      document.getElementById("studentsList");
-
+    studentsList.innerHTML =
+      '<p class="empty">Loading students...</p>';
 
     const {
       data,
@@ -761,10 +554,12 @@
 
     if (error) {
 
-      console.error(error);
+      studentsList.innerHTML =
+        `<p class="empty">
+          Could not load students.
+        </p>`;
 
-      list.innerHTML =
-        '<div class="empty">Unable to load students.</div>';
+      console.error(error);
 
       return;
     }
@@ -776,74 +571,57 @@
 
     if (!data.length) {
 
-      list.innerHTML =
-        '<div class="empty">No students created yet.</div>';
+      studentsList.innerHTML =
+        '<p class="empty">No students created yet.</p>';
 
       return;
     }
 
 
-    list.innerHTML = "";
+    studentsList.innerHTML = "";
 
 
     data.forEach(student => {
 
-      const item =
+      const div =
         document.createElement("div");
 
-      item.className = "item";
-
-
-      const header =
-        document.createElement("div");
-
-      header.className = "item-header";
-
-
-      const info =
-        document.createElement("div");
-
-
-      const title =
-        document.createElement("h3");
-
-      title.textContent =
-        student.username;
+      div.className =
+        "student-item";
 
 
       const date =
-        document.createElement("small");
-
-      date.textContent =
-        "Created: " +
-        new Date(student.created_at)
-          .toLocaleString();
+        student.created_at
+          ? new Date(student.created_at)
+              .toLocaleDateString()
+          : "";
 
 
-      info.appendChild(title);
-      info.appendChild(date);
+      div.innerHTML = `
+
+        <div>
+
+          <strong>
+            Username: ${escapeHtml(student.username)}
+          </strong>
+
+          <p>
+            Created: ${date}
+          </p>
+
+        </div>
+
+        <button
+          class="danger-btn"
+          onclick="deleteStudent('${student.id}', '${escapeHtml(student.username)}')"
+        >
+          Delete
+        </button>
+
+      `;
 
 
-      const deleteButton =
-        document.createElement("button");
-
-      deleteButton.className =
-        "delete-btn";
-
-      deleteButton.textContent =
-        "Delete";
-
-
-      deleteButton.onclick =
-        () => deleteStudent(student.id);
-
-
-      header.appendChild(info);
-      header.appendChild(deleteButton);
-
-      item.appendChild(header);
-
-      list.appendChild(item);
+      studentsList.appendChild(div);
 
     });
 
@@ -851,131 +629,333 @@
 
 
   /* =========================================
-     DELETE STUDENT
+     LOAD LESSONS
   ========================================= */
 
-  async function deleteStudent(studentId) {
+  async function loadLessons() {
 
-    const confirmed =
-      confirm(
-        "Are you sure you want to delete this student?"
-      );
+    lessonsList.innerHTML =
+      '<p class="empty">Loading lessons...</p>';
 
 
-    if (!confirmed) return;
+    const {
+      data,
+      error
+    } = await supabaseClient
+      .from("lessons")
+      .select("*")
+      .order("created_at", {
+        ascending: false
+      });
 
 
-    /*
-      Student deletion through frontend
-      requires a secure server function.
-      We call the Edge Function.
-    */
+    if (error) {
 
-    try {
-
-      const response =
-        await supabaseClient.functions.invoke(
-          "delete-student",
-          {
-            body: {
-              studentId: studentId
-            }
-          }
-        );
-
-
-      if (response.error) {
-
-        throw response.error;
-
-      }
-
-
-      if (
-        response.data &&
-        response.data.error
-      ) {
-
-        throw new Error(
-          response.data.error
-        );
-
-      }
-
-
-      alert("Student deleted successfully.");
-
-      await loadStudents();
-
-
-    } catch (error) {
+      lessonsList.innerHTML =
+        `<p class="empty">
+          Could not load lessons.
+        </p>`;
 
       console.error(error);
 
-      alert(
-        "Student delete failed: " +
-        error.message
-      );
-
+      return;
     }
+
+
+    document.getElementById("lessonCount")
+      .textContent = data.length;
+
+    document.getElementById("videoCount")
+      .textContent =
+        data.filter(x => x.video_path).length;
+
+
+    if (!data.length) {
+
+      lessonsList.innerHTML =
+        '<p class="empty">No lessons added yet.</p>';
+
+      return;
+    }
+
+
+    lessonsList.innerHTML = "";
+
+
+    data.forEach(lesson => {
+
+      const div =
+        document.createElement("div");
+
+      div.className =
+        "lesson-item";
+
+
+      let videoHtml = "";
+
+
+      if (lesson.video_path) {
+
+        const {
+          data: publicUrlData
+        } =
+          supabaseClient.storage
+            .from("Video")
+            .getPublicUrl(
+              lesson.video_path
+            );
+
+
+        const videoUrl =
+          publicUrlData.publicUrl;
+
+
+        videoHtml = `
+
+          <video
+            controls
+            preload="metadata"
+          >
+            <source
+              src="${videoUrl}"
+              type="video/mp4"
+            >
+
+            Your browser does not support
+            HTML5 video.
+          </video>
+
+        `;
+      }
+
+
+      div.innerHTML = `
+
+        <h3>
+          ${escapeHtml(lesson.title)}
+        </h3>
+
+        <p>
+          <strong>Course:</strong>
+          ${escapeHtml(lesson.course)}
+        </p>
+
+        <p>
+          ${escapeHtml(
+            lesson.description || ""
+          )}
+        </p>
+
+        ${videoHtml}
+
+        <br>
+
+        <button
+          class="danger-btn"
+          onclick="deleteLesson(${lesson.id}, '${escapeHtml(lesson.video_path || "")}')"
+        >
+          Delete Lesson
+        </button>
+
+      `;
+
+
+      lessonsList.appendChild(div);
+
+    });
 
   }
 
 
   /* =========================================
-     ADD LESSON + VIDEO
+     CREATE STUDENT
   ========================================= */
 
-  document
-    .getElementById("lessonForm")
-    .addEventListener("submit", async function(event) {
+  studentForm.addEventListener(
+    "submit",
+    async function(event) {
 
       event.preventDefault();
 
 
-      const course =
-        document
-          .getElementById("course")
-          .value;
+      const username =
+        document.getElementById(
+          "studentUsername"
+        ).value.trim();
 
-      const title =
-        document
-          .getElementById("lessonTitle")
-          .value
-          .trim();
 
-      const description =
-        document
-          .getElementById("lessonDescription")
-          .value
-          .trim();
+      const password =
+        document.getElementById(
+          "studentPassword"
+        ).value;
 
-      const fileInput =
-        document.getElementById("videoFile");
 
-      const file =
-        fileInput.files[0];
+      if (
+        !/^[A-Za-z0-9_]{3,30}$/.test(username)
+      ) {
+
+        showMessage(
+          "Username must be 3-30 characters using letters, numbers or underscore.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      if (password.length < 6) {
+
+        showMessage(
+          "Password must contain at least 6 characters.",
+          "error"
+        );
+
+        return;
+      }
 
 
       const button =
-        document.getElementById("lessonButton");
-
-      const message =
-        document.getElementById("lessonMessage");
-
-      const status =
-        document.getElementById("uploadStatus");
+        document.getElementById(
+          "createStudentBtn"
+        );
 
 
-      message.className = "message";
-      message.textContent = "";
+      button.disabled = true;
+
+      button.textContent =
+        "Creating...";
 
 
-      if (!file) {
+      try {
+
+        const response =
+          await supabaseClient.functions.invoke(
+            "create-student-v2",
+            {
+              body: {
+                username,
+                password
+              }
+            }
+          );
+
+
+        console.log(
+          "Create student response:",
+          response
+        );
+
+
+        if (response.error) {
+
+          throw new Error(
+            response.error.message ||
+            "Edge Function error."
+          );
+        }
+
+
+        if (
+          response.data &&
+          response.data.ok === false
+        ) {
+
+          throw new Error(
+            response.data.error ||
+            "Student creation failed."
+          );
+        }
+
+
+        if (
+          !response.data ||
+          response.data.ok !== true
+        ) {
+
+          throw new Error(
+            "Student account was not created."
+          );
+        }
+
 
         showMessage(
-          message,
-          "Please select a video file.",
+          `Student "${username}" created successfully!`,
+          "success"
+        );
+
+
+        studentForm.reset();
+
+
+        await loadStudents();
+
+
+      } catch (error) {
+
+        console.error(
+          "Create student error:",
+          error
+        );
+
+
+        showMessage(
+          error.message ||
+          "Could not create student.",
+          "error"
+        );
+
+      } finally {
+
+        button.disabled = false;
+
+        button.textContent =
+          "Create Student";
+
+      }
+
+    }
+  );
+
+
+  /* =========================================
+     UPLOAD LESSON + VIDEO
+  ========================================= */
+
+  lessonForm.addEventListener(
+    "submit",
+    async function(event) {
+
+      event.preventDefault();
+
+
+      const title =
+        document.getElementById(
+          "lessonTitle"
+        ).value.trim();
+
+
+      const course =
+        document.getElementById(
+          "lessonCourse"
+        ).value.trim();
+
+
+      const description =
+        document.getElementById(
+          "lessonDescription"
+        ).value.trim();
+
+
+      const file =
+        document.getElementById(
+          "videoFile"
+        ).files[0];
+
+
+      if (!title || !course || !file) {
+
+        showMessage(
+          "Please enter lesson details and select a video.",
           "error"
         );
 
@@ -983,20 +963,10 @@
       }
 
 
-      /*
-        Check video file type.
-      */
-
-      if (!file.type.startsWith("video/")) {
-
-        showMessage(
-          message,
-          "Please select a valid video file.",
-          "error"
+      const button =
+        document.getElementById(
+          "uploadVideoBtn"
         );
-
-        return;
-      }
 
 
       button.disabled = true;
@@ -1005,46 +975,28 @@
         "Uploading...";
 
 
-      status.style.display = "block";
-
-      status.textContent =
-        "Uploading video... Please wait.";
-
-
       let filePath = null;
 
 
       try {
 
-        /*
-          Create safe filename.
-        */
-
         const safeName =
-          file.name
-            .replace(
-              /[^a-zA-Z0-9._-]/g,
-              "_"
-            );
+          file.name.replace(
+            /[^a-zA-Z0-9._-]/g,
+            "_"
+          );
 
 
         filePath =
-          course +
-          "/" +
-          Date.now() +
-          "-" +
-          safeName;
+          `${course}/${Date.now()}-${safeName}`;
 
 
-        /*
-          Upload video to Supabase Storage.
-        */
+        /* Upload video */
 
         const {
           error: uploadError
         } =
-          await supabaseClient
-            .storage
+          await supabaseClient.storage
             .from("Video")
             .upload(
               filePath,
@@ -1062,62 +1014,42 @@
         if (uploadError) {
 
           throw uploadError;
-
         }
 
 
-        status.textContent =
-          "Video uploaded. Saving lesson...";
-
-
-        /*
-          Save storage path to lessons table.
-        */
+        /* Save lesson */
 
         const {
-          error: dbError
+          error: lessonError
         } =
           await supabaseClient
             .from("lessons")
             .insert({
-              title: title,
-              course: course,
-              description: description,
+              title,
+              course,
+              description,
               video_path: filePath
             });
 
 
-        if (dbError) {
+        if (lessonError) {
 
-          /*
-            If database save fails,
-            remove uploaded video.
-          */
-
-          await supabaseClient
-            .storage
+          await supabaseClient.storage
             .from("Video")
             .remove([filePath]);
 
 
-          throw dbError;
-
+          throw lessonError;
         }
 
 
-        status.style.display = "none";
-
-
         showMessage(
-          message,
-          "Lesson and video uploaded successfully.",
+          "Lesson and video uploaded successfully!",
           "success"
         );
 
 
-        document
-          .getElementById("lessonForm")
-          .reset();
+        lessonForm.reset();
 
 
         await loadLessons();
@@ -1125,208 +1057,29 @@
 
       } catch (error) {
 
-        console.error(error);
-
-
-        status.style.display = "none";
+        console.error(
+          "Upload error:",
+          error
+        );
 
 
         showMessage(
-          message,
           error.message ||
-          "Video upload failed.",
+          "Could not upload video.",
           "error"
         );
 
+      } finally {
+
+        button.disabled = false;
+
+        button.textContent =
+          "Upload Lesson & Video";
+
       }
 
-
-      button.disabled = false;
-
-      button.textContent =
-        "Upload Video & Save Lesson";
-
-    });
-
-
-  /* =========================================
-     LOAD LESSONS
-  ========================================= */
-
-  async function loadLessons() {
-
-    const list =
-      document.getElementById("lessonsList");
-
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .from("lessons")
-        .select(
-          "id, title, course, description, video_path, created_at"
-        )
-        .order("created_at", {
-          ascending: false
-        });
-
-
-    if (error) {
-
-      console.error(error);
-
-      list.innerHTML =
-        '<div class="empty">Unable to load lessons.</div>';
-
-      return;
     }
-
-
-    document.getElementById("lessonCount")
-      .textContent = data.length;
-
-
-    document.getElementById("videoCount")
-      .textContent =
-        data.filter(
-          lesson => lesson.video_path
-        ).length;
-
-
-    if (!data.length) {
-
-      list.innerHTML =
-        '<div class="empty">No lessons uploaded yet.</div>';
-
-      return;
-    }
-
-
-    list.innerHTML = "";
-
-
-    data.forEach(lesson => {
-
-      const item =
-        document.createElement("div");
-
-      item.className = "item";
-
-
-      const header =
-        document.createElement("div");
-
-      header.className =
-        "item-header";
-
-
-      const info =
-        document.createElement("div");
-
-
-      const title =
-        document.createElement("h3");
-
-      title.textContent =
-        lesson.title;
-
-
-      const course =
-        document.createElement("small");
-
-      course.textContent =
-        "Course: " +
-        lesson.course;
-
-
-      info.appendChild(title);
-      info.appendChild(course);
-
-
-      const deleteButton =
-        document.createElement("button");
-
-      deleteButton.className =
-        "delete-btn";
-
-      deleteButton.textContent =
-        "Delete";
-
-
-      deleteButton.onclick =
-        () => deleteLesson(
-          lesson.id,
-          lesson.video_path
-        );
-
-
-      header.appendChild(info);
-      header.appendChild(deleteButton);
-
-
-      item.appendChild(header);
-
-
-      if (lesson.description) {
-
-        const description =
-          document.createElement("p");
-
-        description.style.marginTop =
-          "10px";
-
-        description.textContent =
-          lesson.description;
-
-        item.appendChild(description);
-
-      }
-
-
-      /*
-        Get public URL from Storage.
-      */
-
-      if (lesson.video_path) {
-
-        const {
-          data: publicUrlData
-        } =
-          supabaseClient
-            .storage
-            .from("Video")
-            .getPublicUrl(
-              lesson.video_path
-            );
-
-
-        const video =
-          document.createElement("video");
-
-        video.className =
-          "video-preview";
-
-        video.controls = true;
-
-        video.preload =
-          "metadata";
-
-        video.src =
-          publicUrlData.publicUrl;
-
-
-        item.appendChild(video);
-
-      }
-
-
-      list.appendChild(item);
-
-    });
-
-  }
+  );
 
 
   /* =========================================
@@ -1340,7 +1093,7 @@
 
     const confirmed =
       confirm(
-        "Are you sure you want to delete this lesson and video?"
+        "Are you sure you want to delete this lesson?"
       );
 
 
@@ -1349,35 +1102,28 @@
 
     try {
 
-      /*
-        Delete video from Storage.
-      */
-
       if (videoPath) {
 
         const {
           error: storageError
         } =
-          await supabaseClient
-            .storage
+          await supabaseClient.storage
             .from("Video")
-            .remove([videoPath]);
+            .remove([
+              videoPath
+            ]);
 
 
         if (storageError) {
 
-          console.error(
+          console.warn(
+            "Storage delete warning:",
             storageError
           );
-
         }
 
       }
 
-
-      /*
-        Delete lesson from database.
-      */
 
       const {
         error
@@ -1391,12 +1137,12 @@
       if (error) {
 
         throw error;
-
       }
 
 
-      alert(
-        "Lesson deleted successfully."
+      showMessage(
+        "Lesson deleted successfully.",
+        "success"
       );
 
 
@@ -1407,9 +1153,10 @@
 
       console.error(error);
 
-      alert(
-        "Lesson delete failed: " +
-        error.message
+      showMessage(
+        error.message ||
+        "Could not delete lesson.",
+        "error"
       );
 
     }
@@ -1418,22 +1165,134 @@
 
 
   /* =========================================
-     MESSAGE
+     DELETE STUDENT
   ========================================= */
 
-  function showMessage(
-    element,
-    text,
-    type
+  async function deleteStudent(
+    studentId,
+    username
   ) {
 
-    element.textContent =
-      text;
+    const confirmed =
+      confirm(
+        `Delete student "${username}"?`
+      );
 
-    element.className =
-      "message " + type;
+
+    if (!confirmed) return;
+
+
+    try {
+
+      const response =
+        await supabaseClient.functions.invoke(
+          "delete-student",
+          {
+            body: {
+              student_id: studentId
+            }
+          }
+        );
+
+
+      if (response.error) {
+
+        throw new Error(
+          response.error.message
+        );
+      }
+
+
+      if (
+        response.data &&
+        response.data.error
+      ) {
+
+        throw new Error(
+          response.data.error
+        );
+      }
+
+
+      showMessage(
+        "Student deleted successfully.",
+        "success"
+      );
+
+
+      await loadStudents();
+
+
+    } catch (error) {
+
+      console.error(
+        "Delete student error:",
+        error
+      );
+
+
+      showMessage(
+        error.message ||
+        "Delete student function is not ready yet.",
+        "error"
+      );
+
+    }
 
   }
+
+
+  /* =========================================
+     HTML ESCAPE
+  ========================================= */
+
+  function escapeHtml(value) {
+
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  /* =========================================
+     LOGOUT
+  ========================================= */
+
+  document.getElementById(
+    "logoutBtn"
+  ).addEventListener(
+    "click",
+    async function() {
+
+      await supabaseClient.auth.signOut();
+
+      window.location.href =
+        "login.html";
+
+    }
+  );
+
+
+  /* =========================================
+     START
+  ========================================= */
+
+  (async function() {
+
+    const user =
+      await checkAdmin();
+
+
+    if (!user) return;
+
+
+    await loadDashboard();
+
+  })();
 
 </script>
 
