@@ -1,14 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Login | MN Technology</title>
-
-  <!-- Supabase JavaScript Library -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     * {
@@ -20,605 +16,474 @@
 
     body {
       min-height: 100vh;
+      background: #f4f7fb;
       display: flex;
-      justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #06152e, #0b4f8a, #06152e);
-      padding: 20px;
+      justify-content: center;
     }
 
     .login-box {
       width: 100%;
       max-width: 420px;
       background: white;
-      border-radius: 20px;
-      padding: 35px 30px;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+      padding: 35px;
+      border-radius: 15px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.1);
     }
 
     .logo {
       text-align: center;
-      font-size: 30px;
-      font-weight: bold;
-      color: #0b4f8a;
-      margin-bottom: 8px;
-    }
-
-    .subtitle {
-      text-align: center;
-      color: #777;
-      margin-bottom: 30px;
-    }
-
-    .user-type {
-      display: flex;
-      gap: 10px;
       margin-bottom: 25px;
     }
 
-    .user-type button {
+    .logo-box {
+      width: 55px;
+      height: 55px;
+      background: #22d3ee;
+      color: #051223;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .logo h1 {
+      font-size: 24px;
+      color: #051223;
+    }
+
+    .logo p {
+      color: #64748b;
+      margin-top: 5px;
+    }
+
+    .type-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .type-buttons button {
       flex: 1;
       padding: 12px;
-      border: none;
-      border-radius: 10px;
-      background: #e9eef5;
-      color: #333;
-      font-weight: bold;
+      border: 1px solid #d1d5db;
+      background: white;
+      border-radius: 7px;
       cursor: pointer;
+      font-weight: bold;
     }
 
-    .user-type button.active {
-      background: #0b4f8a;
+    .type-buttons button.active {
+      background: #0ea5e9;
       color: white;
+      border-color: #0ea5e9;
     }
 
-    .input-group {
-      margin-bottom: 18px;
-    }
-
-    .input-group label {
+    label {
       display: block;
-      margin-bottom: 7px;
       font-weight: bold;
-      color: #333;
+      margin-bottom: 7px;
     }
 
-    .input-group input {
+    input {
       width: 100%;
-      padding: 14px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      font-size: 16px;
-      outline: none;
-    }
-
-    .input-group input:focus {
-      border-color: #0b4f8a;
-    }
-
-    .password-wrapper {
-      position: relative;
-    }
-
-    .password-wrapper input {
-      padding-right: 55px;
-    }
-
-    .show-password-btn {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      border: none;
-      background: transparent;
-      font-size: 21px;
-      cursor: pointer;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 7px;
+      margin-bottom: 16px;
+      font-size: 15px;
     }
 
     .login-btn {
       width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 10px;
-      background: #0b4f8a;
+      padding: 13px;
+      background: #0ea5e9;
       color: white;
-      font-size: 17px;
+      border: none;
+      border-radius: 7px;
+      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
-      margin-top: 8px;
     }
 
     .login-btn:hover {
-      background: #083c69;
+      background: #0284c7;
     }
 
-    .forgot-password {
+    .login-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .forgot {
       text-align: center;
-      margin-top: 14px;
+      margin-top: 15px;
     }
 
-    .forgot-password a {
-      color: #0b4f8a;
-      font-weight: bold;
+    .forgot a {
+      color: #0284c7;
       text-decoration: none;
     }
 
     .message {
-      margin-top: 18px;
-      text-align: center;
-      font-weight: bold;
-      min-height: 22px;
-      line-height: 1.5;
+      display: none;
+      padding: 12px;
+      border-radius: 7px;
+      margin-bottom: 15px;
     }
 
-    .info {
-      margin-top: 22px;
-      padding: 14px;
-      background: #f1f6fb;
-      border-radius: 10px;
-      font-size: 13px;
-      color: #555;
-      line-height: 1.6;
-      text-align: center;
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
     }
 
-    .loading {
-      opacity: 0.7;
-      pointer-events: none;
+    .success {
+      background: #dcfce7;
+      color: #166534;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="login-box">
+<div class="login-box">
 
-    <div class="logo">MN Technology</div>
-
-    <div class="subtitle">
-      Electronic & Technical Learning
-    </div>
-
-    <div class="user-type">
-
-      <button
-        id="studentBtn"
-        class="active"
-        type="button"
-        onclick="selectType('student')">
-        Student
-      </button>
-
-      <button
-        id="adminBtn"
-        type="button"
-        onclick="selectType('admin')">
-        Admin
-      </button>
-
-    </div>
-
-    <form id="loginForm">
-
-      <div class="input-group">
-
-        <label for="username">Username</label>
-
-        <input
-          type="text"
-          id="username"
-          placeholder="Enter username"
-          required
-          autocomplete="username">
-
-      </div>
-
-      <div class="input-group">
-
-        <label for="password">Password</label>
-
-        <div class="password-wrapper">
-
-          <input
-            type="password"
-            id="password"
-            placeholder="Enter password"
-            required
-            autocomplete="current-password">
-
-          <button
-            type="button"
-            id="showPasswordBtn"
-            class="show-password-btn">
-            👁️
-          </button>
-
-        </div>
-
-      </div>
-
-      <button
-        type="submit"
-        class="login-btn"
-        id="loginBtn">
-        Login
-      </button>
-
-      <div class="forgot-password">
-        <a href="forgot-password.html">
-          Forgot Password?
-        </a>
-      </div>
-
-    </form>
-
-    <div class="message" id="message"></div>
-
-    <div class="info">
-      MN Technology Learning System
-      <br>
-      Secure Admin Login
-    </div>
-
+  <div class="logo">
+    <div class="logo-box">MN</div>
+    <h1>MN Technology</h1>
+    <p>Login to your account</p>
   </div>
 
-  <script>
+  <div class="type-buttons">
+    <button id="studentBtn" class="active">
+      Student
+    </button>
 
-    /* =========================
-       SUPABASE CONFIGURATION
-    ========================= */
+    <button id="adminBtn">
+      Admin
+    </button>
+  </div>
 
-    const SUPABASE_URL =
-      "https://ekanfqwbqwfhjfgctouk.supabase.co";
+  <div id="message" class="message"></div>
 
-    const SUPABASE_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrYW5mcXdicXdmaGpmZ2N0b3VrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzODI4MDcsImV4cCI6MjEwNDk1ODgwN30.EjfM_-4NYuLdoPzi66J00CZPAKdyUecTahWo2JGrN_Y";
+  <form id="loginForm">
 
-    const supabaseClient =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
+    <label for="username">
+      Username
+    </label>
+
+    <input
+      type="text"
+      id="username"
+      placeholder="Enter username"
+      required
+      autocomplete="username"
+    >
+
+    <label for="password">
+      Password
+    </label>
+
+    <input
+      type="password"
+      id="password"
+      placeholder="Enter password"
+      required
+      autocomplete="current-password"
+    >
+
+    <button
+      type="submit"
+      class="login-btn"
+      id="loginButton"
+    >
+      Student Login
+    </button>
+
+  </form>
+
+  <div class="forgot">
+    <a href="forgot-password.html">
+      Forgot Password?
+    </a>
+  </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const SUPABASE_URL =
+  "https://ekanfqwbqwfhjfgctouk.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_tpFTptBWglmisRRhQiptmg_VkKhJdDn";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+let loginType = "student";
+
+
+const studentBtn =
+  document.getElementById("studentBtn");
+
+const adminBtn =
+  document.getElementById("adminBtn");
+
+const loginButton =
+  document.getElementById("loginButton");
+
+const loginForm =
+  document.getElementById("loginForm");
+
+const messageBox =
+  document.getElementById("message");
+
+
+function showMessage(text, type = "error") {
+
+  messageBox.textContent = text;
+
+  messageBox.className =
+    "message " + type;
+
+  messageBox.style.display = "block";
+}
+
+
+studentBtn.addEventListener("click", () => {
+
+  loginType = "student";
+
+  studentBtn.classList.add("active");
+  adminBtn.classList.remove("active");
+
+  loginButton.textContent =
+    "Student Login";
+
+});
+
+
+adminBtn.addEventListener("click", () => {
+
+  loginType = "admin";
+
+  adminBtn.classList.add("active");
+  studentBtn.classList.remove("active");
+
+  loginButton.textContent =
+    "Admin Login";
+
+});
+
+
+loginForm.addEventListener(
+  "submit",
+  async function(event) {
+
+    event.preventDefault();
+
+    messageBox.style.display = "none";
+
+    const username =
+      document.getElementById(
+        "username"
+      ).value.trim();
+
+    const password =
+      document.getElementById(
+        "password"
+      ).value;
+
+
+    if (!username || !password) {
+
+      showMessage(
+        "Please enter username and password."
       );
 
-
-    const ADMIN_EMAIL =
-      "Lakshitha94314@gmail.com";
-
-    let loginType = "student";
-
-
-    /* =========================
-       CHECK SUPABASE
-    ========================= */
-
-    if (!window.supabase) {
-
-      document.getElementById("message").style.color = "red";
-
-      document.getElementById("message").textContent =
-        "Supabase library failed to load.";
-
-      console.error(
-        "Supabase JavaScript library failed to load."
-      );
+      return;
     }
 
 
-    /* =========================
-       SHOW / HIDE PASSWORD
-    ========================= */
+    loginButton.disabled = true;
 
-    const passwordInput =
-      document.getElementById("password");
+    loginButton.textContent =
+      "Logging in...";
 
-    const showPasswordBtn =
-      document.getElementById("showPasswordBtn");
 
-    showPasswordBtn.addEventListener(
-      "click",
-      function () {
+    try {
 
-        if (passwordInput.type === "password") {
+      let email;
 
-          passwordInput.type = "text";
-          showPasswordBtn.textContent = "🙈";
 
-        } else {
+      /*
+        STUDENT LOGIN
 
-          passwordInput.type = "password";
-          showPasswordBtn.textContent = "👁️";
+        Admin-created student accounts use:
+        username@students.mntechnology.com
+      */
 
-        }
+      if (loginType === "student") {
+
+        email =
+          `${username.toLowerCase()}@students.mntechnology.com`;
 
       }
-    );
 
 
-    /* =========================
-       SELECT LOGIN TYPE
-    ========================= */
+      /*
+        ADMIN LOGIN
 
-    function selectType(type) {
+        Admin email is:
+        lakshitha94314@gmail.com
+      */
 
-      loginType = type;
+      else {
 
-      document
-        .getElementById("studentBtn")
-        .classList.toggle(
-          "active",
-          type === "student"
+        email =
+          username.toLowerCase();
+
+      }
+
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.auth
+          .signInWithPassword({
+            email,
+            password
+          });
+
+
+      if (error) {
+
+        throw new Error(
+          error.message
         );
 
-      document
-        .getElementById("adminBtn")
-        .classList.toggle(
-          "active",
-          type === "admin"
+      }
+
+
+      if (!data.user) {
+
+        throw new Error(
+          "Login failed."
         );
 
-      document.getElementById("username").value = "";
+      }
 
-      document.getElementById("password").value = "";
 
-      document.getElementById("message").textContent = "";
+      /*
+        STUDENT
+      */
 
-      passwordInput.type = "password";
+      if (loginType === "student") {
 
-      showPasswordBtn.textContent = "👁️";
-    }
+        const {
+          data: student,
+          error: studentError
+        } =
+          await supabaseClient
+            .from("student_accounts")
+            .select("id, username")
+            .eq("id", data.user.id)
+            .maybeSingle();
 
 
-    /* =========================
-       LOGIN FORM
-    ========================= */
+        if (
+          studentError ||
+          !student
+        ) {
 
-    document
-      .getElementById("loginForm")
-      .addEventListener(
-        "submit",
-        async function (event) {
+          await supabaseClient.auth.signOut();
 
-          event.preventDefault();
-
-          const username =
-            document
-              .getElementById("username")
-              .value
-              .trim();
-
-          const password =
-            document
-              .getElementById("password")
-              .value;
-
-          const message =
-            document.getElementById("message");
-
-          const loginBtn =
-            document.getElementById("loginBtn");
-
-
-          message.textContent = "";
-
-
-          /* =========================
-             ADMIN LOGIN
-          ========================= */
-
-          if (loginType === "admin") {
-
-            if (
-              username.toLowerCase() !== "admin"
-            ) {
-
-              message.style.color = "red";
-
-              message.textContent =
-                "Username must be admin.";
-
-              return;
-            }
-
-
-            loginBtn.textContent =
-              "Logging in...";
-
-            loginBtn.classList.add("loading");
-
-
-            try {
-
-              /* SUPABASE AUTH LOGIN */
-
-              const {
-                data,
-                error
-              } =
-                await supabaseClient.auth
-                  .signInWithPassword({
-
-                    email: ADMIN_EMAIL,
-
-                    password: password
-
-                  });
-
-
-              if (error) {
-
-                console.error(
-                  "Supabase Auth Error:",
-                  error
-                );
-
-                throw new Error(
-                  "Supabase Auth: " +
-                  error.message
-                );
-              }
-
-
-              if (!data || !data.user) {
-
-                throw new Error(
-                  "Supabase Auth: User not found."
-                );
-              }
-
-
-              console.log(
-                "Logged in user:",
-                data.user.email
-              );
-
-
-              /* =========================
-                 CHECK ADMIN TABLE
-              ========================= */
-
-              const {
-                data: adminRow,
-                error: adminError
-              } =
-                await supabaseClient
-                  .from("admins")
-                  .select("username")
-                  .eq(
-                    "id",
-                    data.user.id
-                  )
-                  .maybeSingle();
-
-
-              if (adminError) {
-
-                console.error(
-                  "Admin Table Error:",
-                  adminError
-                );
-
-                await supabaseClient.auth.signOut();
-
-                throw new Error(
-                  "Admin table: " +
-                  adminError.message
-                );
-              }
-
-
-              if (!adminRow) {
-
-                await supabaseClient.auth.signOut();
-
-                throw new Error(
-                  "Admin table: No admin record found."
-                );
-              }
-
-
-              /* =========================
-                 ADMIN LOGIN SUCCESS
-              ========================= */
-
-              message.style.color = "green";
-
-              message.textContent =
-                "Admin login successful!";
-
-
-              setTimeout(
-                function () {
-
-                  window.location.href =
-                    "admin-dashboard.html";
-
-                },
-                500
-              );
-
-            }
-
-
-            catch (error) {
-
-              console.error(
-                "ADMIN LOGIN ERROR:",
-                error
-              );
-
-              message.style.color = "red";
-
-              message.textContent =
-                error.message ||
-                "Unknown login error.";
-
-            }
-
-
-            finally {
-
-              loginBtn.textContent =
-                "Login";
-
-              loginBtn.classList.remove(
-                "loading"
-              );
-
-            }
-
-            return;
-          }
-
-
-          /* =========================
-             STUDENT LOGIN
-          ========================= */
-
-          if (
-            username.toLowerCase() === "student" &&
-            password === "1234"
-          ) {
-
-            localStorage.setItem(
-              "studentLoggedIn",
-              "true"
-            );
-
-            localStorage.removeItem(
-              "selectedCourse"
-            );
-
-            message.style.color = "green";
-
-            message.textContent =
-              "Student login successful.";
-
-
-            setTimeout(
-              function () {
-
-                window.location.href =
-                  "student-dashboard.html";
-
-              },
-              500
-            );
-
-          }
-
-          else {
-
-            message.style.color = "red";
-
-            message.textContent =
-              "Invalid Student username or password.";
-
-          }
+          throw new Error(
+            "This account is not a valid student account."
+          );
 
         }
+
+
+        window.location.href =
+          "student-dashboard.html";
+
+        return;
+      }
+
+
+      /*
+        ADMIN
+      */
+
+      const {
+        data: admin,
+        error: adminError
+      } =
+        await supabaseClient
+          .from("admins")
+          .select("id, username")
+          .eq("id", data.user.id)
+          .maybeSingle();
+
+
+      if (
+        adminError ||
+        !admin
+      ) {
+
+        await supabaseClient.auth.signOut();
+
+        throw new Error(
+          "This account is not an admin account."
+        );
+
+      }
+
+
+      window.location.href =
+        "admin-dashboard.html";
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+      showMessage(
+        error.message ||
+        "Login failed."
       );
 
-  </script>
+    }
+
+    finally {
+
+      loginButton.disabled = false;
+
+      loginButton.textContent =
+        loginType === "student"
+          ? "Student Login"
+          : "Admin Login";
+
+    }
+
+  }
+);
+
+</script>
 
 </body>
 </html>
