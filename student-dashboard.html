@@ -171,6 +171,11 @@
       line-height: 1.5;
     }
 
+
+    /* =====================================
+       VIDEO WRAPPER
+    ===================================== */
+
     .video-wrapper {
       position: relative;
       width: 100%;
@@ -180,6 +185,11 @@
       overflow: hidden;
     }
 
+
+    /* =====================================
+       VIDEO
+    ===================================== */
+
     video {
       width: 100%;
       display: block;
@@ -187,21 +197,24 @@
       border-radius: 10px;
     }
 
-    /*
-      WATERMARK
-    */
+
+    /* =====================================
+       WATERMARK
+    ===================================== */
 
     .video-watermark {
+
       position: absolute;
 
-      color: rgba(255,255,255,0.65);
+      color: rgba(255,255,255,0.30);
 
       font-size: 15px;
+
       font-weight: bold;
 
       padding: 6px 10px;
 
-      background: rgba(0,0,0,0.20);
+      background: rgba(0,0,0,0.12);
 
       border-radius: 5px;
 
@@ -209,7 +222,7 @@
 
       user-select: none;
 
-      z-index: 10;
+      z-index: 99999;
 
       transition:
         top 1s ease,
@@ -220,11 +233,145 @@
       white-space: nowrap;
     }
 
+
+    /* =====================================
+       FULLSCREEN
+    ===================================== */
+
+    .video-wrapper:fullscreen {
+
+      width: 100vw;
+
+      height: 100vh;
+
+      max-width: none;
+
+      border-radius: 0;
+
+      background: black;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+    }
+
+
+    .video-wrapper:-webkit-full-screen {
+
+      width: 100vw;
+
+      height: 100vh;
+
+      max-width: none;
+
+      border-radius: 0;
+
+      background: black;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+    }
+
+
+    .video-wrapper:fullscreen video {
+
+      width: 100%;
+
+      height: 100%;
+
+      object-fit: contain;
+
+      border-radius: 0;
+    }
+
+
+    .video-wrapper:-webkit-full-screen video {
+
+      width: 100%;
+
+      height: 100%;
+
+      object-fit: contain;
+
+      border-radius: 0;
+    }
+
+
+    /* =====================================
+       FULLSCREEN BUTTON
+    ===================================== */
+
+    .fullscreen-btn {
+
+      position: absolute;
+
+      right: 12px;
+
+      bottom: 12px;
+
+      z-index: 100000;
+
+      background: rgba(0,0,0,0.65);
+
+      color: white;
+
+      border: 1px solid rgba(255,255,255,0.35);
+
+      padding: 8px 12px;
+
+      border-radius: 6px;
+
+      cursor: pointer;
+
+      font-size: 14px;
+
+      opacity: 0.85;
+
+      transition: opacity 0.2s ease;
+    }
+
+
+    .fullscreen-btn:hover {
+
+      opacity: 1;
+    }
+
+
+    .video-wrapper:fullscreen .fullscreen-btn {
+
+      right: 18px;
+
+      bottom: 18px;
+    }
+
+
+    .video-wrapper:-webkit-full-screen .fullscreen-btn {
+
+      right: 18px;
+
+      bottom: 18px;
+    }
+
+
+    /* =====================================
+       NO LESSONS
+    ===================================== */
+
     .no-lessons {
       color: #64748b;
       text-align: center;
       padding: 30px;
     }
+
+
+    /* =====================================
+       PASSWORD
+    ===================================== */
 
     .password-form {
       max-width: 500px;
@@ -260,6 +407,11 @@
       cursor: not-allowed;
     }
 
+
+    /* =====================================
+       MESSAGE
+    ===================================== */
+
     .message {
       display: none;
       padding: 12px;
@@ -276,6 +428,11 @@
       background: #fee2e2;
       color: #991b1b;
     }
+
+
+    /* =====================================
+       MOBILE
+    ===================================== */
 
     @media (max-width: 700px) {
 
@@ -300,8 +457,17 @@
       }
 
       .video-watermark {
+
         font-size: 11px;
+
         padding: 4px 7px;
+      }
+
+      .fullscreen-btn {
+
+        font-size: 12px;
+
+        padding: 7px 9px;
       }
 
     }
@@ -313,6 +479,10 @@
 
 <body>
 
+
+<!-- =====================================
+     NAVBAR
+===================================== -->
 
 <nav>
 
@@ -354,15 +524,20 @@
 <div class="container">
 
 
-  <!-- WELCOME -->
+  <!-- =====================================
+       WELCOME
+  ===================================== -->
 
   <div class="welcome">
 
     <h1>
+
       Welcome,
+
       <span id="welcomeUsername">
         Student
       </span>!
+
     </h1>
 
     <p>
@@ -372,7 +547,9 @@
   </div>
 
 
-  <!-- LESSONS -->
+  <!-- =====================================
+       LESSONS
+  ===================================== -->
 
   <div class="section">
 
@@ -391,7 +568,9 @@
   </div>
 
 
-  <!-- PASSWORD -->
+  <!-- =====================================
+       PASSWORD
+  ===================================== -->
 
   <div class="section">
 
@@ -455,7 +634,9 @@
 </div>
 
 
-<!-- IMPORTANT: lowercase @supabase -->
+<!-- =====================================
+     SUPABASE
+===================================== -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -527,7 +708,7 @@ let CURRENT_STUDENT = null;
 
 
 /* =====================================
-   MESSAGE
+   PASSWORD MESSAGE
 ===================================== */
 
 
@@ -645,7 +826,9 @@ async function loadCourses() {
   } =
     await supabaseClient
       .from("courses")
-      .select("id, name")
+      .select(
+        "id, name"
+      )
       .order(
         "id",
         {
@@ -707,7 +890,9 @@ async function loadCourses() {
 
 
   /*
+
     Student course access
+
   */
 
   const access =
@@ -746,7 +931,9 @@ async function loadCourses() {
 
 
       /*
+
         COURSE TITLE
+
       */
 
       const title =
@@ -771,10 +958,13 @@ async function loadCourses() {
 
 
       /*
+
         LOCKED COURSE
+
       */
 
       if (!hasAccess) {
+
 
         const locked =
           document.createElement(
@@ -823,7 +1013,9 @@ async function loadCourses() {
 
 
       /*
+
         OPEN COURSE
+
       */
 
       const courseLessons =
@@ -837,6 +1029,7 @@ async function loadCourses() {
       if (
         courseLessons.length === 0
       ) {
+
 
         const noLesson =
           document.createElement(
@@ -859,14 +1052,17 @@ async function loadCourses() {
       }
       else {
 
+
         courseLessons.forEach(
           lesson => {
+
 
             courseBox.appendChild(
               createLessonElement(
                 lesson
               )
             );
+
 
           }
         );
@@ -958,11 +1154,13 @@ function createLessonElement(
   );
 
 
-  /*
-    VIDEO
-  */
+  /* =====================================
+     VIDEO
+  ===================================== */
+
 
   if (lesson.video_path) {
+
 
     const videoWrapper =
       document.createElement(
@@ -980,20 +1178,27 @@ function createLessonElement(
       );
 
 
-    video.controls = true;
+    video.controls =
+      true;
+
 
     video.preload =
       "metadata";
 
+
     /*
       Hide browser download button
-      where supported.
+      and native fullscreen button.
+
+      Our own fullscreen button is used
+      so watermark remains visible.
     */
 
     video.setAttribute(
       "controlsList",
-      "nodownload noremoteplayback"
+      "nodownload noremoteplayback nofullscreen"
     );
+
 
     video.setAttribute(
       "disablePictureInPicture",
@@ -1003,7 +1208,6 @@ function createLessonElement(
 
     /*
       Prevent right-click
-      on video.
     */
 
     video.addEventListener(
@@ -1016,9 +1220,10 @@ function createLessonElement(
     );
 
 
-    /*
-      WATERMARK
-    */
+    /* =====================================
+       WATERMARK
+    ===================================== */
+
 
     const watermark =
       document.createElement(
@@ -1035,6 +1240,177 @@ function createLessonElement(
       CURRENT_STUDENT.username;
 
 
+    /* =====================================
+       FULLSCREEN BUTTON
+    ===================================== */
+
+
+    const fullscreenButton =
+      document.createElement(
+        "button"
+      );
+
+
+    fullscreenButton.className =
+      "fullscreen-btn";
+
+
+    fullscreenButton.type =
+      "button";
+
+
+    fullscreenButton.textContent =
+      "⛶ Full Screen";
+
+
+    fullscreenButton.addEventListener(
+      "click",
+      async function(event) {
+
+
+        event.preventDefault();
+
+        event.stopPropagation();
+
+
+        try {
+
+
+          if (
+            !document.fullscreenElement
+          ) {
+
+
+            if (
+              videoWrapper.requestFullscreen
+            ) {
+
+              await videoWrapper.requestFullscreen();
+
+            }
+            else if (
+              videoWrapper.webkitRequestFullscreen
+            ) {
+
+              videoWrapper.webkitRequestFullscreen();
+
+            }
+
+
+          }
+          else {
+
+
+            if (
+              document.exitFullscreen
+            ) {
+
+              await document.exitFullscreen();
+
+            }
+            else if (
+              document.webkitExitFullscreen
+            ) {
+
+              document.webkitExitFullscreen();
+
+            }
+
+          }
+
+
+        }
+        catch (error) {
+
+          console.error(
+            "Fullscreen error:",
+            error
+          );
+
+        }
+
+      }
+    );
+
+
+    /* =====================================
+       DOUBLE CLICK FULLSCREEN
+    ===================================== */
+
+
+    video.addEventListener(
+      "dblclick",
+      async function(event) {
+
+
+        event.preventDefault();
+
+
+        try {
+
+
+          if (
+            !document.fullscreenElement
+          ) {
+
+
+            if (
+              videoWrapper.requestFullscreen
+            ) {
+
+              await videoWrapper.requestFullscreen();
+
+            }
+            else if (
+              videoWrapper.webkitRequestFullscreen
+            ) {
+
+              videoWrapper.webkitRequestFullscreen();
+
+            }
+
+
+          }
+          else {
+
+
+            if (
+              document.exitFullscreen
+            ) {
+
+              await document.exitFullscreen();
+
+            }
+            else if (
+              document.webkitExitFullscreen
+            ) {
+
+              document.webkitExitFullscreen();
+
+            }
+
+          }
+
+
+        }
+        catch (error) {
+
+          console.error(
+            "Fullscreen error:",
+            error
+          );
+
+        }
+
+      }
+    );
+
+
+    /* =====================================
+       ADD ELEMENTS
+    ===================================== */
+
+
     videoWrapper.appendChild(
       video
     );
@@ -1045,15 +1421,20 @@ function createLessonElement(
     );
 
 
+    videoWrapper.appendChild(
+      fullscreenButton
+    );
+
+
     item.appendChild(
       videoWrapper
     );
 
 
-    /*
-      Load private video
-      with signed URL.
-    */
+    /* =====================================
+       LOAD PRIVATE VIDEO
+    ===================================== */
+
 
     loadSecureVideo(
       lesson.video_path,
@@ -1061,9 +1442,10 @@ function createLessonElement(
     );
 
 
-    /*
-      Move watermark.
-    */
+    /* =====================================
+       START WATERMARK MOVEMENT
+    ===================================== */
+
 
     startWatermarkMovement(
       watermark,
@@ -1106,13 +1488,16 @@ async function loadSecureVideo(
 
     if (error) {
 
+
       console.error(
         "Video signed URL error:",
         error
       );
 
+
       videoElement.outerHTML =
         '<p style="color:#991b1b;padding:15px;">Unable to load this video.</p>';
+
 
       return;
 
@@ -1124,8 +1509,10 @@ async function loadSecureVideo(
       !data.signedUrl
     ) {
 
+
       videoElement.outerHTML =
         '<p style="color:#991b1b;padding:15px;">Video URL could not be created.</p>';
+
 
       return;
 
@@ -1133,7 +1520,7 @@ async function loadSecureVideo(
 
 
     /*
-      Add signed URL.
+      Add signed URL
     */
 
     videoElement.src =
@@ -1146,7 +1533,9 @@ async function loadSecureVideo(
   }
   catch (error) {
 
+
     console.error(error);
+
 
     videoElement.outerHTML =
       '<p style="color:#991b1b;padding:15px;">Unable to load this video.</p>';
@@ -1169,10 +1558,12 @@ function startWatermarkMovement(
 
   const positions = [
 
+
     {
       top: "8%",
       left: "8%"
     },
+
 
     {
       top: "8%",
@@ -1180,11 +1571,13 @@ function startWatermarkMovement(
       right: "8%"
     },
 
+
     {
       top: "auto",
       bottom: "18%",
       left: "8%"
     },
+
 
     {
       top: "auto",
@@ -1192,21 +1585,25 @@ function startWatermarkMovement(
       left: "auto",
       right: "8%"
     },
+
 
     {
       top: "42%",
       left: "40%"
     },
 
+
     {
       top: "25%",
       left: "20%"
     },
 
+
     {
       top: "60%",
       left: "55%"
     }
+
 
   ];
 
@@ -1296,10 +1693,12 @@ passwordForm.addEventListener(
       newPassword.length < 6
     ) {
 
+
       showPasswordMessage(
         "Password must contain at least 6 characters.",
         "error"
       );
+
 
       return;
 
@@ -1311,10 +1710,12 @@ passwordForm.addEventListener(
       confirmPassword
     ) {
 
+
       showPasswordMessage(
         "Passwords do not match.",
         "error"
       );
+
 
       return;
 
@@ -1367,6 +1768,7 @@ passwordForm.addEventListener(
     }
     catch (error) {
 
+
       console.error(error);
 
 
@@ -1379,8 +1781,10 @@ passwordForm.addEventListener(
     }
     finally {
 
+
       button.disabled =
         false;
+
 
       button.textContent =
         "Change Password";
@@ -1409,7 +1813,6 @@ document.getElementById(
     window.location.href =
       "login.html";
 
-
   }
 );
 
@@ -1433,6 +1836,7 @@ document.getElementById(
 
 
 })();
+
 
 </script>
 
