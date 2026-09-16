@@ -7,7 +7,7 @@
 <title>Admin Dashboard | MN Technology</title>
 
 <!-- SUPABASE CDN -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@Supabase/supabase-js@2"></script>
 
 <style>
 *{
@@ -416,6 +416,63 @@ video{
     margin-bottom:12px;
 }
 
+/* ==========================================
+   MONITORING STUDENT LIST
+   ========================================== */
+
+.monitor-student-list{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin:15px 0;
+}
+
+.monitor-student-btn{
+    width:100%;
+    text-align:left;
+    background:#f8fafc;
+    border:1px solid #dbe3ec;
+    color:#172033;
+    padding:14px 16px;
+    border-radius:9px;
+    font-size:15px;
+    font-weight:bold;
+    transition:.2s;
+}
+
+.monitor-student-btn:hover{
+    background:#e0f2fe;
+    border-color:#0ea5e9;
+}
+
+.monitor-student-btn.active{
+    background:#0ea5e9;
+    color:white;
+    border-color:#0ea5e9;
+}
+
+.selected-student-box{
+    margin-top:15px;
+    margin-bottom:12px;
+    padding:14px 16px;
+    background:#f8fafc;
+    border-left:5px solid #0ea5e9;
+    border-radius:8px;
+    display:none;
+}
+
+.selected-student-box strong{
+    font-size:18px;
+}
+
+.monitor-empty-selection{
+    padding:15px;
+    background:#f8fafc;
+    border-radius:8px;
+    color:#64748b;
+    margin-top:10px;
+}
+
 /* MOBILE */
 
 @media(max-width:700px){
@@ -440,6 +497,10 @@ video{
 
     .course-actions{
         width:100%;
+    }
+
+    .monitor-student-list{
+        grid-template-columns:1fr;
     }
 
 }
@@ -690,9 +751,33 @@ video{
 
 </div>
 
+<!-- STUDENT LIST -->
+
+<div
+    id="monitorStudentList"
+    class="monitor-student-list"
+>
+    <div class="monitor-empty-selection">
+        Loading students...
+    </div>
+</div>
+
+<!-- SELECTED STUDENT -->
+
+<div
+    id="selectedStudentBox"
+    class="selected-student-box"
+>
+    <strong id="selectedStudentName"></strong>
+</div>
+
 <div class="monitor-wrap">
 
-    <table class="monitor-table">
+    <table
+        class="monitor-table"
+        id="monitoringTable"
+        style="display:none;"
+    >
 
         <thead>
 
@@ -712,7 +797,7 @@ video{
 
             <tr>
                 <td colspan="7" class="empty">
-                    Loading monitoring...
+                    Select a student to view monitoring.
                 </td>
             </tr>
 
@@ -720,6 +805,13 @@ video{
 
     </table>
 
+</div>
+
+<div
+    id="monitorSelectionMessage"
+    class="monitor-empty-selection"
+>
+    👆 Select a student above to view lesson monitoring details.
 </div>
 
 </div>
@@ -757,6 +849,13 @@ let MONITORING_ROWS = [];
 let VIDEO_LOADING = new Set();
 
 let videoObserver = null;
+
+/*
+ * Monitoring selected student.
+ */
+let SELECTED_MONITORING_STUDENT_ID = null;
+
+let SELECTED_MONITORING_STUDENT_NAME = "";
 
 
 /* ==========================================
@@ -3066,6 +3165,30 @@ async function loadMonitoring(){
         );
 
 
+    const studentList =
+        document.getElementById(
+            "monitorStudentList"
+        );
+
+
+    const table =
+        document.getElementById(
+            "monitoringTable"
+        );
+
+
+    const selectionMessage =
+        document.getElementById(
+            "monitorSelectionMessage"
+        );
+
+
+    const selectedBox =
+        document.getElementById(
+            "selectedStudentBox"
+        );
+
+
     if(!body){
 
         return;
@@ -3084,13 +3207,23 @@ async function loadMonitoring(){
     `;
 
 
+    if(studentList){
+
+        studentList.innerHTML = `
+
+            <div class="monitor-empty-selection">
+                Loading students...
+            </div>
+
+        `;
+
+    }
+
+
     try{
 
         /*
-         * IMPORTANT SPEED OPTIMIZATION
-         *
-         * All 3 queries are independent.
-         * They now run together.
+         * All 3 queries run together.
          */
 
         const [
@@ -3125,6 +3258,12 @@ async function loadMonitoring(){
                 .from("student_accounts")
                 .select(
                     "id,username"
+                )
+                .order(
+                    "username",
+                    {
+                        ascending:true
+                    }
                 ),
 
             supabaseClient
@@ -3175,33 +3314,6 @@ async function loadMonitoring(){
             lessonsResult.data || [];
 
 
-        if(
-            progress.length === 0
-        ){
-
-            MONITORING_ROWS = [];
-
-
-            body.innerHTML = `
-
-                <tr>
-
-                    <td
-                        colspan="7"
-                        class="empty"
-                    >
-                        No student lesson activity yet.
-                    </td>
-
-                </tr>
-
-            `;
-
-            return;
-
-        }
-
-
         const studentMap = {};
 
 
@@ -3235,8 +3347,9 @@ async function loadMonitoring(){
         MONITORING_ROWS = [];
 
 
-        body.innerHTML = "";
-
+        /*
+         * Build monitoring rows.
+         */
 
         progress.forEach(row => {
 
@@ -3295,27 +3408,31 @@ async function loadMonitoring(){
                 );
 
 
-            const status =
-                getMonitoringStatus(
-                    row
-                );
-
-
             MONITORING_ROWS.push({
 
-                student:studentName,
+                studentId:
+                    String(row.student_id),
 
-                lesson:lessonName,
+                student:
+                    studentName,
 
-                course:courseName,
+                lesson:
+                    lessonName,
 
-                date:date,
+                course:
+                    courseName,
 
-                started:started,
+                date:
+                    date,
 
-                lastWatched:lastWatched,
+                started:
+                    started,
 
-                watchTime:watchTime,
+                lastWatched:
+                    lastWatched,
+
+                watchTime:
+                    watchTime,
 
                 statusText:
                     getMonitoringStatusText(
@@ -3324,71 +3441,176 @@ async function loadMonitoring(){
 
             });
 
-
-            body.innerHTML += `
-
-                <tr>
-
-                    <td>
-
-                        <strong>
-                            ${escapeHtml(studentName)}
-                        </strong>
-
-                    </td>
+        });
 
 
-                    <td>
+        /*
+         * Build unique student list.
+         *
+         * Students are taken from actual
+         * monitoring records.
+         */
 
-                        <strong>
-                            ${escapeHtml(lessonName)}
-                        </strong>
-
-                        ${
-                            courseName
-                            ?
-                            `<br>
-                            <small style="
-                                color:#64748b;
-                            ">
-                                ${escapeHtml(courseName)}
-                            </small>`
-                            :
-                            ""
-                        }
-
-                    </td>
+        const monitoringStudents = {};
 
 
-                    <td>
-                        ${escapeHtml(date)}
-                    </td>
+        MONITORING_ROWS.forEach(row => {
 
+            if(
+                !monitoringStudents[
+                    row.studentId
+                ]
+            ){
 
-                    <td>
-                        ${escapeHtml(started)}
-                    </td>
+                monitoringStudents[
+                    row.studentId
+                ] = {
 
+                    id:
+                        row.studentId,
 
-                    <td>
-                        ${escapeHtml(lastWatched)}
-                    </td>
+                    name:
+                        row.student
 
+                };
 
-                    <td>
-                        ${escapeHtml(watchTime)}
-                    </td>
-
-
-                    <td>
-                        ${status}
-                    </td>
-
-                </tr>
-
-            `;
+            }
 
         });
+
+
+        /*
+         * If there is no activity.
+         */
+
+        if(
+            MONITORING_ROWS.length === 0
+        ){
+
+            if(studentList){
+
+                studentList.innerHTML = `
+
+                    <div class="monitor-empty-selection">
+                        No student lesson activity yet.
+                    </div>
+
+                `;
+
+            }
+
+
+            table.style.display =
+                "none";
+
+
+            selectionMessage.style.display =
+                "block";
+
+
+            selectionMessage.textContent =
+                "No student lesson activity yet.";
+
+
+            selectedBox.style.display =
+                "none";
+
+
+            return;
+
+        }
+
+
+        /*
+         * Create student buttons.
+         */
+
+        if(studentList){
+
+            studentList.innerHTML = "";
+
+
+            Object.values(
+                monitoringStudents
+            )
+            .sort(
+                (a,b) =>
+                    a.name.localeCompare(
+                        b.name
+                    )
+            )
+            .forEach(student => {
+
+                studentList.innerHTML += `
+
+                    <button
+                        type="button"
+                        class="monitor-student-btn"
+                        data-student-id="${escapeHtml(student.id)}"
+                        onclick="selectMonitoringStudent(
+                            '${escapeJs(student.id)}',
+                            '${escapeJs(student.name)}'
+                        )"
+                    >
+                        👤 ${escapeHtml(student.name)}
+                    </button>
+
+                `;
+
+            });
+
+        }
+
+
+        /*
+         * If previously selected student
+         * still exists, keep selection.
+         */
+
+        const selectedStillExists =
+            SELECTED_MONITORING_STUDENT_ID &&
+            monitoringStudents[
+                SELECTED_MONITORING_STUDENT_ID
+            ];
+
+
+        if(selectedStillExists){
+
+            selectMonitoringStudent(
+                SELECTED_MONITORING_STUDENT_ID,
+                selectedStillExists.name
+            );
+
+        }
+        else{
+
+            /*
+             * Start with no student selected.
+             */
+
+            SELECTED_MONITORING_STUDENT_ID =
+                null;
+
+            SELECTED_MONITORING_STUDENT_NAME =
+                "";
+
+
+            table.style.display =
+                "none";
+
+
+            selectionMessage.style.display =
+                "block";
+
+
+            selectionMessage.textContent =
+                "👆 Select a student above to view lesson monitoring details.";
+
+
+            selectedBox.style.display =
+                "none";
+
+        }
 
     }
     catch(err){
@@ -3402,31 +3624,345 @@ async function loadMonitoring(){
         MONITORING_ROWS = [];
 
 
-        body.innerHTML = `
+        if(studentList){
 
-            <tr>
+            studentList.innerHTML = `
 
-                <td
-                    colspan="7"
+                <div
                     style="
                         color:#991b1b;
                         padding:15px;
                     "
                 >
-
                     ❌ Monitoring load failed:
                     ${escapeHtml(
                         err.message ||
                         "Unknown error"
                     )}
+                </div>
 
+            `;
+
+        }
+
+
+        table.style.display =
+            "none";
+
+
+        selectionMessage.style.display =
+            "block";
+
+
+        selectionMessage.textContent =
+            "Monitoring load failed.";
+
+    }
+
+}
+
+
+/* ==========================================
+   SELECT MONITORING STUDENT
+   ========================================== */
+
+function selectMonitoringStudent(
+    studentId,
+    studentName
+){
+
+    SELECTED_MONITORING_STUDENT_ID =
+        String(studentId);
+
+
+    SELECTED_MONITORING_STUDENT_NAME =
+        studentName;
+
+
+    const table =
+        document.getElementById(
+            "monitoringTable"
+        );
+
+
+    const body =
+        document.getElementById(
+            "monitoringBody"
+        );
+
+
+    const selectionMessage =
+        document.getElementById(
+            "monitorSelectionMessage"
+        );
+
+
+    const selectedBox =
+        document.getElementById(
+            "selectedStudentBox"
+        );
+
+
+    const selectedName =
+        document.getElementById(
+            "selectedStudentName"
+        );
+
+
+    /*
+     * Active button.
+     */
+
+    document
+        .querySelectorAll(
+            ".monitor-student-btn"
+        )
+        .forEach(button => {
+
+            if(
+                button.dataset.studentId ===
+                String(studentId)
+            ){
+
+                button.classList.add(
+                    "active"
+                );
+
+            }
+            else{
+
+                button.classList.remove(
+                    "active"
+                );
+
+            }
+
+        });
+
+
+    /*
+     * Selected student title.
+     */
+
+    if(selectedBox){
+
+        selectedBox.style.display =
+            "block";
+
+    }
+
+
+    if(selectedName){
+
+        selectedName.textContent =
+            "👤 " +
+            studentName +
+            " - Lesson Monitoring";
+
+    }
+
+
+    /*
+     * Filter only selected student.
+     */
+
+    const studentRows =
+        MONITORING_ROWS.filter(
+            row =>
+            String(row.studentId) ===
+            String(studentId)
+        );
+
+
+    body.innerHTML = "";
+
+
+    if(studentRows.length === 0){
+
+        table.style.display =
+            "none";
+
+
+        selectionMessage.style.display =
+            "block";
+
+
+        selectionMessage.textContent =
+            "මෙම Student සඳහා monitoring data නැහැ.";
+
+        return;
+
+    }
+
+
+    /*
+     * Show table.
+     */
+
+    table.style.display =
+        "table";
+
+
+    selectionMessage.style.display =
+        "none";
+
+
+    studentRows.forEach(row => {
+
+        const status =
+            getStatusHtmlFromText(
+                row.statusText
+            );
+
+
+        body.innerHTML += `
+
+            <tr>
+
+                <td>
+
+                    <strong>
+                        ${escapeHtml(
+                            row.student
+                        )}
+                    </strong>
+
+                </td>
+
+
+                <td>
+
+                    <strong>
+                        ${escapeHtml(
+                            row.lesson
+                        )}
+                    </strong>
+
+                    ${
+                        row.course
+                        ?
+                        `<br>
+                        <small style="
+                            color:#64748b;
+                        ">
+                            ${escapeHtml(
+                                row.course
+                            )}
+                        </small>`
+                        :
+                        ""
+                    }
+
+                </td>
+
+
+                <td>
+                    ${escapeHtml(
+                        row.date
+                    )}
+                </td>
+
+
+                <td>
+                    ${escapeHtml(
+                        row.started
+                    )}
+                </td>
+
+
+                <td>
+                    ${escapeHtml(
+                        row.lastWatched
+                    )}
+                </td>
+
+
+                <td>
+                    ${escapeHtml(
+                        row.watchTime
+                    )}
+                </td>
+
+
+                <td>
+                    ${status}
                 </td>
 
             </tr>
 
         `;
 
+    });
+
+}
+
+
+/* ==========================================
+   STATUS HTML FROM TEXT
+   ========================================== */
+
+function getStatusHtmlFromText(
+    statusText
+){
+
+    if(statusText === "✅ Completed"){
+
+        return `
+
+            <span class="
+                status
+                status-completed
+            ">
+                ✅ Completed
+            </span>
+
+        `;
+
     }
+
+
+    if(statusText === "👀 Watching"){
+
+        return `
+
+            <span class="
+                status
+                status-watching
+            ">
+                👀 Watching
+            </span>
+
+        `;
+
+    }
+
+
+    if(statusText === "▶️ Started"){
+
+        return `
+
+            <span class="
+                status
+                status-started
+            ">
+                ▶️ Started
+            </span>
+
+        `;
+
+    }
+
+
+    return `
+
+        <span class="
+            status
+            status-not-started
+        ">
+            🔒 Not Started
+        </span>
+
+    `;
 
 }
 
@@ -3675,13 +4211,44 @@ function formatWatchTime(seconds){
 
 function sendMonitoringWhatsApp(){
 
+    /*
+     * Must select a student first.
+     */
+
     if(
-        !MONITORING_ROWS ||
-        MONITORING_ROWS.length === 0
+        !SELECTED_MONITORING_STUDENT_ID
     ){
 
         alert(
-            "WhatsApp කරන්න Monitoring Report එකක් නැහැ."
+            "මුලින් Student කෙනෙක් select කරන්න."
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * Only selected student's rows.
+     */
+
+    const studentRows =
+        MONITORING_ROWS.filter(
+            row =>
+            String(row.studentId) ===
+            String(
+                SELECTED_MONITORING_STUDENT_ID
+            )
+        );
+
+
+    if(
+        !studentRows ||
+        studentRows.length === 0
+    ){
+
+        alert(
+            "මෙම Student සඳහා Monitoring Report එකක් නැහැ."
         );
 
         return;
@@ -3693,7 +4260,11 @@ function sendMonitoringWhatsApp(){
         "📊 MN TECHNOLOGY - STUDENT MONITORING REPORT\n\n";
 
 
-    MONITORING_ROWS.forEach(
+    /*
+     * Selected student only.
+     */
+
+    studentRows.forEach(
         (row,index) => {
 
             message +=
@@ -3704,6 +4275,11 @@ function sendMonitoringWhatsApp(){
             message +=
                 "🎬 Lesson: " +
                 row.lesson +
+                "\n";
+
+            message +=
+                "📚 Course: " +
+                row.course +
                 "\n";
 
             message +=
@@ -3734,7 +4310,7 @@ function sendMonitoringWhatsApp(){
 
             if(
                 index <
-                MONITORING_ROWS.length - 1
+                studentRows.length - 1
             ){
 
                 message +=
