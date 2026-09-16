@@ -88,7 +88,37 @@
       margin-bottom: 7px;
     }
 
-    input {
+    .password-box {
+      position: relative;
+      width: 100%;
+    }
+
+    .password-box input {
+      width: 100%;
+      padding: 12px 45px 12px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 7px;
+      margin-bottom: 16px;
+      font-size: 15px;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-60%);
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 20px;
+      padding: 3px;
+    }
+
+    .password-toggle:hover {
+      opacity: 0.7;
+    }
+
+    input[type="text"] {
       width: 100%;
       padding: 12px;
       border: 1px solid #d1d5db;
@@ -128,11 +158,16 @@
       text-decoration: none;
     }
 
+    .forgot a:hover {
+      text-decoration: underline;
+    }
+
     .message {
       display: none;
       padding: 12px;
       border-radius: 7px;
       margin-bottom: 15px;
+      line-height: 1.4;
     }
 
     .error {
@@ -153,21 +188,36 @@
 
   <div class="logo">
     <div class="logo-box">MN</div>
+
     <h1>MN Technology</h1>
+
     <p>Login to your account</p>
   </div>
 
+
   <div class="type-buttons">
-    <button id="studentBtn" class="active">
+
+    <button
+      type="button"
+      id="studentBtn"
+      class="active">
       Student
     </button>
 
-    <button id="adminBtn">
+    <button
+      type="button"
+      id="adminBtn">
       Admin
     </button>
+
   </div>
 
-  <div id="message" class="message"></div>
+
+  <div
+    id="message"
+    class="message">
+  </div>
+
 
   <form id="loginForm">
 
@@ -183,38 +233,57 @@
       autocomplete="username"
     >
 
+
     <label for="password">
       Password
     </label>
 
-    <input
-      type="password"
-      id="password"
-      placeholder="Enter password"
-      required
-      autocomplete="current-password"
-    >
+    <div class="password-box">
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Enter password"
+        required
+        autocomplete="current-password"
+      >
+
+      <button
+        type="button"
+        id="togglePassword"
+        class="password-toggle"
+        aria-label="Show password">
+        👁️
+      </button>
+
+    </div>
+
 
     <button
       type="submit"
       class="login-btn"
-      id="loginButton"
-    >
+      id="loginButton">
       Student Login
     </button>
 
   </form>
 
+
   <div class="forgot">
+
     <a href="forgot-password.html">
       Forgot Password?
     </a>
+
   </div>
 
 </div>
 
 
+<!-- SUPABASE -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 
 <script>
 
@@ -223,6 +292,7 @@ const SUPABASE_URL =
 
 const SUPABASE_KEY =
   "sb_publishable_tpFTptBWglmisRRhQiptmg_VkKhJdDn";
+
 
 const supabaseClient =
   window.supabase.createClient(
@@ -249,43 +319,132 @@ const loginForm =
 const messageBox =
   document.getElementById("message");
 
+const passwordInput =
+  document.getElementById("password");
 
-function showMessage(text, type = "error") {
+const togglePassword =
+  document.getElementById("togglePassword");
+
+
+/* =========================
+   PASSWORD SHOW / HIDE
+========================= */
+
+togglePassword.addEventListener(
+  "click",
+  function() {
+
+    if (
+      passwordInput.type === "password"
+    ) {
+
+      passwordInput.type = "text";
+
+      togglePassword.textContent =
+        "🙈";
+
+      togglePassword.setAttribute(
+        "aria-label",
+        "Hide password"
+      );
+
+    } else {
+
+      passwordInput.type =
+        "password";
+
+      togglePassword.textContent =
+        "👁️";
+
+      togglePassword.setAttribute(
+        "aria-label",
+        "Show password"
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+function showMessage(
+  text,
+  type = "error"
+) {
 
   messageBox.textContent = text;
 
   messageBox.className =
     "message " + type;
 
-  messageBox.style.display = "block";
+  messageBox.style.display =
+    "block";
 }
 
 
-studentBtn.addEventListener("click", () => {
+/* =========================
+   STUDENT BUTTON
+========================= */
 
-  loginType = "student";
+studentBtn.addEventListener(
+  "click",
+  function() {
 
-  studentBtn.classList.add("active");
-  adminBtn.classList.remove("active");
+    loginType = "student";
 
-  loginButton.textContent =
-    "Student Login";
+    studentBtn.classList.add(
+      "active"
+    );
 
-});
+    adminBtn.classList.remove(
+      "active"
+    );
+
+    loginButton.textContent =
+      "Student Login";
+
+    messageBox.style.display =
+      "none";
+
+  }
+);
 
 
-adminBtn.addEventListener("click", () => {
+/* =========================
+   ADMIN BUTTON
+========================= */
 
-  loginType = "admin";
+adminBtn.addEventListener(
+  "click",
+  function() {
 
-  adminBtn.classList.add("active");
-  studentBtn.classList.remove("active");
+    loginType = "admin";
 
-  loginButton.textContent =
-    "Admin Login";
+    adminBtn.classList.add(
+      "active"
+    );
 
-});
+    studentBtn.classList.remove(
+      "active"
+    );
 
+    loginButton.textContent =
+      "Admin Login";
+
+    messageBox.style.display =
+      "none";
+
+  }
+);
+
+
+/* =========================
+   LOGIN
+========================= */
 
 loginForm.addEventListener(
   "submit",
@@ -293,30 +452,38 @@ loginForm.addEventListener(
 
     event.preventDefault();
 
-    messageBox.style.display = "none";
+
+    messageBox.style.display =
+      "none";
+
 
     const username =
-      document.getElementById(
-        "username"
-      ).value.trim();
+      document
+        .getElementById("username")
+        .value
+        .trim();
+
 
     const password =
-      document.getElementById(
-        "password"
-      ).value;
+      passwordInput.value;
 
 
-    if (!username || !password) {
+    if (
+      !username ||
+      !password
+    ) {
 
       showMessage(
         "Please enter username and password."
       );
 
       return;
+
     }
 
 
-    loginButton.disabled = true;
+    loginButton.disabled =
+      true;
 
     loginButton.textContent =
       "Logging in...";
@@ -327,14 +494,13 @@ loginForm.addEventListener(
       let email;
 
 
-      /*
-        STUDENT LOGIN
+      /* =========================
+         STUDENT LOGIN
+      ========================= */
 
-        Admin-created student accounts use:
-        username@students.mntechnology.com
-      */
-
-      if (loginType === "student") {
+      if (
+        loginType === "student"
+      ) {
 
         email =
           `${username.toLowerCase()}@students.mntechnology.com`;
@@ -342,20 +508,38 @@ loginForm.addEventListener(
       }
 
 
-      /*
-        ADMIN LOGIN
-
-        Admin email is:
-        lakshitha94314@gmail.com
-      */
+      /* =========================
+         ADMIN LOGIN
+      ========================= */
 
       else {
 
-        email =
-          username.toLowerCase();
+        /*
+          Admin login uses the
+          real Supabase email.
+        */
+
+        if (
+          username.toLowerCase() ===
+          "admin"
+        ) {
+
+          email =
+            "lakshitha94314@gmail.com";
+
+        } else {
+
+          email =
+            username.toLowerCase();
+
+        }
 
       }
 
+
+      /* =========================
+         SUPABASE AUTH LOGIN
+      ========================= */
 
       const {
         data,
@@ -363,12 +547,20 @@ loginForm.addEventListener(
       } =
         await supabaseClient.auth
           .signInWithPassword({
-            email,
-            password
+
+            email: email,
+
+            password: password
+
           });
 
 
       if (error) {
+
+        console.error(
+          "Supabase Login Error:",
+          error
+        );
 
         throw new Error(
           error.message
@@ -377,7 +569,10 @@ loginForm.addEventListener(
       }
 
 
-      if (!data.user) {
+      if (
+        !data ||
+        !data.user
+      ) {
 
         throw new Error(
           "Login failed."
@@ -386,11 +581,13 @@ loginForm.addEventListener(
       }
 
 
-      /*
-        STUDENT
-      */
+      /* =========================
+         STUDENT CHECK
+      ========================= */
 
-      if (loginType === "student") {
+      if (
+        loginType === "student"
+      ) {
 
         const {
           data: student,
@@ -398,8 +595,13 @@ loginForm.addEventListener(
         } =
           await supabaseClient
             .from("student_accounts")
-            .select("id, username")
-            .eq("id", data.user.id)
+            .select(
+              "id, username"
+            )
+            .eq(
+              "id",
+              data.user.id
+            )
             .maybeSingle();
 
 
@@ -408,7 +610,8 @@ loginForm.addEventListener(
           !student
         ) {
 
-          await supabaseClient.auth.signOut();
+          await supabaseClient.auth
+            .signOut();
 
           throw new Error(
             "This account is not a valid student account."
@@ -421,12 +624,13 @@ loginForm.addEventListener(
           "student-dashboard.html";
 
         return;
+
       }
 
 
-      /*
-        ADMIN
-      */
+      /* =========================
+         ADMIN CHECK
+      ========================= */
 
       const {
         data: admin,
@@ -434,8 +638,13 @@ loginForm.addEventListener(
       } =
         await supabaseClient
           .from("admins")
-          .select("id, username")
-          .eq("id", data.user.id)
+          .select(
+            "id, username"
+          )
+          .eq(
+            "id",
+            data.user.id
+          )
           .maybeSingle();
 
 
@@ -444,7 +653,13 @@ loginForm.addEventListener(
         !admin
       ) {
 
-        await supabaseClient.auth.signOut();
+        console.error(
+          "Admin Check Error:",
+          adminError
+        );
+
+        await supabaseClient.auth
+          .signOut();
 
         throw new Error(
           "This account is not an admin account."
@@ -453,14 +668,22 @@ loginForm.addEventListener(
       }
 
 
+      /* =========================
+         ADMIN DASHBOARD
+      ========================= */
+
       window.location.href =
         "admin-dashboard.html";
 
     }
 
+
     catch (error) {
 
-      console.error(error);
+      console.error(
+        "Login Error:",
+        error
+      );
 
       showMessage(
         error.message ||
@@ -469,9 +692,11 @@ loginForm.addEventListener(
 
     }
 
+
     finally {
 
-      loginButton.disabled = false;
+      loginButton.disabled =
+        false;
 
       loginButton.textContent =
         loginType === "student"
