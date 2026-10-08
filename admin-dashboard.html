@@ -728,7 +728,7 @@ video{
 
 <!-- MN Electronic Assistant: Admin Control -->
 <details class="card mnt-admin-panel" id="mntAssistantPanel"><summary>⚡ MN Electronic Assistant — Student Access</summary><div class="mnt-panel-body">
-<p style="color:#64748b;margin-bottom:12px">Manage student access, daily text questions and expiry. Changes are checked by a secure server function.</p>
+<p style="color:#64748b;margin-bottom:12px">Manage student access, daily text questions, daily image requests and expiry. Changes are checked by a secure server function.</p>
 <button class="primary" type="button" onclick="mntAssistantLoad()">🔄 Refresh Students</button>
 <div id="mntAssistantStatus" style="margin:12px 0;color:#475569" role="status">Open this panel to load students.</div>
 <div id="mntAssistantStudents"></div>
@@ -4525,9 +4525,9 @@ async function mntAssistantLoad(){
   try{
     const data=await mntAssistantCall({action:'list'});
     const access=new Map((data.access||[]).map(x=>[x.student_id,x]));
-    const usage=new Map((data.usage||[]).map(x=>[x.student_id,x.request_count]));
+    const usage=new Map((data.usage||[]).map(x=>[x.student_id,x]));
     for(const student of data.students||[]){
-      const row=access.get(student.id)||{enabled:false,daily_limit:10,expires_at:null};
+      const row=access.get(student.id)||{enabled:false,daily_limit:10,image_daily_limit:0,expires_at:null};
       const card=document.createElement('div');card.className='student-item';card.style.padding='15px';
       const title=document.createElement('div');title.className='student-name';title.textContent='👤 '+student.username;card.append(title);
       const line=document.createElement('div');line.style.cssText='display:flex;gap:12px;flex-wrap:wrap;align-items:center';
@@ -4535,17 +4535,21 @@ async function mntAssistantLoad(){
       const enabled=document.createElement('input');enabled.type='checkbox';enabled.checked=!!row.enabled;enabled.style.cssText='width:auto;margin:0 0 0 8px';enabledLabel.append(enabled);line.append(enabledLabel);
       const limitLabel=document.createElement('label');limitLabel.textContent='Daily Questions ';
       const limit=document.createElement('input');limit.type='number';limit.min='0';limit.max='1000';limit.step='1';limit.value=String(row.daily_limit);limit.style.cssText='width:90px;margin:5px';limitLabel.append(limit);line.append(limitLabel);
+      const imageLabel=document.createElement('label');imageLabel.textContent='Daily Images ';
+      const imageLimit=document.createElement('input');imageLimit.type='number';imageLimit.min='0';imageLimit.max='1000';imageLimit.step='1';imageLimit.value=String(row.image_daily_limit??0);imageLimit.style.cssText='width:90px;margin:5px';imageLabel.append(imageLimit);line.append(imageLabel);
       const expiryLabel=document.createElement('label');expiryLabel.textContent='Expiry (optional) ';
       const expiry=document.createElement('input');expiry.type='date';expiry.value=row.expires_at?row.expires_at.slice(0,10):'';expiry.style.cssText='width:165px;margin:5px';expiryLabel.append(expiry);line.append(expiryLabel);
       card.append(line);
-      const used=document.createElement('p');used.style.cssText='color:#64748b;font-size:13px;margin:8px 0';used.textContent='Used today: '+(usage.get(student.id)||0)+' questions (UTC day)';card.append(used);
+      const used=document.createElement('p');used.style.cssText='color:#64748b;font-size:13px;margin:8px 0';used.textContent='Used today: '+(usage.get(student.id)?.request_count||0)+' text / '+(usage.get(student.id)?.image_count||0)+' image requests (UTC day)';card.append(used);
       const save=document.createElement('button');save.className='success';save.type='button';save.textContent='💾 Save Access';
       const msg=document.createElement('span');msg.style.marginLeft='12px';
       save.onclick=async()=>{
         const n=Number(limit.value);
         if(!Number.isInteger(n)||n<0||n>1000){msg.textContent='Enter 0–1000 questions';return;}
+        const im=Number(imageLimit.value);
+        if(!Number.isInteger(im)||im<0||im>1000){msg.textContent='Enter 0–1000 images';return;}
         save.disabled=true;msg.textContent='Saving...';
-        try{await mntAssistantCall({action:'save',student_id:student.id,enabled:enabled.checked,daily_limit:n,expires_at:expiry.value||null});msg.textContent='✅ Saved';}
+        try{await mntAssistantCall({action:'save',student_id:student.id,enabled:enabled.checked,daily_limit:n,image_daily_limit:im,expires_at:expiry.value||null});msg.textContent='✅ Saved';}
         catch(e){msg.textContent='❌ '+e.message;}
         finally{save.disabled=false;}
       };
