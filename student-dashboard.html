@@ -644,6 +644,16 @@
 
   </style>
 
+<style id="mnt-week-styles">
+.mnt-week{margin:12px 0;border:1px solid rgba(34,211,238,.23);border-radius:14px;overflow:hidden;background:rgba(13,27,45,.75)}
+.mnt-week-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 18px;cursor:pointer;font-weight:700;color:#e6f7ff;list-style:none}
+.mnt-week-heading::-webkit-details-marker{display:none}
+.mnt-week-heading::after{content:"⌄";margin-left:8px;color:#22d3ee}
+.mnt-week[open]>.mnt-week-heading::after{content:"⌃"}
+.mnt-week-count{font-size:.85rem;font-weight:600;color:#a5b4c7;margin-left:auto}
+.mnt-week-lessons{padding:8px 12px 14px;border-top:1px solid rgba(148,163,184,.15)}
+@media(max-width:600px){.mnt-week-heading{padding:14px 12px}.mnt-week-lessons{padding:7px}}
+</style>
 </head>
 
 <body>
@@ -1494,11 +1504,7 @@
                   lesson.course ===
                   courseName
               )
-              .sort(
-                (a, b) =>
-                  Number(a.id) -
-                  Number(b.id)
-              );
+              .sort((a, b) => (Number(a.week_number || 1) - Number(b.week_number || 1)) || (Number(a.id) - Number(b.id)));
 
 
           if (
@@ -1527,18 +1533,33 @@
 
           else {
 
-            courseLessons.forEach(
-              lesson => {
-
-                courseBox.appendChild(
-                  createLessonElement(
-                    lesson,
-                    courseLessons
-                  )
-                );
-
-              }
-            );
+            // Group lessons into collapsible weeks; counts come from live Supabase data.
+            const weeks = new Map();
+            courseLessons.forEach(lesson => {
+              const week = Math.max(1, Number(lesson.week_number) || 1);
+              if (!weeks.has(week)) weeks.set(week, []);
+              weeks.get(week).push(lesson);
+            });
+            [...weeks.entries()].sort((a, b) => a[0] - b[0]).forEach(([week, weekLessons]) => {
+              const section = document.createElement("details");
+              section.className = "mnt-week";
+              const heading = document.createElement("summary");
+              heading.className = "mnt-week-heading";
+              const label = document.createElement("span");
+              label.textContent = "📁 Week " + week;
+              const count = document.createElement("span");
+              count.className = "mnt-week-count";
+              count.textContent = weekLessons.length + (weekLessons.length === 1 ? " Lesson" : " Lessons");
+              heading.append(label, count);
+              section.appendChild(heading);
+              const contents = document.createElement("div");
+              contents.className = "mnt-week-lessons";
+              weekLessons.forEach(lesson => {
+                contents.appendChild(createLessonElement(lesson, courseLessons));
+              });
+              section.appendChild(contents);
+              courseBox.appendChild(section);
+            });
 
           }
 
@@ -1870,11 +1891,7 @@
               item.course ===
               lesson.course
           )
-          .sort(
-            (a, b) =>
-              Number(a.id) -
-              Number(b.id)
-          );
+          .sort((a, b) => (Number(a.week_number || 1) - Number(b.week_number || 1)) || (Number(a.id) - Number(b.id)));
 
 
       if (
