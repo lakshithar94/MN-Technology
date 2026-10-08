@@ -1316,6 +1316,33 @@ body{background-color:#eaf4ff;background-image:radial-gradient(circle at 10% 10%
 
 
     /* =====================================
+       SORT LESSONS BY COURSE ORDER
+       Week > Topic > Lesson, with stable fallbacks.
+    ===================================== */
+
+    function mntSortLessons(a, b) {
+      const order = (value, fallback) => {
+        if (value === null || value === undefined || value === "") return fallback;
+        const number = Number(value);
+        return Number.isFinite(number) ? number : fallback;
+      };
+
+      const weekA = order(a.week_order, order(a.week_number, 1));
+      const weekB = order(b.week_order, order(b.week_number, 1));
+      if (weekA !== weekB) return weekA - weekB;
+
+      const topicA = order(a.topic_order, 1);
+      const topicB = order(b.topic_order, 1);
+      if (topicA !== topicB) return topicA - topicB;
+
+      const lessonA = order(a.lesson_order, order(a.id, 0));
+      const lessonB = order(b.lesson_order, order(b.id, 0));
+      if (lessonA !== lessonB) return lessonA - lessonB;
+
+      return order(a.id, 0) - order(b.id, 0);
+    }
+
+    /* =====================================
        LOAD COURSES
     ===================================== */
 
