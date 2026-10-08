@@ -679,7 +679,14 @@ body{background-color:#eaf4ff;background-image:radial-gradient(circle at 10% 10%
 .welcome:before{content:"";position:absolute;inset:0;opacity:.24;background:repeating-linear-gradient(90deg,transparent 0 42px,#3ad7ff 43px,transparent 44px),repeating-linear-gradient(0deg,transparent 0 38px,#3ad7ff 39px,transparent 40px);mask-image:linear-gradient(90deg,transparent,#000)}
 .welcome h1,.welcome p{position:relative;z-index:1}.welcome h1{font-size:clamp(23px,3vw,34px)}.welcome p{color:#c8eaff}.welcome:after{content:"MN TECHNOLOGY";position:relative;display:block;margin-top:20px;font-weight:800;letter-spacing:3px;color:#67e8f9;font-size:12px}
 .section,.viewer-section{background:rgba(255,255,255,.96);border:1px solid #d8e9fa}.course-title{background:linear-gradient(100deg,#061a35,#103d73);border:1px solid #2563a0}.mnt-week{background:#193d68;border-color:#a5c7e7}.mnt-week-heading{color:#fff}.mnt-topic{margin:7px 8px 9px 16px;border:1px solid #b8d9f5;border-radius:9px;background:#e7f3ff;overflow:hidden}.mnt-topic>summary{padding:10px 14px;cursor:pointer;font-weight:700;color:#113d6b;list-style:none}.mnt-topic>summary:after{content:"⌄";float:right}.mnt-topic[open]>summary:after{content:"⌃"}.mnt-topic-lessons{padding:5px 10px 9px}.mnt-topic .lesson{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 12px;margin:5px 0;background:#fff;border:1px solid #d7e1ed;border-radius:8px}.mnt-topic .lesson h3{font-size:15px;margin:0;flex:1}.mnt-topic .lesson .course,.mnt-topic .lesson .description,.mnt-topic .lesson .open-lesson-hint,.mnt-topic .lesson .locked-message{display:none}.mnt-topic .lesson .lesson-status{font-size:12px;padding:5px 9px}
-</style></head>
+</style><style id="mnt-assistant-entry-styles">
+.mnt-assistant-entry{margin-bottom:25px;border-radius:16px;padding:22px;background:linear-gradient(110deg,#071b36,#0c4372);color:white;display:flex;align-items:center;justify-content:space-between;gap:20px;box-shadow:0 8px 22px #0b254b24}
+.mnt-assistant-entry h2{font-size:22px;margin-bottom:8px}.mnt-assistant-entry p{color:#c9e8f6;line-height:1.5;margin-bottom:12px}
+.mnt-assistant-enter{display:inline-block;text-decoration:none;background:#13b7dd;color:#041a2d;font-weight:bold;padding:12px 20px;border-radius:9px}
+.mnt-assistant-enter:hover{background:#67e8f9}
+@media(max-width:600px){.mnt-assistant-entry{padding:17px}.mnt-assistant-entry h2{font-size:19px}}
+</style>
+</head>
 
 <body>
 
@@ -746,6 +753,14 @@ body{background-color:#eaf4ff;background-image:radial-gradient(circle at 10% 10%
 
     </div>
 
+
+
+    <!-- MN Electronic Assistant: separate entry; existing lesson system remains unchanged -->
+    <section class="mnt-assistant-entry" id="mntAssistantEntry">
+      <div><h2>⚡ MN Electronic Assistant</h2><p>Your Electronics Learning Partner</p>
+      <a class="mnt-assistant-enter" href="mn-electronic-assistant.html">Enter Assistant →</a></div>
+      <div aria-hidden="true" style="font-size:44px">🔌</div>
+    </section>
 
     <!-- =====================================
          LESSON LIST
@@ -4019,6 +4034,15 @@ body{background-color:#eaf4ff;background-image:radial-gradient(circle at 10% 10%
 
   </script>
 
+<script>
+(function(){
+ const entry=document.getElementById('mntAssistantEntry');
+ const welcome=document.getElementById('welcomeSection');
+ if(!entry||!welcome)return;
+ const sync=()=>{entry.style.display=getComputedStyle(welcome).display==='none'?'none':'';};
+ new MutationObserver(sync).observe(welcome,{attributes:true,attributeFilter:['style']});sync();
+})();
+</script>
 </body>
 
 </html>
