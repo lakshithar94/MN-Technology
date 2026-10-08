@@ -505,7 +505,9 @@ video{
 
 }
 </style>
-</head>
+<style id="mnt-admin-update">
+.mnt-admin-panel{padding:0;overflow:hidden;margin-bottom:12px}.mnt-admin-panel>summary{list-style:none;cursor:pointer;padding:18px 22px;font-weight:750;font-size:18px;background:#071d38;color:#fff}.mnt-admin-panel>summary::-webkit-details-marker{display:none}.mnt-admin-panel>summary:after{content:"＋";float:right;color:#67e8f9}.mnt-admin-panel[open]>summary:after{content:"−"}.mnt-panel-body{padding:20px}.student-item{padding:0;overflow:hidden}.student-item>summary{padding:13px 15px;cursor:pointer;font-weight:700;list-style:none}.student-item>summary:after{content:"⌄";float:right}.student-item .access-grid,.student-item>button{margin:12px 15px}.mnt-order-row{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:10px;border:1px solid #dbe3ec;border-radius:8px;margin:7px 0;background:#f8fafc}.mnt-order-row button{padding:7px 10px;background:#dbeafe}.mnt-order-child{margin-left:18px}.mnt-order-title{font-weight:700;flex:1}.mnt-order-actions{display:flex;gap:4px}.mnt-order-message{margin:12px 0;color:#0369a1}.mnt-topic-input{margin:8px 0 12px}
+</style></head>
 
 <body>
 
@@ -549,9 +551,7 @@ video{
 
 <!-- CREATE STUDENT -->
 
-<div class="card">
-
-<h2>👨‍🎓 Create Student</h2>
+<details class="card mnt-admin-panel"><summary>👨‍🎓 Create Student</summary><div class="mnt-panel-body">
 
 <form id="studentForm">
 
@@ -585,13 +585,11 @@ video{
 
 <div id="studentMessage" class="message"></div>
 
-</div>
+</div></details>
 
 <!-- COURSES -->
 
-<div class="card">
-
-<h2>📚 Courses</h2>
+<details class="card mnt-admin-panel"><summary>📚 Courses</summary><div class="mnt-panel-body">
 
 <div class="add-course-box">
 
@@ -623,13 +621,11 @@ video{
 
 </div>
 
-</div>
+</div></details>
 
 <!-- STUDENTS -->
 
-<div class="card">
-
-<h2>👨‍🎓 Students & Course Access</h2>
+<details class="card mnt-admin-panel"><summary>👨‍🎓 Students & Course Access</summary><div class="mnt-panel-body">
 
 <div id="studentsList">
 
@@ -639,13 +635,11 @@ video{
 
 </div>
 
-</div>
+</div></details>
 
 <!-- ADD LESSON -->
 
-<div class="card">
-
-<h2>➕ Add New Lesson</h2>
+<details class="card mnt-admin-panel"><summary>➕ Add New Lesson</summary><div class="mnt-panel-body">
 
 <form id="lessonForm">
 
@@ -672,6 +666,8 @@ video{
 <input type="number" id="lessonWeek" min="1" step="1" value="1" required>
 <p style="opacity:.7;font-size:.85rem;margin:5px 0 12px">Example: 1 = Week 1, 2 = Week 2</p>
 
+<label>Topic Name</label><input id="lessonTopic" type="text" placeholder="Example: Resistors" required>
+<p style="font-size:13px;color:#64748b;margin-bottom:12px">Same course + week + topic name groups lessons together.</p>
 <label>Description</label>
 
 <textarea
@@ -704,13 +700,11 @@ video{
 
 <div id="lessonMessage" class="message"></div>
 
-</div>
+</div></details>
 
 <!-- LESSONS -->
 
-<div class="card">
-
-<h2>🎬 Lessons</h2>
+<details class="card mnt-admin-panel"><summary>🎬 Lessons</summary><div class="mnt-panel-body">
 
 <div id="lessonsList">
 
@@ -720,13 +714,20 @@ video{
 
 </div>
 
-</div>
+</div></details>
+
+<!-- LESSON ORDER MANAGER -->
+<details class="card mnt-admin-panel"><summary>↕️ Lesson Order Manager</summary><div class="mnt-panel-body">
+<p style="color:#64748b;margin-bottom:12px">Use arrows to arrange weeks, topics and lessons. Click Save Order to apply changes.</p>
+<div id="mntOrderList">Open this panel and click Refresh Order.</div>
+<div class="mnt-order-message" id="mntOrderMessage"></div>
+<button class="primary" type="button" onclick="mntLoadOrder()">🔄 Refresh Order</button>
+<button class="success" type="button" onclick="mntSaveOrder()">💾 Save Order</button>
+</div></details>
 
 <!-- ADMIN MONITORING -->
 
-<div class="card">
-
-<h2>📊 Student Lesson Monitoring</h2>
+<details class="card mnt-admin-panel"><summary>📊 Student Lesson Monitoring</summary><div class="mnt-panel-body">
 
 <p style="
     color:#64748b;
@@ -818,7 +819,7 @@ video{
     👆 Select a student above to view lesson monitoring details.
 </div>
 
-</div>
+</div></details>
 
 </div>
 
@@ -1201,11 +1202,7 @@ async function loadStudents(){
 
         box.innerHTML += `
 
-            <div class="student-item">
-
-                <div class="student-name">
-                    👤 ${escapeHtml(student.username)}
-                </div>
+            <details class="student-item"><summary>👤 ${escapeHtml(student.username)}</summary>
 
                 <div class="access-grid">
                     ${courseHTML}
@@ -1218,7 +1215,7 @@ async function loadStudents(){
                     Save Course Access
                 </button>
 
-            </div>
+            </details>
 
         `;
 
@@ -2960,6 +2957,9 @@ document.getElementById(
                     course:course,
 
                     week_number:weekNumber,
+                    topic_name:document.getElementById("lessonTopic").value.trim(),
+                    topic_order:await nextTopicOrder(course,weekNumber,document.getElementById("lessonTopic").value.trim()),
+                    lesson_order:await nextLessonOrder(course,weekNumber,document.getElementById("lessonTopic").value.trim()),
 
                     description:
                         description || null,
@@ -4438,6 +4438,63 @@ function escapeJs(value){
 
 }
 
+
+/* MNT lesson ordering: rows are cached until Save Order. */
+let MNT_ORDER=[];
+const mntTopic=(x)=>(x.topic_name||'General').trim()||'General';
+async function nextTopicOrder(course,week,topic){
+ const {data,error}=await supabaseClient.from('lessons').select('topic_name,topic_order').eq('course',course).eq('week_number',week);
+ if(error)throw error;
+ const existing=(data||[]).find(x=>mntTopic(x)===topic);
+ return existing?Number(existing.topic_order||0):Math.max(0,...(data||[]).map(x=>Number(x.topic_order||0)))+1;
+}
+async function nextLessonOrder(course,week,topic){
+ const {data,error}=await supabaseClient.from('lessons').select('topic_name,lesson_order').eq('course',course).eq('week_number',week);
+ if(error)throw error;
+ return Math.max(0,...(data||[]).filter(x=>mntTopic(x)===topic).map(x=>Number(x.lesson_order||0)))+1;
+}
+async function mntLoadOrder(){
+ const msg=document.getElementById('mntOrderMessage');msg.textContent='Loading...';
+ const {data,error}=await supabaseClient.from('lessons').select('id,title,course,week_number,week_order,topic_name,topic_order,lesson_order');
+ if(error){msg.textContent='Error: '+error.message;return;}
+ MNT_ORDER=(data||[]).map(x=>({...x,week_number:Number(x.week_number||1),week_order:Number(x.week_order||x.week_number||1),topic_order:Number(x.topic_order||1),lesson_order:Number(x.lesson_order||x.id)}));
+ mntRenderOrder();msg.textContent='Changes are local until Save Order.';
+}
+function mntGroupOrder(){
+ const courses=new Map();
+ MNT_ORDER.forEach(l=>{if(!courses.has(l.course))courses.set(l.course,new Map());const weeks=courses.get(l.course);const w=String(l.week_number);if(!weeks.has(w))weeks.set(w,{order:l.week_order,topics:new Map()});const t=mntTopic(l);if(!weeks.get(w).topics.has(t))weeks.get(w).topics.set(t,{order:l.topic_order,lessons:[]});weeks.get(w).topics.get(t).lessons.push(l);});return courses;
+}
+function mntMove(type,course,week,topic,id,dir){
+ const courses=mntGroupOrder(),weeks=courses.get(course);if(!weeks)return;
+ let entries,field;
+ if(type==='week'){entries=[...weeks.entries()].sort((a,b)=>a[1].order-b[1].order);field=String(week);}
+ else if(type==='topic'){entries=[...weeks.get(String(week)).topics.entries()].sort((a,b)=>a[1].order-b[1].order);field=topic;}
+ else{entries=[...weeks.get(String(week)).topics.get(topic).lessons].sort((a,b)=>a.lesson_order-b.lesson_order).map(x=>[String(x.id),x]);field=String(id);}
+ const i=entries.findIndex(x=>x[0]===field),j=i+dir;if(i<0||j<0||j>=entries.length)return;
+ [entries[i],entries[j]]=[entries[j],entries[i]];
+ entries.forEach(([key],index)=>{MNT_ORDER.forEach(l=>{if(l.course!==course)return;if(type==='week'&&String(l.week_number)===key)l.week_order=index+1;if(type==='topic'&&String(l.week_number)===String(week)&&mntTopic(l)===key)l.topic_order=index+1;if(type==='lesson'&&String(l.id)===key)l.lesson_order=index+1;});});mntRenderOrder();
+}
+function mntRenderOrder(){
+ const box=document.getElementById('mntOrderList');box.replaceChildren();
+ const mk=(title,depth,callback)=>{const row=document.createElement('div');row.className='mnt-order-row'+(depth?' mnt-order-child':'');const label=document.createElement('span');label.className='mnt-order-title';label.textContent=title;row.append(label);[-1,1].forEach(dir=>{const b=document.createElement('button');b.type='button';b.textContent=dir<0?'↑':'↓';b.onclick=()=>callback(dir);row.append(b)});box.append(row);};
+ for(const [course,weeks] of mntGroupOrder()){
+ const h=document.createElement('h3');h.textContent='📚 '+course;h.style.margin='18px 0 8px';box.append(h);
+ for(const [week,w] of [...weeks].sort((a,b)=>a[1].order-b[1].order)){
+ mk('📁 Week '+week,0,d=>mntMove('week',course,week,'',0,d));
+ for(const [topic,t] of [...w.topics].sort((a,b)=>a[1].order-b[1].order)){
+ mk('📂 '+topic,1,d=>mntMove('topic',course,week,topic,0,d));
+ for(const lesson of [...t.lessons].sort((a,b)=>a.lesson_order-b.lesson_order))mk('🎬 '+lesson.title,2,d=>mntMove('lesson',course,week,topic,lesson.id,d));
+ }
+ }
+ }
+ if(!MNT_ORDER.length)box.textContent='No lessons available.';
+}
+async function mntSaveOrder(){
+ const msg=document.getElementById('mntOrderMessage');msg.textContent='Saving...';
+ try{for(const l of MNT_ORDER){const {error}=await supabaseClient.from('lessons').update({week_order:l.week_order,topic_order:l.topic_order,lesson_order:l.lesson_order}).eq('id',l.id);if(error)throw error;}msg.textContent='✅ Order saved successfully.';await loadLessons();}
+ catch(e){msg.textContent='❌ Save failed: '+e.message+' (some rows may have saved; refresh and retry)';}
+}
+document.querySelectorAll('.mnt-admin-panel').forEach(panel=>{panel.addEventListener('toggle',()=>{if(panel.open&&panel.querySelector('#mntOrderList')&&!MNT_ORDER.length)mntLoadOrder();});});
 </script>
 
 </body>
