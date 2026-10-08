@@ -654,6 +654,25 @@
 .mnt-week-lessons{padding:8px 12px 14px;border-top:1px solid rgba(148,163,184,.15)}
 @media(max-width:600px){.mnt-week-heading{padding:14px 12px}.mnt-week-lessons{padding:7px}}
 </style>
+<style id="mnt-compact-course-styles">
+/* Compact nested Course > Week > Lesson layout */
+.course-section{margin-bottom:10px}
+.course-section>.course-title{display:block;cursor:pointer;list-style:none;margin-bottom:0;padding:12px 16px;font-size:17px}
+.course-section>.course-title::-webkit-details-marker{display:none}
+.course-section>.course-title::after{content:"⌄";float:right;color:#22d3ee}
+.course-section[open]>.course-title::after{content:"⌃"}
+.course-section[open]>.mnt-week,.course-section[open]>.no-lessons,.course-section[open]>.course-locked{margin:8px 0 12px}
+.mnt-week{background:#26364d;border:1px solid #a1adbd;margin:8px 0;border-radius:10px}
+.mnt-week-heading{padding:11px 14px;font-size:15px;color:#fff}
+.mnt-week-count{color:#d5e0eb}
+.mnt-week-lessons{padding:6px 10px 8px}
+.mnt-week .lesson{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 12px;margin:5px 0;background:#f8fafc;border:1px solid #d7e1ed;border-radius:8px}
+.mnt-week .lesson h3{font-size:15px;margin:0;flex:1 1 150px;color:#172033}
+.mnt-week .lesson .course,.mnt-week .lesson .description,.mnt-week .lesson .open-lesson-hint,.mnt-week .lesson .locked-message{display:none}
+.mnt-week .lesson .lesson-status{font-size:12px;padding:5px 9px;white-space:nowrap}
+.mnt-week .lesson.lesson-locked{background:#edf0f4}
+@media(max-width:700px){.mnt-week .lesson{padding:9px}.mnt-week .lesson h3{font-size:14px}}
+</style>
 </head>
 
 <body>
@@ -1416,7 +1435,7 @@
 
           const courseBox =
             document.createElement(
-              "div"
+              "details"
             );
 
 
@@ -1428,7 +1447,7 @@
 
           const title =
             document.createElement(
-              "div"
+              "summary"
             );
 
 
