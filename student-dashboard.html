@@ -673,7 +673,13 @@
 .mnt-week .lesson.lesson-locked{background:#edf0f4}
 @media(max-width:700px){.mnt-week .lesson{padding:9px}.mnt-week .lesson h3{font-size:14px}}
 </style>
-</head>
+<style id="mnt-circuit-design">
+body{background-color:#eaf4ff;background-image:radial-gradient(circle at 10% 10%,rgba(14,165,233,.16),transparent 38%),radial-gradient(circle at 90% 50%,rgba(37,99,235,.11),transparent 35%),repeating-linear-gradient(0deg,transparent 0 47px,rgba(14,116,204,.055) 48px,transparent 49px),repeating-linear-gradient(90deg,transparent 0 47px,rgba(14,116,204,.055) 48px,transparent 49px)}
+.welcome{position:relative;overflow:hidden;background:linear-gradient(115deg,#05152d,#0a3970 65%,#096ba5);color:#fff;border:1px solid #1d78aa;box-shadow:0 12px 30px rgba(2,34,75,.18)}
+.welcome:before{content:"";position:absolute;inset:0;opacity:.24;background:repeating-linear-gradient(90deg,transparent 0 42px,#3ad7ff 43px,transparent 44px),repeating-linear-gradient(0deg,transparent 0 38px,#3ad7ff 39px,transparent 40px);mask-image:linear-gradient(90deg,transparent,#000)}
+.welcome h1,.welcome p{position:relative;z-index:1}.welcome h1{font-size:clamp(23px,3vw,34px)}.welcome p{color:#c8eaff}.welcome:after{content:"MN TECHNOLOGY";position:relative;display:block;margin-top:20px;font-weight:800;letter-spacing:3px;color:#67e8f9;font-size:12px}
+.section,.viewer-section{background:rgba(255,255,255,.96);border:1px solid #d8e9fa}.course-title{background:linear-gradient(100deg,#061a35,#103d73);border:1px solid #2563a0}.mnt-week{background:#193d68;border-color:#a5c7e7}.mnt-week-heading{color:#fff}.mnt-topic{margin:7px 8px 9px 16px;border:1px solid #b8d9f5;border-radius:9px;background:#e7f3ff;overflow:hidden}.mnt-topic>summary{padding:10px 14px;cursor:pointer;font-weight:700;color:#113d6b;list-style:none}.mnt-topic>summary:after{content:"⌄";float:right}.mnt-topic[open]>summary:after{content:"⌃"}.mnt-topic-lessons{padding:5px 10px 9px}.mnt-topic .lesson{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 12px;margin:5px 0;background:#fff;border:1px solid #d7e1ed;border-radius:8px}.mnt-topic .lesson h3{font-size:15px;margin:0;flex:1}.mnt-topic .lesson .course,.mnt-topic .lesson .description,.mnt-topic .lesson .open-lesson-hint,.mnt-topic .lesson .locked-message{display:none}.mnt-topic .lesson .lesson-status{font-size:12px;padding:5px 9px}
+</style></head>
 
 <body>
 
@@ -1523,7 +1529,7 @@
                   lesson.course ===
                   courseName
               )
-              .sort((a, b) => (Number(a.week_number || 1) - Number(b.week_number || 1)) || (Number(a.id) - Number(b.id)));
+              .sort(mntSortLessons);
 
 
           if (
@@ -1559,7 +1565,7 @@
               if (!weeks.has(week)) weeks.set(week, []);
               weeks.get(week).push(lesson);
             });
-            [...weeks.entries()].sort((a, b) => a[0] - b[0]).forEach(([week, weekLessons]) => {
+            [...weeks.entries()].sort((a, b) => (Number(a[1][0]?.week_order||a[0])-Number(b[1][0]?.week_order||b[0])) || (a[0]-b[0])).forEach(([week, weekLessons]) => {
               const section = document.createElement("details");
               section.className = "mnt-week";
               const heading = document.createElement("summary");
@@ -1573,9 +1579,15 @@
               section.appendChild(heading);
               const contents = document.createElement("div");
               contents.className = "mnt-week-lessons";
-              weekLessons.forEach(lesson => {
-                contents.appendChild(createLessonElement(lesson, courseLessons));
-              });
+              const topics=new Map();
+              weekLessons.forEach(lesson=>{const topic=(lesson.topic_name||'General').trim()||'General';if(!topics.has(topic))topics.set(topic,[]);topics.get(topic).push(lesson);});
+              for(const [topic,topicLessons] of topics){
+                const topicBox=document.createElement('details');topicBox.className='mnt-topic';
+                const topicHeading=document.createElement('summary');topicHeading.textContent='📂 '+topic+' ('+topicLessons.length+')';topicBox.append(topicHeading);
+                const topicContent=document.createElement('div');topicContent.className='mnt-topic-lessons';
+                topicLessons.forEach(lesson=>topicContent.append(createLessonElement(lesson,courseLessons)));
+                topicBox.append(topicContent);contents.append(topicBox);
+              }
               section.appendChild(contents);
               courseBox.appendChild(section);
             });
@@ -1910,7 +1922,7 @@
               item.course ===
               lesson.course
           )
-          .sort((a, b) => (Number(a.week_number || 1) - Number(b.week_number || 1)) || (Number(a.id) - Number(b.id)));
+          .sort(mntSortLessons);
 
 
       if (
