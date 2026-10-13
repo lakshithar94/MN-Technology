@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="750" viewBox="0 0 1080 750">
+<rect width="1080" height="750" fill="#eef5fc"/>
+<rect width="1080" height="105" fill="#12385d"/><text x="540" y="58" text-anchor="middle" font-size="39" fill="white" font-family="Arial" font-weight="bold">3-Band Resistor Color Code</text><text x="540" y="89" text-anchor="middle" font-size="20" fill="#d6eafa" font-family="Arial">First digit  •  Second digit  •  Multiplier  |  Tolerance ±20%</text>
+<g font-family="Arial" font-size="24" text-anchor="middle" fill="#153653"><text x="385" y="163">1st digit</text><text x="520" y="163">2nd digit</text><text x="665" y="163">Multiplier</text></g>
+<g stroke="#43556a" stroke-width="3"><line x1="385" y1="172" x2="385" y2="231"/><line x1="520" y1="172" x2="520" y2="231"/><line x1="665" y1="172" x2="665" y2="231"/></g>
+<line x1="155" y1="295" x2="925" y2="295" stroke="#929da9" stroke-width="19" stroke-linecap="round"/>
+<rect x="255" y="235" width="560" height="120" rx="55" fill="#e9c99d" stroke="#9d805e" stroke-width="4"/>
+<rect x="361" y="237" width="48" height="116" fill="#8c5028"/><rect x="496" y="237" width="48" height="116" fill="#151b23"/><rect x="641" y="237" width="48" height="116" fill="#c92d35"/>
+<g font-family="Arial" fill="#163957"><text x="75" y="418" font-size="29" font-weight="bold">Example: Brown - Black - Red</text><text x="75" y="464" font-size="26">Brown = 1    Black = 0    Red = ×100</text><text x="75" y="505" font-size="32" font-weight="bold">10 × 100 = 1,000 Ω = 1 kΩ (±20%)</text></g>
+<rect x="70" y="540" width="940" height="158" rx="16" fill="white" stroke="#bfd3e6" stroke-width="2"/>
+<g font-family="Arial" font-size="22" fill="#163957"><text x="94" y="580" font-weight="bold">Digit colors:</text><text x="94" y="615">Black 0  |  Brown 1  |  Red 2  |  Orange 3  |  Yellow 4</text><text x="94" y="649">Green 5  |  Blue 6  |  Violet 7  |  Grey 8  |  White 9</text><text x="94" y="683" font-size="19">Multiplier: same color digit = power of ten; Gold ×0.1; Silver ×0.01</text></g>
+</svg>
